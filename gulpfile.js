@@ -12,7 +12,8 @@ let gulp = require('gulp'),
         deletePath: 'static/build',
         bundleConfigPath: theme.path+'/bundle-config.js',
         bundleResultsPath: 'static/build',
-        svgSrc: 'static/build/images'
+        svgSrc: 'static/build/images',
+        js: ['front/vendor/**/*.js', theme.path+'/**/*.js', 'common/**/*.js']
     };
 
 let svg2Sprite = function (src, dest) {
@@ -63,6 +64,11 @@ gulp.task('bundle', ['clean', 'build-svg'], () => {
                 pathPrefix: paths.prefix
             }))
         .pipe(gulp.dest(paths.build))
+});
+
+gulp.task('build-js', () => {
+    return gulp.src(paths.js)
+        .pipe(require('./static/builder')())
 });
 
 gulp.task('clean', () => {

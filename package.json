@@ -50,6 +50,7 @@
     "passport-local": "*",
     "passport-remember-me": "*",
     "smart-plurals": "*",
+    "through2": "^2.0.0",
     "try-thread-sleep": "^1.0.0",
     "underscore": "^1.8.3"
   }
