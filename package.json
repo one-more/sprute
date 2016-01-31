@@ -20,5 +20,37 @@
   "bugs": {
     "url": "https://github.com/one-more/KIS/issues"
   },
-  "homepage": "https://github.com/one-more/KIS#readme"
+  "homepage": "https://github.com/one-more/KIS#readme",
+  "dependencies": {
+    "bcrypt": "*",
+    "body-parser": "*",
+    "cookie-parser": "*",
+    "crypto": "*",
+    "express": "^4.13.4",
+    "express-session": "*",
+    "gulp": "^3.8.11",
+    "gulp-autoprefixer": "*",
+    "gulp-bundle-assets": "*",
+    "gulp-cssmin": "*",
+    "gulp-cssnext": "*",
+    "gulp-rimraf": "*",
+    "gulp-stylus": "^2.0.3",
+    "gulp-svg-sprite": "*",
+    "gulp-traceur": "^0.17.1",
+    "gulp-uglify": "*",
+    "gulp-watch": "*",
+    "jsmart": "*",
+    "lazypipe": "*",
+    "morgan": "*",
+    "mysql": "*",
+    "nib": "^1.1.0",
+    "opn": "*",
+    "orm": "*",
+    "passport": "*",
+    "passport-local": "*",
+    "passport-remember-me": "*",
+    "smart-plurals": "*",
+    "try-thread-sleep": "^1.0.0",
+    "underscore": "^1.8.3"
+  }
 }
