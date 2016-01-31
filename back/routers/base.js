@@ -2,6 +2,8 @@
 
 module.exports = class {
     loadPage(res, domDocument) {
-        res.send(+domDocument)
+        domDocument.toHTML().then(html => {
+            res.send(html)
+        })
     }
 };

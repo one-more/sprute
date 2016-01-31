@@ -1,0 +1,1 @@
+module.exports = {"js":"0822ee4fe714f5e4e9b94a42.js","css":"b8ecae8f76d1ff4ed0ee1f20.css"}

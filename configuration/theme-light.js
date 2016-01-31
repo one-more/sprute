@@ -3,5 +3,5 @@
 let process = require('process');
 
 module.exports = {
-    path: process.cwd()+'/front/theme-light'
+    path: process.cwd()+'/themes/theme-light'
 };

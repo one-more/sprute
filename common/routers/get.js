@@ -1,11 +1,12 @@
 'use strict';
 
-let baseRouter = require('../../back/routers/base'),
-    domDocument = new require('../../back/classes/dom-document');
+let baseRouter = require(app.get('classPath')+'/routers/base'),
+    domDocument = require(app.get('classPath')+'/classes/dom-document'),
+    domDocumentObj = new domDocument;
 
 module.exports = class extends baseRouter {
     index(req, res) {
-        domDocument.setBlock('main', 'main page');
-        this.loadPage(res, domDocument)
+        domDocumentObj.setBlock('main', 'main page');
+        this.loadPage(res, domDocumentObj)
     }
 };

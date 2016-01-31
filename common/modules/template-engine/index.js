@@ -3,7 +3,7 @@
 let smartPlurals = require('smart-plurals');
 let pluralRule = smartPlurals.Plurals.getRule('ru');
 
-let jSmart = require('jsmart');
+require('jsmart');
 
 module.exports = {
     init() {

@@ -1,19 +1,25 @@
 'use strict';
 
 let gulp = require('gulp'),
-    bundle = require('gulp-bundle-assets'),
     rimraf = require('gulp-rimraf'),
-    path = require('path'),
     svgSprite = require('gulp-svg-sprite'),
+    traceur = require('gulp-traceur'),
+    stylus = require('gulp-stylus'),
+    nib = require('nib'),
+    cssnext = require('gulp-cssnext'),
+    uglify = require('gulp-uglify'),
+    cssmin = require('gulp-cssmin'),
+    concat = require('gulp-concat'),
+    crypto = require('crypto'),
+    fs = require('fs'),
     theme = require('./configuration/app').theme,
+    watch = require('gulp-watch'),
     paths = {
-        build: 'static/build',
-        prefix: '/build/',
         deletePath: 'static/build',
-        bundleConfigPath: theme.path+'/bundle-config.js',
-        bundleResultsPath: 'static/build',
         svgSrc: 'static/build/images',
-        js: ['front/vendor/**/*.js', theme.path+'/**/*.js', 'common/**/*.js']
+        js: ['front/**/*.js', theme.path+'/**/*.js', 'common/**/*.js'],
+        css: [theme.path+'/**/*.styl', 'front/**/*.css'],
+        dest: 'static/build'
     };
 
 let svg2Sprite = function (src, dest) {
@@ -55,20 +61,36 @@ gulp.task('build-svg', function () {
     svg2Sprite(paths.svgSrc, paths.svgSrc);
 });
 
-gulp.task('bundle', ['clean', 'build-svg'], () => {
-    return gulp.src(paths.bundleConfigPath)
-        .pipe(bundle())
-            .on('error', console.log.bind(console))
-        .pipe(bundle.results({
-                dest: paths.bundleResultsPath,
-                pathPrefix: paths.prefix
-            }))
-        .pipe(gulp.dest(paths.build))
+gulp.task('build-css', () => {
+    let fileName = crypto.randomBytes(12).toString('hex')+'.css';
+    let buildResult = require('./static/build-result');
+    buildResult.css = fileName;
+    fs.writeFileSync('./static/build-result.js', `module.exports = ${JSON.stringify(buildResult)}`);
+    return gulp.src(paths.css)
+        .pipe(stylus({
+            include: [theme.path+'/includes/stylus'],
+            import: [/*'_animations', '_variables', '_mixins',*/ 'nib'],
+            use: nib()
+        }))
+        .pipe(cssmin())
+        .pipe(cssnext({
+            compress: true
+        }))
+        .pipe(concat(fileName))
+        .pipe(gulp.dest(paths.dest))
 });
 
 gulp.task('build-js', () => {
+    let fileName = crypto.randomBytes(12).toString('hex')+'.js';
+    let buildResult = require('./static/build-result');
+    buildResult.js = fileName;
+    fs.writeFileSync('./static/build-result.js', `module.exports = ${JSON.stringify(buildResult)}`);
     return gulp.src(paths.js)
-        .pipe(require('./static/builder')())
+        .pipe(traceur())
+        .pipe(uglify())
+        .pipe(require('./gulp-modules')())
+        .pipe(concat(fileName))
+        .pipe(gulp.dest(paths.dest))
 });
 
 gulp.task('clean', () => {
@@ -77,14 +99,12 @@ gulp.task('clean', () => {
 });
 
 gulp.task('watch', () => {
-    bundle.watch({
-        configPath: path.join(__dirname, paths.bundleConfigPath),
-        results: {
-            dest: path.join(__dirname, paths.bundleResultsPath),
-            pathPrefix: paths.prefix
-        },
-        dest: path.join(__dirname, paths.build)
+    gulp.watch(paths.js, () => {
+        gulp.task('build-js')
+    });
+    gulp.watch(paths.css, () => {
+        gulp.task('build-css')
     })
 });
 
-gulp.task('default', ['bundle', 'watch']);
+gulp.task('default', ['clean', 'build-js', 'build-css', 'build-svg', 'watch']);
