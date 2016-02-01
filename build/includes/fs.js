@@ -24,7 +24,13 @@ window.fs = (() => {
         getFile(path, __baseDir = '.') {
             parseFileSystem();
 
-            let baseDir = getDir(__baseDir);
+            let baseDir;
+            if(path[0] == '/') {
+                baseDir = getDir('.');
+                path = '.'+path
+            } else {
+                baseDir = getDir(__baseDir);
+            }
             let dirs = path.split('/');
             let file = dirs.pop();
             let dir = dirs.reduce((path, part) => {

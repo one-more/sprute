@@ -3,8 +3,11 @@
 module.exports = {
     start() {
         this.setAliases();
-        let templateEngine = require('../common/modules/template-engine/index');
-        this.set('templateEngine', templateEngine.init())
+        this.setVars();
+        this.setRoutes();
+
+        Backbone.history.start({pushState: true, silent: true});
+        return this
     },
 
     set(name, val) {
@@ -18,5 +21,20 @@ module.exports = {
     setAliases() {
         window['smart-plurals'] = Smart;
         window['jsmart'] = jSmart
+    },
+
+    setVars() {
+        let templateEngine = require('../common/modules/template-engine/index');
+        this.set('templateEngine', templateEngine.init());
+        this.set('classPath', '/front')
+    },
+
+    setRoutes() {
+        let getRouter = require('../common/routers/get'),
+            routes = require('../configuration/routes'),
+            routerObj = new getRouter();
+        routerObj.routes = routes.getRouter;
+
+        this.set('router', routerObj)
     }
 };

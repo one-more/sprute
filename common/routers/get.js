@@ -7,6 +7,6 @@ let baseRouter = require(app.get('classPath')+'/routers/base'),
 module.exports = class extends baseRouter {
     index(req, res) {
         domDocumentObj.setBlock('main', 'main page');
-        this.loadPage(res, domDocumentObj)
+        this.loadPage(domDocumentObj, res)
     }
 };

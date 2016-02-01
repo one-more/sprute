@@ -21,24 +21,24 @@ module.exports = Object.setPrototypeOf({
             console.log(`start listening ${configuration.app.host}:${configuration.app.port}`)
         });
         app.use(express.static(path.join(__dirname, 'static')));
-        app.set('templateEngine', templateEngine.init());
-        app.set('classPath', process.cwd()+'/back');
-        app.set('theme', configuration.app.theme);
+        this.setVars();
         this.addMiddleware();
         this.registerRoutes();
         return app
     },
 
+    setVars() {
+        app.set('templateEngine', templateEngine.init());
+        app.set('classPath', process.cwd()+'/back');
+        app.set('theme', configuration.app.theme);
+    },
+
     registerRoutes() {
         let getRouter = require('./common/routers/get'),
-            routers = {
-                getRouter: new getRouter()
-            };
+            getRouterObj = new getRouter();
 
-        _.pairs(routes).forEach(pair => {
-            let router = pair[1][0],
-                method = pair[1][1];
-            app.all(pair[0], routers[router][method].bind(routers[router]))
+        _.pairs(routes.getRouter).forEach(pair => {
+            app.all(pair[0], getRouterObj[pair[1]].bind(getRouterObj))
         })
     },
 
