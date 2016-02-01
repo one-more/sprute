@@ -1,1 +1,1 @@
-module.exports = {"js":{"origin":"origin.a3ba429fffd18d5142bd58af.js","vendor":"vendor.13e245d7055717d655b3afd3.js"}}
+module.exports = {"js":{"origin":"origin.d7e463e9af4fae5738742e83.js","vendor":"vendor.d5d257f79a6cdb1e2deb3ff1.js"},"css":{"origin":"origin.2143fa092e9fe2c4ad7759e4.css","vendor":"vendor.63531541663242203c8a81a6.css"}}

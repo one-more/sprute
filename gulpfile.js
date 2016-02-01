@@ -129,11 +129,11 @@ gulp.task('clean', () => {
 });
 
 gulp.task('watch', () => {
-    gulp.watch(paths.js, () => {
-        gulp.task('build-js')
+    watch(paths.js, () => {
+        gulp.start('build-js')
     });
-    gulp.watch(paths.css, () => {
-        gulp.task('build-css')
+    watch(paths.css, () => {
+        gulp.strt('build-css')
     })
 });
 

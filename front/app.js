@@ -2,6 +2,21 @@
 
 module.exports = {
     start() {
-        console.log(3)
+        this.setAliases();
+        let templateEngine = require('../common/modules/template-engine/index');
+        this.set('templateEngine', templateEngine.init())
+    },
+
+    set(name, val) {
+        this[name] = val
+    },
+
+    get(name) {
+        return this[name]
+    },
+
+    setAliases() {
+        window['smart-plurals'] = Smart;
+        window['jsmart'] = jSmart
     }
 };

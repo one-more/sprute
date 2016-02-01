@@ -9,7 +9,7 @@ let vendorJS = [
     vendorPath+'/underscore/underscore-min.js',
     vendorPath+'/backbone/backbone-min.js',
     vendorPath+'/jsmart/jsmart.min.js',
-    vendorPath+'/smart-plurals/dist/Smart.Plurals.all-min.js'
+    vendorPath+'/smart-plurals/dist/Smart.Plurals/Smart.Plurals.all-min.js'
 ];
 let vendorCSS = [];
 
