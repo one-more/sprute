@@ -1,7 +1,15 @@
 'use strict';
 
 let process = require('process');
+let themePath = process.cwd()+'/themes/theme-light';
 
 module.exports = {
-    path: process.cwd()+'/themes/theme-light'
+    path: themePath,
+    buildOptions: {
+        stylus: {
+            includes: [themePath+'/includes/stylus'],
+            imports: [/*'_animations', '_variables', '_mixins',*/]
+        },
+        main: 'index.js'
+    }
 };

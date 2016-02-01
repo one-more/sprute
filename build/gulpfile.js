@@ -12,7 +12,8 @@ let gulp = require('gulp'),
     concat = require('gulp-concat'),
     crypto = require('crypto'),
     fs = require('fs'),
-    theme = require('./configuration/app').theme,
+    process = require('process'),
+    theme = require(process.cwd()+'/configuration/app').theme,
     watch = require('gulp-watch'),
     paths = {
         deletePath: 'static/build',
@@ -63,13 +64,13 @@ gulp.task('build-svg', function () {
 
 gulp.task('build-css', () => {
     let fileName = crypto.randomBytes(12).toString('hex')+'.css';
-    let buildResult = require('./static/build-result');
+    let buildResult = require(process.cwd()+'/static/build-result');
     buildResult.css = fileName;
     fs.writeFileSync('./static/build-result.js', `module.exports = ${JSON.stringify(buildResult)}`);
     return gulp.src(paths.css)
         .pipe(stylus({
-            include: [theme.path+'/includes/stylus'],
-            import: [/*'_animations', '_variables', '_mixins',*/ 'nib'],
+            include: theme.buildOptions.stylus.includes || [],
+            import: ['nib'].concat(theme.buildOptions.stylus.imports || []),
             use: nib()
         }))
         .pipe(cssmin())
@@ -82,7 +83,7 @@ gulp.task('build-css', () => {
 
 gulp.task('build-js', () => {
     let fileName = crypto.randomBytes(12).toString('hex')+'.js';
-    let buildResult = require('./static/build-result');
+    let buildResult = require(process.cwd()+'/static/build-result');
     buildResult.js = fileName;
     fs.writeFileSync('./static/build-result.js', `module.exports = ${JSON.stringify(buildResult)}`);
     return gulp.src(paths.js)
@@ -90,6 +91,7 @@ gulp.task('build-js', () => {
         .pipe(uglify())
         .pipe(require('./gulp-modules')())
         .pipe(concat(fileName))
+        .pipe(require('./gulp-environment')())
         .pipe(gulp.dest(paths.dest))
 });
 

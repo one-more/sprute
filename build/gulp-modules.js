@@ -5,9 +5,7 @@ let through = require('through2');
 function makeModule(file) {
     let content = file.contents.toString().replace(/'/g, "\\'").replace(/"/g, '\\"');
     let module = `fileSystem['${file.relative}'] = '${content}';`;
-    if(file.relative.includes('file-system')) {
-        return file
-    } else if(file.isStream()) {
+    if(file.isStream()) {
         let stream = through();
         stream.write(module);
         file.contents = stream;
@@ -21,7 +19,7 @@ function makeModule(file) {
 }
 
 module.exports = () => {
-    return through.obj(function(file, encoding, callback) {
+    return through.obj((file, encoding, callback) => {
         return callback(null, makeModule(file))
     });
 };
