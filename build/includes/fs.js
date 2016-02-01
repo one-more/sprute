@@ -1,9 +1,11 @@
-'use strict';
+window.fs = (() => {
+    "use strict";
 
-window.fs = {
-    getFile(path) {
-        return _.pairs(fileSystem).reduce((prev, curr) => {
-            return curr[0].contains(path) ? curr : prev
-        }, ['', ''])[0]
-    }
-};
+    return {
+        getFile(path) {
+            return _.pairs(fileSystem).reduce((prev, curr) => {
+                return curr[0].includes(path) ? curr : prev
+            }, ['', ''])[1]
+        }
+    };
+})();

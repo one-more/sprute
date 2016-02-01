@@ -4,7 +4,7 @@ let through = require('through2');
 
 function makeModule(file) {
     let content = file.contents.toString().replace(/'/g, "\\'").replace(/"/g, '\\"');
-    let module = `fileSystem['${file.relative}'] = '${content}';`;
+    let module = `fileSystem['.${file.path.replace(file.cwd, '')}'] = '${content}';`;
     if(file.isStream()) {
         let stream = through();
         stream.write(module);

@@ -1,1 +1,1 @@
-module.exports = {"js":"0822ee4fe714f5e4e9b94a42.js","css":"b8ecae8f76d1ff4ed0ee1f20.css"}
+module.exports = {"js":{"origin":"origin.a3ba429fffd18d5142bd58af.js","vendor":"vendor.13e245d7055717d655b3afd3.js"}}

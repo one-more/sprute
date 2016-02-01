@@ -9,7 +9,6 @@ module.exports = {
         stylus: {
             includes: [themePath+'/includes/stylus'],
             imports: [/*'_animations', '_variables', '_mixins',*/]
-        },
-        main: 'index.js'
+        }
     }
 };
