@@ -6,7 +6,7 @@ let through = require('through2'),
 
 function addVariables(file) {
     return `
-        var __dirname = '.${file.base.replace(file.cwd, '')}';
+        var __dirname = '.${file.path.replace(file.cwd, '').split('/').filter(part => !part.includes('.')).join('/')}';
     `
 }
 

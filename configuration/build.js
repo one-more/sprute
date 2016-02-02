@@ -15,11 +15,20 @@ let vendorJS = [
 ];
 let vendorCSS = [];
 
+let originJS = [
+    'front/**/*.js',
+    theme.path+'/**/*.js',
+    'common/**/*.js',
+    'configuration/routes.js',
+    'configuration/app.js',
+    'configuration/theme-light.js'
+];
+
 module.exports = {
     paths: {
         deletePath: 'static/build',
         svgSrc: 'static/build/images',
-        js: ['front/**/*.js', theme.path+'/**/*.js', 'common/**/*.js', 'configuration/routes.js'],
+        js: originJS,
         css: [theme.path+'/**/*.styl', 'front/**/*.css'],
         dest: 'static/build',
         vendorJS,

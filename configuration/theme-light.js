@@ -10,5 +10,6 @@ module.exports = {
             includes: [themePath+'/includes/stylus'],
             imports: [/*'_animations', '_variables', '_mixins',*/]
         }
-    }
+    },
+    templatesPath: themePath+'/templates'
 };

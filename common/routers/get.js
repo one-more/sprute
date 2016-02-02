@@ -2,11 +2,15 @@
 
 let baseRouter = require(app.get('classPath')+'/routers/base'),
     domDocument = require(app.get('classPath')+'/classes/dom-document'),
-    domDocumentObj = new domDocument;
+    domDocumentObj = new domDocument,
+    mainPageView = require('../views/main-page');
 
 module.exports = class extends baseRouter {
     index(req, res) {
-        domDocumentObj.setBlock('main', 'main page');
-        this.loadPage(domDocumentObj, res)
+        let mainPageViewObj = new mainPageView;
+        mainPageViewObj.render().then(html => {
+            domDocumentObj.setBlock('main', html);
+            this.loadPage(domDocumentObj, res)
+        })
     }
 };
