@@ -11,6 +11,7 @@ let gulp = require('gulp'),
     cssmin = require('gulp-cssmin'),
     concat = require('gulp-concat'),
     crypto = require('crypto'),
+    htmlmin = require('gulp-htmlmin'),
     fs = require('fs'),
     theme = require('./configuration/app').theme,
     watch = require('gulp-watch'),
@@ -124,6 +125,19 @@ gulp.task('build-js', () => {
     buildVendorJs(fileNameVendor)
 });
 
+gulp.task('build-html', () => {
+    let fileName = crypto.randomBytes(12).toString('hex')+'.templates.js';
+    let buildResult = require(configuration.buildResult);
+    buildResult.templates = fileName;
+    fs.writeFileSync(configuration.buildResult, `module.exports = ${JSON.stringify(buildResult)}`);
+
+    gulp.src(paths.templates)
+        .pipe(htmlmin({collapseWhitespace: true}))
+        .pipe(require('./build/gulp-templates')())
+        .pipe(concat(fileName))
+        .pipe(gulp.dest(paths.dest))
+});
+
 gulp.task('clean', () => {
     return gulp.src(paths.deletePath)
         .pipe(rimraf())
@@ -134,8 +148,8 @@ gulp.task('watch', () => {
         gulp.start('build-js')
     });
     watch(paths.css, () => {
-        gulp.strt('build-css')
+        gulp.start('build-css')
     })
 });
 
-gulp.task('default', ['clean', 'build-js', 'build-css', 'build-svg', 'watch']);
+gulp.task('default', ['clean', 'build-js', 'build-css', 'build-svg', 'build-html', 'watch']);

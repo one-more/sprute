@@ -33,6 +33,7 @@
     "gulp-bundle-assets": "*",
     "gulp-cssmin": "*",
     "gulp-cssnext": "*",
+    "gulp-htmlmin": "^1.3.0",
     "gulp-rimraf": "*",
     "gulp-stylus": "^2.0.3",
     "gulp-svg-sprite": "*",

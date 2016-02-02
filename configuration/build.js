@@ -32,7 +32,8 @@ module.exports = {
         css: [theme.path+'/**/*.styl', 'front/**/*.css'],
         dest: 'static/build',
         vendorJS,
-        vendorCSS
+        vendorCSS,
+        templates: [theme.templatesPath+'/**/*.tpl.html']
     },
     buildResult: process.cwd()+'/static/build-result.js',
     main: './front/index.js'

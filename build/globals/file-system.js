@@ -75,3 +75,9 @@ var fileSystem = {
         })
     }
 };
+
+window.loadFile = (path, content) => {
+    "use strict";
+
+    fileSystem.addFile(path, content)
+};
