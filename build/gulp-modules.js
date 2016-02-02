@@ -4,10 +4,9 @@ let through = require('through2');
 
 function makeModule(file) {
     let content = file.contents.toString()
-        .replace(/require\((\S*?)\)/g, `require($1, '.${file.base.replace(file.cwd, '')}')`)
         .replace(/'/g, "\\'")
         .replace(/"/g, '\\"');
-    let module = `fileSystem['.${file.path.replace(file.cwd, '')}'] = '${content}';`;
+    let module = `fileSystem.addFile('.${file.path.replace(file.cwd, '')}', '${content}');`;
     if(file.isStream()) {
         let stream = through();
         stream.write(module);

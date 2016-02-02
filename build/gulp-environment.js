@@ -1,7 +1,6 @@
 'use strict';
 
 let through = require('through2'),
-    theme = require('../configuration/app').theme,
     pluginError = require('gulp-util').PluginError,
     fs = require('fs'),
     path = require('path'),
@@ -9,13 +8,13 @@ let through = require('through2'),
 
 function addEnvironment(file) {
     let content = file.contents.toString();
-    let basePath = __dirname+'/includes';
-    let includes = [basePath+'/file-system.js', basePath+'/fs.js', basePath+'/require.js']
-        .reduce((prev, path) => {
-            return fs.readFileSync(path, 'utf8') + prev
-        }, '');
-    let start = `\n new Function(fs.getFile('${configuration.main}'))()`;
-    let result = `(function() { 'use strict'; \n ${includes + content + start} \n })();`;
+    let globals = '';
+    let globalsPath = __dirname+'/globals';
+    fs.readdirSync(globalsPath).forEach(file => {
+        globals += fs.readFileSync(`${globalsPath}/${file}`, 'utf8')
+    });
+    let start = `\n new Function(fileSystem.getFile('${configuration.main}'))()`;
+    let result = `(function() { 'use strict'; \n ${globals + content + start} \n })();`;
     if(file.isStream()) {
         let stream = through();
         stream.write(result);

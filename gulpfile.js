@@ -80,6 +80,7 @@ function buildVendorCSS(fileName) {
 
 function buildOriginJs(fileName) {
     return gulp.src(paths.js)
+        .pipe(require('./build/gulp-includes')())
         .pipe(traceur())
         .pipe(uglify())
         .pipe(require('./build/gulp-modules')())

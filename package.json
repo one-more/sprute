@@ -44,6 +44,7 @@
     "morgan": "*",
     "mysql": "*",
     "nib": "^1.1.0",
+    "node-dir": "^0.1.11",
     "opn": "*",
     "orm": "*",
     "passport": "*",
