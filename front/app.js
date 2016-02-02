@@ -25,10 +25,11 @@ module.exports = {
     },
 
     setVars() {
+        this.set('classPath', '/front');
+        this.set('commonPath', process.cwd()+'/common');
+
         let templateEngine = require('../common/modules/template-engine/index');
         this.set('templateEngine', templateEngine.init());
-        this.set('classPath', '/front');
-        app.set('commonPath', process.cwd()+'/common');
     },
 
     setRoutes() {

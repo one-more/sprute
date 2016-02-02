@@ -10,19 +10,29 @@ var fileSystem = {
         dir[file] = content
     },
 
-    getFile(path, __baseDir = '.') {
+    getDir(path) {
         "use strict";
 
-        let baseDir;
+        return path.split('/').filter(part => !!part).reduce((path, part) => {
+            return path[part]
+        }, this)
+    },
+
+    getBaseDir(path, __baseDir = '.') {
+        "use strict";
+
         if(path[0] == '/') {
-            baseDir = this.getDir('.');
-            path = '.'+path
+            path = '.'+path;
+            return this.getDir('.')
         } else {
-            baseDir = this.getDir(__baseDir);
+            return this.getDir(__baseDir);
         }
-        let dirs = path.split('/');
-        let file = dirs.pop();
-        let dir = dirs.reduce((path, part) => {
+    },
+
+    getFromBaseDir(dirs, baseDir) {
+        "use strict";
+
+        return dirs.reduce((path, part) => {
             if(part.trim() == '.') {
                 return path
             }
@@ -31,16 +41,37 @@ var fileSystem = {
             }
             return path[part]
         }, baseDir);
-        return dir[file.includes('.js') ? file : `${file}.js`] || (() => {
+    },
+
+    normalizePath(path) {
+        "use strict";
+
+        if(path[0] == '/') {
+            return '.'+path
+        }
+        return path
+    },
+
+    getFile(path, __baseDir = '.') {
+        "use strict";
+
+        let baseDir = this.getBaseDir(path, __baseDir);
+        let dirs = this.normalizePath(path).split('/');
+        let file = dirs.pop();
+        let dir = this.getFromBaseDir(dirs, baseDir);
+        return dir[file] || (() => {
                 throw new Error(`cannot find file ${path}`)
             })()
     },
 
-    getDir(path) {
+    getDirContent(path, __baseDir) {
         "use strict";
 
-        return path.split('/').filter(part => !!part).reduce((path, part) => {
-            return path[part]
-        }, this)
+        let baseDir = this.getBaseDir(path, __baseDir);
+        let dirs = this.normalizePath(path).split('/');
+        let dir = this.getFromBaseDir(dirs, baseDir);
+        return _.pairs(dir).map(pair => {
+            return pair[0].split('/').splice(-1)
+        })
     }
 };

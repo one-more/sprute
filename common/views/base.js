@@ -34,6 +34,6 @@ module.exports = class extends Backbone.View {
     compile(tpl, data) {
         let templateEngine = app.get('templateEngine');
         let compiled = new templateEngine(tpl);
-        return compiled.fetch(Object.assign(data, {templateDirs: this.templateDirs}))
+        return compiled.fetch(Object.assign(data || {}, {templateDirs: this.templateDirs}))
     }
 };

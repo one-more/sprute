@@ -1,7 +1,6 @@
 'use strict';
 
 let express = require('express'),
-    templateEngine = require('./common/modules/template-engine/index'),
     app = express(),
     configuration = {},
     routes = require('./configuration/routes'),
@@ -28,10 +27,12 @@ module.exports = Object.setPrototypeOf({
     },
 
     setVars() {
-        app.set('templateEngine', templateEngine.init());
         app.set('classPath', process.cwd()+'/back');
         app.set('commonPath', process.cwd()+'/common');
         app.set('theme', configuration.app.theme);
+
+        let templateEngine = require('./common/modules/template-engine/index');
+        app.set('templateEngine', templateEngine.init());
     },
 
     registerRoutes() {
