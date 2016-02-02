@@ -4,6 +4,12 @@ let through = require('through2'),
     fs = require('fs'),
     path = require('path');
 
+function addVariables(file) {
+    return `
+        var __dirname = '.${file.base.replace(file.cwd, '')}';
+    `
+}
+
 function include(file) {
     let content = file.contents.toString();
     let includes = '';
@@ -11,7 +17,7 @@ function include(file) {
     fs.readdirSync(includesPath).forEach(file => {
         includes += fs.readFileSync(`${includesPath}/${file}`, 'utf8')
     });
-    let result = `${includes + content}`;
+    let result = `${addVariables(file) + includes + content}`;
     
     if(file.isStream()) {
         let stream = through();

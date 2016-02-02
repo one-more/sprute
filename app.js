@@ -30,6 +30,7 @@ module.exports = Object.setPrototypeOf({
     setVars() {
         app.set('templateEngine', templateEngine.init());
         app.set('classPath', process.cwd()+'/back');
+        app.set('commonPath', process.cwd()+'/common');
         app.set('theme', configuration.app.theme);
     },
 

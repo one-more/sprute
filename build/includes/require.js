@@ -4,8 +4,8 @@ var require = (path) => {
     } else {
         let file = fs.readFileSync(path);
         let module = {};
-        let env = new Function('module', file);
-        env(module);
+        let env = new Function('module', 'fileSystem', file);
+        env(module, fileSystem);
         return module.exports
     }
 };

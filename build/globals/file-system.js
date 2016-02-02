@@ -36,7 +36,7 @@ var fileSystem = {
             })()
     },
 
-    getDir() {
+    getDir(path) {
         "use strict";
 
         return path.split('/').filter(part => !!part).reduce((path, part) => {

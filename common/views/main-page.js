@@ -1,6 +1,6 @@
 'use strict';
 
-let baseView = require(app.get('classPath')+'/views/base');
+let baseView = require('./base');
 
 module.exports = class extends baseView {
     constructor() {

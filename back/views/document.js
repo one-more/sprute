@@ -1,23 +1,19 @@
 'use strict';
 
-let baseView = require('./base'),
-    fs = require('fs'),
+let baseView = require(app.get('commonPath')+'/views/base'),
     process = require('process'),
     buildConf = require(process.cwd()+'/configuration/build');
 
 module.exports = class extends baseView {
     constructor() {
         super();
-    }
 
-    get templateDir() {
-        return app.get('theme').path+'/templates/document'
+        this.setTemplateDir(app.get('theme').path+'/templates/document')
     }
 
     render(blocks) {
         return new Promise(resolve => {
-            let tpl = fs.readFileSync(this.templateDir+'/index.tpl.html', 'utf8');
-            let html = this.getTemplate(tpl, {
+            let html = this.getTemplate('index.tpl.html', {
                 blocks,
                 static: require(buildConf.buildResult)
             });

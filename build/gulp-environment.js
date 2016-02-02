@@ -13,7 +13,9 @@ function addEnvironment(file) {
     fs.readdirSync(globalsPath).forEach(file => {
         globals += fs.readFileSync(`${globalsPath}/${file}`, 'utf8')
     });
-    let start = `\n new Function(fileSystem.getFile('${configuration.main}'))()`;
+    let start = `
+        new Function('fileSystem', fileSystem.getFile('${configuration.main}'))(fileSystem)
+    `;
     let result = `(function() { 'use strict'; \n ${globals + content + start} \n })();`;
     if(file.isStream()) {
         let stream = through();
