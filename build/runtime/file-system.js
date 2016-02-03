@@ -1,38 +1,64 @@
 var fileSystem = {
-    addFile(path, content) {
+    addFile(file) {
         "use strict";
 
-        let dirs = path.split('/');
-        let file = dirs.pop();
-        let dir = dirs.reduce((path, part) => {
-            return path[part] || (path[part] = {parent: path})
+        file.dirName = file.base.replace(file.cwd, '');
+        file.pathName = file.path.replace(file.cwd, '');
+        file.name = file.path.split('/').slice(-1);
+        let path = file.dirName;
+        let dir = path.split('/').filter(part => !!part).reduce((tree, dir) => {
+            return tree[dir] || (tree[dir] = {parent: tree})
         }, this);
-        dir[file] = content
+        dir[file.path.split('/').slice(-1)] = file;
     },
 
-    getDir(path) {
+    getFile(path, __baseDir) {
         "use strict";
 
-        return path.split('/').filter(part => !!part).reduce((path, part) => {
-            return path[part]
-        }, this)
+        let baseDir = this.getDir(__baseDir, this);
+        return this.getDir(path, baseDir) || (() => {
+                throw new Error(`file ${path} does not exist`)
+            })()
     },
 
-    getBaseDir(path, __baseDir = '.') {
+    findFile(name) {
         "use strict";
 
-        if(path[0] == '/') {
-            path = '.'+path;
-            return this.getDir('.')
-        } else {
-            return this.getDir(__baseDir);
-        }
+        let objectValues = obj => Object.keys(obj).filter(key => key != 'parent').map(key => obj[key]);
+        let isObject = obj => Object.prototype.toString.call(obj).includes('[object Object]');
+        let iterates = 0;
+
+        let search = (name, root) => {
+            if(iterates++ > 300) {
+                return
+            }
+            console.log(root);
+            let values = objectValues(root);
+            if(values.length == 0) {
+                return
+            }
+            let child = {};
+            for(let i = 0; i < values.length; i++) {
+                if(isFile(values[i])) {
+                    if(values[i].name == name) {
+                        return file
+                    }
+                } else if(isObject(values[i])) {
+                    child[i] = objectValues(values[i])
+                }
+            }
+            return search(name, child)
+        };
+
+        let isFile = obj => !!obj.pathName;
+
+        return search(name, this)
     },
 
-    getFromBaseDir(dirs, baseDir) {
+    getDir(path, baseDir) {
         "use strict";
 
-        return dirs.reduce((path, part) => {
+        return path.split('/').reduce((path, part) => {
             if(part.trim() == '.') {
                 return path
             }
@@ -41,43 +67,5 @@ var fileSystem = {
             }
             return path[part]
         }, baseDir);
-    },
-
-    normalizePath(path) {
-        "use strict";
-
-        if(path[0] == '/') {
-            return '.'+path
-        }
-        return path
-    },
-
-    getFile(path, __baseDir = '.') {
-        "use strict";
-
-        let baseDir = this.getBaseDir(path, __baseDir);
-        let dirs = this.normalizePath(path).split('/');
-        let file = dirs.pop();
-        let dir = this.getFromBaseDir(dirs, baseDir);
-        return dir[file] || (() => {
-                throw new Error(`cannot find file ${path}`)
-            })()
-    },
-
-    getDirContent(path, __baseDir) {
-        "use strict";
-
-        let baseDir = this.getBaseDir(path, __baseDir);
-        let dirs = this.normalizePath(path).split('/');
-        let dir = this.getFromBaseDir(dirs, baseDir);
-        return _.pairs(dir).map(pair => {
-            return pair[0].split('/').splice(-1)
-        })
     }
-};
-
-window.loadFile = (path, content) => {
-    "use strict";
-
-    fileSystem.addFile(path, content)
 };

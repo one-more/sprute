@@ -9,7 +9,7 @@ module.exports = class extends baseView {
         super();
 
         this.theme = theme;
-        this.setTemplateDir(theme.templatesPath+'/document')
+        this.setTemplateDir(app.get('classPath')+'/templates/document')
     }
 
     render(blocks) {

@@ -34,14 +34,15 @@ module.exports = {
             js: [
                 'front/**/*.js',
                 'common/**/*.js',
-                'configuration/routes.js'
+                'configuration/routes.js',
+                'configuration/build.js'
             ],
             options: bundleOptions
         }
     },
     build: process.cwd()+'/static/build',
     bundleResult: process.cwd()+'/static/build-result.js',
-    main: './front/index.js',
+    main: process.cwd()+'/front/index.js',
     clean: 'static/build/*',
     prefix: '/build'
 };

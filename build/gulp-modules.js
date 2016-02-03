@@ -1,10 +1,15 @@
 'use strict';
 
-let through = require('through2');
+let through = require('through2'),
+    _ = require('underscore');
 
 function makeModule(file) {
-    let content = file.contents.toString();
-    let module = `loadFile('.${file.path.replace(file.cwd, '')}', \`${content}\`);`;
+    let fileCopy = _.clone(file);
+    delete fileCopy._contents;
+    delete fileCopy.stat;
+    fileCopy.path = file.path;
+    fileCopy.contents = file.contents.toString();
+    let module = `loadFile(${JSON.stringify(fileCopy)});`;
     if(file.isStream()) {
         let stream = through();
         stream.write(module);
