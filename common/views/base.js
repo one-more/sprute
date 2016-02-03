@@ -1,12 +1,13 @@
 'use strict';
 
+let fs = require('fs');
+
 try {
     var Backbone = require('Backbone');
 } catch(e) {
     Backbone = {
         View: function () {}
     };
-    var fs = require('fs')
 }
 
 module.exports = class extends Backbone.View {
@@ -33,7 +34,11 @@ module.exports = class extends Backbone.View {
 
     compile(tpl, data) {
         let templateEngine = app.get('templateEngine');
-        let compiled = new templateEngine(tpl);
+        try {
+            var compiled = new templateEngine(tpl);
+        } catch(e) {
+            console.error(e)
+        }
         return compiled.fetch(Object.assign(data || {}, {templateDirs: this.templateDirs}))
     }
 };

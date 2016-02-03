@@ -1,8 +1,9 @@
 'use strict';
 
-let theme = require('./app').theme,
-    process = require('process'),
-    traceur = require('gulp-traceur');
+let process = require('process'),
+    traceur = require('gulp-traceur'),
+    lazypipe = require('lazypipe'),
+    uglify = require('gulp-uglify');
 
 let vendorPath = 'bower_components';
 let vendorJS = [
@@ -13,28 +14,34 @@ let vendorJS = [
     vendorPath+'/smart-plurals/dist/Smart.Plurals/Smart.Plurals.all-min.js',
     traceur.RUNTIME_PATH
 ];
-let vendorCSS = [];
 
-let originJS = [
-    'front/**/*.js',
-    theme.path+'/**/*.js',
-    'common/**/*.js',
-    'configuration/routes.js',
-    'configuration/app.js',
-    'configuration/theme-light.js'
-];
+let bundleOptions = {
+    transforms: {
+        js: lazypipe().pipe(traceur)
+    },
+    minify: true
+};
 
 module.exports = {
-    paths: {
-        deletePath: 'static/build',
-        svgSrc: 'static/build/images',
-        js: originJS,
-        css: [theme.path+'/**/*.styl', 'front/**/*.css'],
-        dest: 'static/build',
-        vendorJS,
-        vendorCSS,
-        templates: [theme.templatesPath+'/**/*.tpl.html']
+    bundles: {
+        'app-vendor': {
+            js: vendorJS,
+            options: {
+                minify: true
+            }
+        },
+        app: {
+            js: [
+                'front/**/*.js',
+                'common/**/*.js',
+                'configuration/routes.js'
+            ],
+            options: bundleOptions
+        }
     },
-    buildResult: process.cwd()+'/static/build-result.js',
-    main: './front/index.js'
+    build: process.cwd()+'/static/build',
+    bundleResult: process.cwd()+'/static/build-result.js',
+    main: './front/index.js',
+    clean: 'static/build/*',
+    prefix: '/build'
 };

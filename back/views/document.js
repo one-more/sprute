@@ -2,20 +2,23 @@
 
 let baseView = require(app.get('commonPath')+'/views/base'),
     process = require('process'),
-    buildConf = require(process.cwd()+'/configuration/build');
+    build = require(process.cwd()+'/configuration/build');
 
 module.exports = class extends baseView {
-    constructor() {
+    constructor(theme) {
         super();
 
-        this.setTemplateDir(app.get('theme').path+'/templates/document')
+        this.theme = theme;
+        this.setTemplateDir(theme.templatesPath+'/document')
     }
 
     render(blocks) {
         return new Promise(resolve => {
             let html = this.getTemplate('index.tpl.html', {
                 blocks,
-                static: require(buildConf.buildResult)
+                bundleResult: require(build.bundleResult),
+                theme: this.theme,
+                build
             });
             resolve(html);
         })

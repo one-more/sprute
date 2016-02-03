@@ -41,7 +41,7 @@
     "gulp-uglify": "*",
     "gulp-watch": "*",
     "jsmart": "*",
-    "lazypipe": "*",
+    "lazypipe": "^1.0.1",
     "morgan": "*",
     "mysql": "*",
     "nib": "^1.1.0",
@@ -52,6 +52,7 @@
     "passport-local": "*",
     "passport-remember-me": "*",
     "smart-plurals": "*",
+    "stream-combiner2": "^1.1.1",
     "through2": "^2.0.0",
     "try-thread-sleep": "^1.0.0",
     "underscore": "^1.8.3"

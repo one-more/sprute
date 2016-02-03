@@ -29,18 +29,18 @@ module.exports = Object.setPrototypeOf({
     setVars() {
         app.set('classPath', process.cwd()+'/back');
         app.set('commonPath', process.cwd()+'/common');
-        app.set('theme', configuration.app.theme);
 
         let templateEngine = require('./common/modules/template-engine/index');
         app.set('templateEngine', templateEngine.init());
     },
 
     registerRoutes() {
-        let getRouter = require('./common/routers/get'),
-            getRouterObj = new getRouter();
-
-        _.pairs(routes.getRouter).forEach(pair => {
-            app.all(pair[0], getRouterObj[pair[1]].bind(getRouterObj))
+        _.pairs(routes).forEach(pair => {
+            let router = require(`./common/routers/${pair[0]}`),
+                routerObj = new router;
+            _.pairs(pair[1]).forEach(pair => {
+                app.all(pair[0], routerObj[pair[1]].bind(routerObj))
+            })
         })
     },
 

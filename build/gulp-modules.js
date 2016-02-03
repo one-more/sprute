@@ -3,10 +3,8 @@
 let through = require('through2');
 
 function makeModule(file) {
-    let content = file.contents.toString()
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"');
-    let module = `fileSystem.addFile('.${file.path.replace(file.cwd, '')}', '${content}');`;
+    let content = file.contents.toString();
+    let module = `loadFile('.${file.path.replace(file.cwd, '')}', \`${content}\`);`;
     if(file.isStream()) {
         let stream = through();
         stream.write(module);

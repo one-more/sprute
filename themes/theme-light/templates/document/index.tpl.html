@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="/build/{$static.css.vendor}">
-        <link rel="stylesheet" href="/build/{$static.css.origin}">
+
     </head>
     <body>
         <div id="all">
@@ -11,8 +10,16 @@
             </div>
         </div>
 
-        <script src="/build/{$static.js.vendor}"></script>
-        <script src="/build/{$static.js.origin}"></script>
-        <script src="/build/{$static.templates}"></script>
+        <script src="{$build.prefix}/{$bundleResult.runtime.js}"></script>
+        {foreach $build.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].js}
+                <script src="{$build.prefix}/{$bundleResult[$bundle].js}"></script>
+            {/if}
+        {/foreach}
+        {foreach $theme.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].js}
+                <script src="{$build.prefix}/{$bundleResult[$bundle].js}"></script>
+            {/if}
+        {/foreach}
     </body>
 </html>

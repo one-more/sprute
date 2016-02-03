@@ -1,155 +1,27 @@
 'use strict';
 
-let gulp = require('gulp'),
-    rimraf = require('gulp-rimraf'),
-    svgSprite = require('gulp-svg-sprite'),
-    traceur = require('gulp-traceur'),
-    stylus = require('gulp-stylus'),
-    nib = require('nib'),
-    cssnext = require('gulp-cssnext'),
-    uglify = require('gulp-uglify'),
-    cssmin = require('gulp-cssmin'),
-    concat = require('gulp-concat'),
-    crypto = require('crypto'),
-    htmlmin = require('gulp-htmlmin'),
-    fs = require('fs'),
-    theme = require('./configuration/app').theme,
-    watch = require('gulp-watch'),
-    configuration = require('./configuration/build'),
-    paths = configuration.paths;
+let build = require('./configuration/build'),
+    _ = require('underscore'),
+    bundle = require('./build/bundle'),
+    themes = require('./configuration/themes'),
+    gulp = require('gulp'),
+    rimraf = require('gulp-rimraf');
 
-let svg2Sprite = function (src, dest) {
-    gulp.src(['svg/**/*.svg'], {cwd: src})
-        .pipe(svgSprite({
-            shape: {
-                id: {
-                    generator: function(name) {
-                        var _name = name.split('/');
-                        return _name.pop();
-                    }
-                },
-                transform: [
-                    {svgo: {
-                        plugins: [
-                            {removeTitle: true}
-                        ]
-                    }}
-                ]
-            },
-            svg: {
-                namespaceClassnames: false,
-                doctypeDeclaration: false,
-                transform: function (svg) {
-                    return svg.replace(/\#[\w]*/gi, 'currentColor').replace(/<symbol/gi, "\n<symbol");
-                }
-            },
-            mode: {
-                symbol: {
-                    dest: ''
-                }
-            }
-        }))
-        .on('error', console.log)
-        .pipe(gulp.dest(dest));
-};
-
-gulp.task('build-svg', function () {
-    svg2Sprite(paths.svgSrc, paths.svgSrc);
-});
-
-function buildOriginCSS(fileName) {
-    return gulp.src(paths.css)
-        .pipe(stylus({
-            include: theme.buildOptions.stylus.includes || [],
-            import: ['nib'].concat(theme.buildOptions.stylus.imports || []),
-            use: nib()
-        }))
-        .pipe(cssmin())
-        .pipe(cssnext({
-            compress: true
-        }))
-        .pipe(concat(fileName))
-        .pipe(gulp.dest(paths.dest))
-}
-
-function buildVendorCSS(fileName) {
-    return gulp.src(paths.vendorCSS)
-        .pipe(cssmin())
-        .pipe(concat(fileName))
-        .pipe(gulp.dest(paths.dest))
-}
-
-function buildOriginJs(fileName) {
-    return gulp.src(paths.js)
-        .pipe(require('./build/gulp-includes')())
-        .pipe(traceur())
-        .pipe(uglify())
-        .pipe(require('./build/gulp-modules')())
-        .pipe(concat(fileName))
-        .pipe(require('./build/gulp-environment')())
-        .pipe(traceur())
-        .pipe(uglify())
-        .pipe(gulp.dest(paths.dest))
-}
-
-function buildVendorJs(fileName) {
-    return gulp.src(paths.vendorJS)
-        .pipe(uglify())
-        .pipe(concat(fileName))
-        .pipe(gulp.dest(paths.dest))
-}
-
-gulp.task('build-css', () => {
-    let fileNameOrigin = 'origin.'+crypto.randomBytes(12).toString('hex')+'.css';
-    let fileNameVendor = 'vendor.'+crypto.randomBytes(12).toString('hex')+'.css';
-    let buildResult = require(configuration.buildResult);
-    buildResult.css = {};
-    buildResult.css.origin = fileNameOrigin;
-    buildResult.css.vendor = fileNameVendor;
-    fs.writeFileSync(configuration.buildResult, `module.exports = ${JSON.stringify(buildResult)}`);
-
-    buildOriginCSS(fileNameOrigin);
-    buildVendorCSS(fileNameVendor)
-});
-
-gulp.task('build-js', () => {
-    let fileNameOrigin = 'origin.'+crypto.randomBytes(12).toString('hex')+'.js';
-    let fileNameVendor = 'vendor.'+crypto.randomBytes(12).toString('hex')+'.js';
-    let buildResult = require(configuration.buildResult);
-    buildResult.js = {};
-    buildResult.js.origin = fileNameOrigin;
-    buildResult.js.vendor = fileNameVendor;
-    fs.writeFileSync(configuration.buildResult, `module.exports = ${JSON.stringify(buildResult)}`);
-
-    buildOriginJs(fileNameOrigin);
-    buildVendorJs(fileNameVendor)
-});
-
-gulp.task('build-html', () => {
-    let fileName = crypto.randomBytes(12).toString('hex')+'.templates.js';
-    let buildResult = require(configuration.buildResult);
-    buildResult.templates = fileName;
-    fs.writeFileSync(configuration.buildResult, `module.exports = ${JSON.stringify(buildResult)}`);
-
-    gulp.src(paths.templates)
-        .pipe(htmlmin({collapseWhitespace: true}))
-        .pipe(require('./build/gulp-templates')())
-        .pipe(concat(fileName))
-        .pipe(gulp.dest(paths.dest))
-});
-
-gulp.task('clean', () => {
-    return gulp.src(paths.deletePath)
-        .pipe(rimraf())
-});
-
-gulp.task('watch', () => {
-    watch(paths.js, () => {
-        gulp.start('build-js')
-    });
-    watch(paths.css, () => {
-        gulp.start('build-css')
+gulp.task('bundle', () => {
+    [build].concat(_.pairs(themes).map(pair => pair[1])).forEach(obj => {
+        _.pairs(obj.bundles).forEach(pair => {
+            bundle.build.apply(null, pair)
+        });
     })
 });
 
-gulp.task('default', ['clean', 'build-js', 'build-css', 'build-svg', 'build-html', 'watch']);
+gulp.task('build-runtime', () => {
+    bundle.buildRuntime()
+});
+
+gulp.task('clean', () => {
+    return gulp.src(build.clean)
+        .pipe(rimraf())
+});
+
+gulp.task('default', ['clean', 'build-runtime', 'bundle']);

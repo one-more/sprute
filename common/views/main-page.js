@@ -1,11 +1,10 @@
 'use strict';
 
 let baseView = require('./base'),
-    process = require('process'),
-    theme = require(process.cwd()+'/configuration/app').theme;
+    process = require('process');
 
 module.exports = class extends baseView {
-    constructor() {
+    constructor(theme) {
         super();
 
         this.setTemplateDir(theme.templatesPath+'/main-page')

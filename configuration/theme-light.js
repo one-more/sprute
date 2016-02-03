@@ -11,5 +11,8 @@ module.exports = {
             imports: [/*'_animations', '_variables', '_mixins',*/]
         }
     },
-    templatesPath: themePath+'/templates'
+    templatesPath: themePath+'/templates',
+    bundles: {
+
+    }
 };

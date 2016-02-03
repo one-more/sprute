@@ -1,4 +1,4 @@
-var fs = {
+var _fs = {
     readFileSync(path) {
         "use strict";
 
