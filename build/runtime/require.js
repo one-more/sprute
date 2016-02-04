@@ -32,6 +32,9 @@ function loadAsFile(dir, fileName) {
     if(fileSystem.isFile(dir[fileName])) {
         return dir[fileName]
     }
+    if(fileSystem.isFile(dir[fileName+'.min.js'])) {
+        return dir[fileName+'.js']
+    }
     if(fileSystem.isFile(dir[fileName+'.js'])) {
         return dir[fileName+'.js']
     }

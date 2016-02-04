@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        {foreach $build.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].styles}
+                <link rel="stylesheet" href="{$build.prefix}/{$bundleResult[$bundle].styles}">
+            {/if}
+        {/foreach}
+        {foreach $theme.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].styles}
+                <link rel="stylesheet" href="{$build.prefix}/{$bundleResult[$bundle].styles}">
+            {/if}
+        {/foreach}
     </head>
     <body>
         <div id="all">
@@ -24,5 +33,15 @@
         <script>
             start()
         </script>
+        {foreach $build.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].templates}
+                <script src="{$build.prefix}/{$bundleResult[$bundle].templates}"></script>
+            {/if}
+        {/foreach}
+        {foreach $theme.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].templates}
+                <script src="{$build.prefix}/{$bundleResult[$bundle].templates}"></script>
+            {/if}
+        {/foreach}
     </body>
 </html>

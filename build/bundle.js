@@ -10,7 +10,9 @@ let process = require('process'),
     traceur = require('gulp-traceur'),
     uglify = require('gulp-uglify'),
     combiner = require('stream-combiner2'),
-    lazypipe = require('lazypipe');
+    lazypipe = require('lazypipe'),
+    cssmin = require('gulp-cssmin'),
+    htmlmin = require('gulp-htmlmin');
 
 function buildJS(name, bundle) {
     let fileName = `${name}.${getFileName(bundle.js)}.js`;
@@ -21,7 +23,7 @@ function buildJS(name, bundle) {
     combiner.obj([
         gulp.src(bundle.js),
         (options.transforms.js || emptyTransforms)(),
-        (options.minify ? uglify : emptyTransforms)(),
+        (options.minifyJS ? uglify : emptyTransforms)(),
         require('./gulp-modules')(),
         concat(fileName),
         gulp.dest(build.build)
@@ -31,6 +33,33 @@ function buildJS(name, bundle) {
 function buildStyles(name, bundle) {
     let fileName = `${name}.${getFileName(bundle.styles)}.js`;
     writeToResultFile(name, 'styles', fileName);
+    let options = Object.assign({
+        transforms: {}
+    }, bundle.options);
+    combiner.obj([
+        gulp.src(bundle.styles),
+        (options.transforms.styles || emptyTransforms)(),
+        (options.minifyStyles ? cssmin : emptyTransforms)(),
+        require('./gulp-modules')(),
+        concat(fileName),
+        gulp.dest(build.build)
+    ]).on('error', console.error.bind(console))
+}
+
+function buildTemplates(name, bundle) {
+    let fileName = `${name}.${getFileName(bundle.templates)}.js`;
+    writeToResultFile(name, 'templates', fileName);
+    let options = Object.assign({
+        transforms: {}
+    }, bundle.options);
+    combiner.obj([
+        gulp.src(bundle.templates),
+        (options.transforms.templates || emptyTransforms)(),
+        (options.minifyTemplates ? htmlmin : emptyTransforms)(),
+        require('./gulp-modules')(),
+        concat(fileName),
+        gulp.dest(build.build)
+    ]).on('error', console.error.bind(console))
 }
 
 function buildRuntime() {
@@ -108,6 +137,9 @@ module.exports = {
         }
         if(bundle.styles) {
             buildStyles(name, bundle)
+        }
+        if(bundle.templates) {
+            buildTemplates(name, bundle)
         }
     },
 

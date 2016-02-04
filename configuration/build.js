@@ -9,7 +9,8 @@ let process = require('process'),
 
 let vendorPath = 'bower_components';
 let vendorJS = [
-    vendorPath+'/jquery/dist/**/+(*.js|*.json)',
+    vendorPath+'/jquery/dist/**/*.js',
+    vendorPath+'/jquery/*.json',
     vendorPath+'/underscore/**/+(*.js|*.json)',
     vendorPath+'/backbone/**/+(*.js|*.json)',
     vendorPath+'/jsmart/**/+(*.js|*.json)',
@@ -24,7 +25,9 @@ let bundleOptions = {
     transforms: {
         js: lazypipe().pipe(traceur)
     },
-    minify: true
+    minifyJS: true,
+    minifyStyles: true,
+    minifyTemplates: true
 };
 
 module.exports = {
@@ -41,7 +44,7 @@ module.exports = {
                         .pipe(jsonminify)
                         .pipe(() => jsonFilter.restore)
                 },
-                minify: false
+                minifyJS: false
             }
         },
         app: {

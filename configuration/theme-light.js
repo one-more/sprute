@@ -1,18 +1,20 @@
 'use strict';
 
-let process = require('process');
-let themePath = process.cwd()+'/themes/theme-light';
+let process = require('process'),
+    themePath = process.cwd()+'/themes/theme-light',
+    templatesPath = themePath+'/templates';
+
+let bundleOptions = {
+    minifyTemplates: true
+};
 
 module.exports = {
     path: themePath,
-    buildOptions: {
-        stylus: {
-            includes: [themePath+'/includes/stylus'],
-            imports: [/*'_animations', '_variables', '_mixins',*/]
-        }
-    },
-    templatesPath: themePath+'/templates',
+    templatesPath: templatesPath,
     bundles: {
-
+        'theme-light': {
+            templates: [templatesPath+'/**/*.tpl.html'],
+            options: bundleOptions
+        }
     }
 };
