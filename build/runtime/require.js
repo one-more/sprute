@@ -29,13 +29,13 @@ function isPathRelative(path) {
 function loadAsFile(dir, fileName) {
     "use strict";
 
-    if(dir[fileName]) {
+    if(fileSystem.isFile(dir[fileName])) {
         return dir[fileName]
     }
-    if(dir[fileName+'.js']) {
+    if(fileSystem.isFile(dir[fileName+'.js'])) {
         return dir[fileName+'.js']
     }
-    if(dir[fileName+'.json']) {
+    if(fileSystem.isFile(dir[fileName+'.json'])) {
         return dir[fileName+'.json']
     }
 }
@@ -43,20 +43,20 @@ function loadAsFile(dir, fileName) {
 function loadAsDirectory(dir) {
     "use strict";
 
-    if(dir['package.json']) {
+    if(fileSystem.isFile(dir['package.json'])) {
         let pJ = JSON.parse(dir['package.json'].contents);
         let path = pJ.main;
         return getLocalModule(path, dir)
     }
-    if(dir['bower.json']) {
+    if(fileSystem.isFile(dir['bower.json'])) {
         let pJ = JSON.parse(dir['bower.json'].contents);
         let path = pJ.main;
         return getLocalModule(path, dir)
     }
-    if(dir['index.js']) {
+    if(fileSystem.isFile(dir['index.js'])) {
         return dir['index.js']
     }
-    if(dir['index.json']) {
+    if(fileSystem.isFile(dir['index.json'])) {
         return dir['index.json']
     }
 }

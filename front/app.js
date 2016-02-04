@@ -1,5 +1,10 @@
 'use strict';
 
+let process = require('process'),
+    Backbone = require('backbone'),
+    _ = require('underscore'),
+    routes = require('../configuration/routes');
+
 module.exports = {
     start() {
         this.setVars();
@@ -22,17 +27,19 @@ module.exports = {
         this.set('classPath', '/front');
         this.set('commonPath', process.cwd()+'/common');
 
-        let templateEngine = require('../common/modules/template-engine/index');
+        let templateEngine = require(this.get('commonPath')+'/modules/template-engine/index');
         this.set('templateEngine', templateEngine.init());
     },
 
     setRoutes() {
-        let getRouter = require('../common/routers/get'),
-            routes = require('../configuration/routes'),
-            routerObj = new getRouter();
-        routerObj.routes = routes.getRouter;
 
-        this.set('router', routerObj)
+        _.pairs(routes).forEach(pair => {
+            try {
+                let router = require(this.get('commonPath')+`/routers/${pair[0]}`),
+                    routerObj = new router;
+                routerObj.roites = pair[1]
+            } catch(e) {}
+        })
     },
 
     registerEvents() {
@@ -43,7 +50,8 @@ module.exports = {
                 && href.indexOf('javascript') == -1;
             if(navigate) {
                 e.preventDefault();
-                this.get('router').navigate(href, {trigger:true});
+                //this.get('router').navigate(href, {trigger:true});
+                Backbone.history.pushState(href)
             }
         });
 

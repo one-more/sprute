@@ -5,7 +5,7 @@ var fileSystem = {
         file.dirName = file.base.replace(file.cwd, '');
         file.pathName = file.path.replace(file.cwd, '');
         file.name = file.path.split('/').slice(-1)[0];
-        let path = file.dirName;
+        let path = file.pathName.replace(file.name, '');
         let dir = path.split('/').filter(part => !!part).reduce((tree, dir) => {
             return tree[dir] || (tree[dir] = {parent: tree})
         }, this);
@@ -61,6 +61,6 @@ var fileSystem = {
     isFile(obj) {
         "use strict";
 
-        return !!obj.pathName
+        return !!obj && !!obj.pathName
     }
 };
