@@ -1,4 +1,4 @@
-window.process = {
+module.exports = {
     cwd() {
         "use strict";
 

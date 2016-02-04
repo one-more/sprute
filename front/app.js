@@ -2,7 +2,6 @@
 
 module.exports = {
     start() {
-        this.setAliases();
         this.setVars();
         this.setRoutes();
         this.registerEvents();
@@ -17,11 +16,6 @@ module.exports = {
 
     get(name) {
         return this[name]
-    },
-
-    setAliases() {
-        window['smart-plurals'] = Smart;
-        window['jsmart'] = jSmart
     },
 
     setVars() {

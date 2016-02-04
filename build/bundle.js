@@ -9,7 +9,8 @@ let process = require('process'),
     fs = require('fs'),
     traceur = require('gulp-traceur'),
     uglify = require('gulp-uglify'),
-    combiner = require('stream-combiner2');
+    combiner = require('stream-combiner2'),
+    lazypipe = require('lazypipe');
 
 function buildJS(name, bundle) {
     let fileName = `${name}.${getFileName(bundle.js)}.js`;
@@ -43,7 +44,29 @@ function buildRuntime() {
         concat(fileName),
         wrapCode(),
         gulp.dest(build.build)
-    ]).on('error', console.error.bind(console))
+    ])
+        .on('error', console.error.bind(console))
+        .on('finish', addGlobalModules.bind(null, fileName));
+}
+
+function addGlobalModules(fileName) {
+    let src = ['./build/global-modules/**/*.js'];
+
+    combiner.obj([
+        gulp.src(src),
+        traceur(),
+        uglify(),
+        require('./gulp-modules')(),
+        concat(fileName),
+        appendFile(fileName)
+    ]).on('error', console.error.bind(console));
+
+    function appendFile(fileName) {
+        return through.obj((file, encoding, callback) => {
+            fs.appendFile(`${build.build}/${fileName}`, `\n${file.contents.toString()}`);
+            return callback()
+        });
+    }
 }
 
 function getFileName(src) {

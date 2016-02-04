@@ -1,4 +1,4 @@
-var _fs = {
+module.exports = {
     readFileSync(path) {
         "use strict";
 

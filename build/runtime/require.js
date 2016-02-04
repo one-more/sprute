@@ -1,32 +1,128 @@
-function require (module, baseDir, path) {
+function require (module, __dirname, path) {
     "use strict";
 
     if(window[path]) {
         return window[path]
     } else {
-        if(!path.includes('.js')) {
-            path += '.js'
-        }
-        if(isModuleGlobal(path)) {
-            file = fileSystem.findFile(path);
-            !file && (() => {
-                throw new Error(`cannot find ${path}`)
-            })()
+        let file;
+        if(isPathRelative(path)) {
+            let baseDir = fileSystem.getDir(__dirname, fileSystem);
+            if(file = getLocalModule(path, baseDir)) {
+                return runModule(module, file)
+            }
         } else {
-            var file = fileSystem.getFile(path, baseDir)
+            if(file = getGlobalModule(path)) {
+                return runModule(module, file)
+            }
         }
-        return runModule(module, file)
+    }
+
+    throw new Error(`cannot find module ${path}`)
+}
+
+function isPathRelative(path) {
+    "use strict";
+
+    return path[0] == '/' || path.slice(0,2) == './' || path.slice(0,3) == '../'
+}
+
+function loadAsFile(dir, fileName) {
+    "use strict";
+
+    if(dir[fileName]) {
+        return dir[fileName]
+    }
+    if(dir[fileName+'.js']) {
+        return dir[fileName+'.js']
+    }
+    if(dir[fileName+'.json']) {
+        return dir[fileName+'.json']
     }
 }
 
-function isModuleGlobal(path) {
+function loadAsDirectory(dir) {
     "use strict";
 
-    return path.split('/').length == 1
+    if(dir['package.json']) {
+        let pJ = JSON.parse(dir['package.json'].contents);
+        let path = pJ.main;
+        return getLocalModule(path, dir)
+    }
+    if(dir['bower.json']) {
+        let pJ = JSON.parse(dir['bower.json'].contents);
+        let path = pJ.main;
+        return getLocalModule(path, dir)
+    }
+    if(dir['index.js']) {
+        return dir['index.js']
+    }
+    if(dir['index.json']) {
+        return dir['index.json']
+    }
+}
+
+function getLocalModule(path, baseDir) {
+    "use strict";
+
+    let file;
+    let fileName = path.split('/').slice(-1)[0];
+    let dirName = path.replace(fileName, '');
+    if(path[0] == '/') {
+        var dir = fileSystem.getFile(dirName, '/')
+    } else {
+        dir = fileSystem.getDir(dirName, baseDir)
+    }
+    if(file = loadAsFile(dir, fileName)) {
+        return file
+    }
+    if(fileSystem.isDir(dir[fileName])) {
+        if(file = loadAsDirectory(dir[fileName])) {
+            return file
+        }
+    }
+}
+
+function getGlobalModule(name) {
+    "use strict";
+
+    let iterations = 0;
+    function findModule(dir) {
+        if(iterations++ > 300) {
+            return
+        }
+        let content = fileSystem.getContent(dir);
+        let subDirs = {}, file;
+        for(let key in content) {
+            let value = content[key];
+            if(fileSystem.isDir(value)) {
+                if(file = getLocalModule(`./${name}`, value)) {
+                    return file
+                } else {
+                    for(let subDir in value) {
+                        subDirs[subDir] = value[subDir]
+                    }
+                }
+            }
+            if(fileSystem.isFile(value)) {
+                if(file = getLocalModule(`./${name}`, dir)) {
+                    return file
+               }
+            }
+        }
+        if(Object.keys(subDirs).length) {
+            return findModule(subDirs)
+        }
+    }
+
+    return findModule(fileSystem)
 }
 
 function runModule(currentModule, file) {
     "use strict";
+
+    if(file.name.includes('.json')) {
+        return JSON.parse(file.content)
+    }
 
     let module = {
         exports: {},
