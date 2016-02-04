@@ -4,7 +4,6 @@ let process = require('process'),
     Backbone = require('backbone'),
     _ = require('underscore'),
     routes = require('../configuration/routes'),
-    traceur = require('traceur-runtime'),
     $ = require('jquery');
 
 module.exports = {
