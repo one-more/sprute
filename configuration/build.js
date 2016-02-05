@@ -27,7 +27,10 @@ let bundleOptions = {
     },
     minifyJS: true,
     minifyStyles: true,
-    minifyTemplates: true
+    minifyTemplates: true,
+    watchJS: true,
+    watchStyles: true,
+    watchTemplates: true
 };
 
 module.exports = {

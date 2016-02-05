@@ -12,7 +12,13 @@ let process = require('process'),
     combiner = require('stream-combiner2'),
     lazypipe = require('lazypipe'),
     cssmin = require('gulp-cssmin'),
-    htmlmin = require('gulp-htmlmin');
+    htmlmin = require('gulp-htmlmin'),
+    watch = require('gulp-watch'),
+    svgSprite = require('gulp-svg-sprite');
+
+function addWatch(src, cb) {
+    watch(src, cb);
+}
 
 function buildJS(name, bundle) {
     let fileName = `${name}.${getFileName(bundle.js)}.js`;
@@ -27,7 +33,11 @@ function buildJS(name, bundle) {
         require('./gulp-modules')(),
         concat(fileName),
         gulp.dest(build.build)
-    ]).on('error', console.error.bind(console))
+    ]).on('error', console.error.bind(console));
+
+    if(options.watchJS) {
+        addWatch(bundle.js, buildJS.bind(null, name, bundle))
+    }
 }
 
 function buildStyles(name, bundle) {
@@ -43,7 +53,11 @@ function buildStyles(name, bundle) {
         require('./gulp-modules')(),
         concat(fileName),
         gulp.dest(build.build)
-    ]).on('error', console.error.bind(console))
+    ]).on('error', console.error.bind(console));
+
+    if(options.watchStyles) {
+        addWatch(bundle.styles, buildStyles.bind(null, name, bundle))
+    }
 }
 
 function buildTemplates(name, bundle) {
@@ -59,7 +73,47 @@ function buildTemplates(name, bundle) {
         require('./gulp-modules')(),
         concat(fileName),
         gulp.dest(build.build)
-    ]).on('error', console.error.bind(console))
+    ]).on('error', console.error.bind(console));
+
+    if(options.watchTemplates) {
+        addWatch(bundle.templates, buildTemplates.bind(null, name, bundle))
+    }
+}
+
+function buildSVG (name, bundle) {
+
+    gulp.src([bundle.svg])
+        .pipe(svgSprite({
+            shape: {
+                id: {
+                    generator: function(name) {
+                        var _name = name.split('/');
+                        return _name.pop();
+                    }
+                },
+                transform: [
+                    {svgo: {
+                        plugins: [
+                            {removeTitle: true}
+                        ]
+                    }}
+                ]
+            },
+            svg: {
+                namespaceClassnames: false,
+                doctypeDeclaration: false,
+                transform: function (svg) {
+                    return svg.replace(/\#[\w]*/gi, 'currentColor').replace(/<symbol/gi, "\n<symbol");
+                }
+            },
+            mode: {
+                symbol: {
+                    dest: ''
+                }
+            }
+        }))
+        .on('error', console.log)
+        .pipe(gulp.dest(dest));
 }
 
 function buildRuntime() {
@@ -109,7 +163,7 @@ function writeToResultFile(bundle, section, fileName) {
     fs.writeFileSync(build.bundleResult, `module.exports = ${JSON.stringify(buildResult)}`)
 }
 
-function emptyTransforms(file) {
+function emptyTransforms() {
     return through.obj((file, encoding, callback) => {
         return callback(null, file)
     });

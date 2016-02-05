@@ -5,7 +5,8 @@ let process = require('process'),
     templatesPath = themePath+'/templates';
 
 let bundleOptions = {
-    minifyTemplates: true
+    minifyTemplates: true,
+    watchTemplates: true
 };
 
 module.exports = {
