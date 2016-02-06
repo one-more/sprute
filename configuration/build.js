@@ -9,12 +9,12 @@ let process = require('process'),
 
 let vendorPath = 'bower_components';
 let vendorJS = [
+    vendorPath+'/backbone/**/backbone-min.js',
     vendorPath+'/jquery/dist/**/*.js',
     vendorPath+'/jquery/*.json',
-    vendorPath+'/underscore/**/+(*.js|*.json)',
-    vendorPath+'/backbone/**/+(*.js|*.json)',
-    vendorPath+'/jsmart/**/+(*.js|*.json)',
+    vendorPath+'/jsmart/**/jsmart.min.js',
     vendorPath+'/smart-plurals/**/+(*.js|*.json)',
+    vendorPath+'/underscore/**/underscore-min.js',
     traceur.RUNTIME_PATH
 ];
 
