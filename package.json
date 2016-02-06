@@ -43,6 +43,7 @@
     "gulp-uglify": "*",
     "gulp-watch": "*",
     "jsmart": "*",
+    "knex": "^0.9.0",
     "lazypipe": "^1.0.1",
     "morgan": "*",
     "mysql": "*",

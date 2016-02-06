@@ -1,13 +1,28 @@
+'use strict';
+
+let _ = require('underscore');
+
 module.exports = class {
-    findOne() {
-
+    constructor() {
+        this.checkTable()
     }
 
-    findWhere() {
-
+    checkTable() {
+        this.adapter.schema.hasTable(this.tableName).then(exists => {
+            if(!exists) {
+                return this.adapter.schema.createTable(this.tableName, t => {
+                    this.afterTableCreated(t);
+                    this.addColumns(t)
+                })
+            }
+        })
     }
 
-    save() {
+    afterTableCreated(table) {}
 
+    addColumns(table) {}
+
+    select() {
+        return this.adapter.select().from(this.tableName)
     }
 };
