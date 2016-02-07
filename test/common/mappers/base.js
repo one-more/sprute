@@ -1,8 +1,19 @@
 'use strict';
 
-let process = require('process'),
-    BaseMapper = require(process.cwd()+'/common/mappers/base'),
-    adapter = require(process.cwd()+'/back/adapters/mysql'),
+let process = require('process');
+global.app = {
+    classPath: process.cwd()+'/back',
+    get(field) {
+        return this[field]
+    }
+};
+
+let BaseMapper = require(process.cwd()+'/common/mappers/base'),
+    configuration = require(process.cwd()+'/configuration/connections'),
+    adapter = require('knex')({
+        client: 'mysql',
+        connection: configuration.mysql
+    }),
     assert = require('assert'),
     EventEmitter = require('events'),
     emitter = new EventEmitter,
@@ -11,10 +22,6 @@ let process = require('process'),
 class TestModel {}
 
 class TestMapper extends BaseMapper {
-    get adapter() {
-        return adapter
-    }
-
     get tableName() {
         return 'test'
     }

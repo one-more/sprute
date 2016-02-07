@@ -1,16 +1,54 @@
 'use strict';
 
-let _ = require('underscore');
+let _ = require('underscore'),
+    knex = require('knex')({
+        client: 'mysql'
+    }),
+    connection = require(app.get('classPath')+'/connections/mysql');
 
 module.exports = class {
     constructor() {
-        this.checkTable()
+        //this.checkTable()
+    }
+
+    get queryBuilder() {
+        let connection = this.connection;
+        let parseResults = this.parseResults.bind(this);
+
+        function BuilderProto() {}
+        BuilderProto.prototype = Object.create(knex(this.tableName));
+        function Builder() {}
+        Builder.prototype = Object.create(BuilderProto.prototype);
+        Builder.prototype.then = function(onFulfilled, onRejected) {
+            let query = this.toSQL();
+            return new Promise((resolve, reject) => {
+                connection.query(query.sql, query.bindings, (err, results) => {
+                    if(err) {
+                        return reject(err)
+                    }
+                    resolve(parseResults(results))
+                });
+            }).then(onFulfilled, onRejected)
+        };
+        Builder.prototype.fetchMode = function(mode) {
+            this._fetchMode = mode
+        };
+        Builder.prototype.fetchModes = {};
+        return new Builder
+    }
+
+    get schemaBuilder() {
+
+    }
+
+    get connection() {
+        return connection
     }
 
     checkTable() {
-        this.adapter.schema.hasTable(this.tableName).then(exists => {
+        this.queryBuilder.schema.hasTable(this.tableName).then(exists => {
             if(!exists) {
-                return this.adapter.schema.createTable(this.tableName, t => {
+                return this.queryBuilder.schema.createTable(this.tableName, t => {
                     this.afterTableCreated(t);
                     this.addColumns(t)
                 })
@@ -26,27 +64,24 @@ module.exports = class {
 
     addColumns(table) {}
 
-    find(asOne) {
-        let _this = this;
-        return Object.setPrototypeOf({
-            then(cb) {
-                Object.getPrototypeOf(this).then(data => {
-                    if(asOne) {
-                        if(data.length) {
-                            cb(_this.populateModel(data[0]))
-                        } else {
-                            cb()
-                        }
-                    } else {
-                        cb(_this.getCollection(data.map(_this.populateModel, _this)))
-                    }
-                })
+    parseResults(data) {
+        if(asOne) {
+            if(data.length) {
+                cb(_this.populateModel(data[0]))
+            } else {
+                cb()
             }
-        }, this.adapter.select().from(this.tableName))
+        } else {
+            cb(_this.getCollection(data.map(_this.populateModel, _this)))
+        }
+    }
+
+    find() {
+        return this.queryBuilder.select()
     }
 
     findOne() {
-        return this.find(true)
+        return this.queryBuilder.select()
     }
 
     populateModel(data) {
