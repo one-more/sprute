@@ -33,13 +33,19 @@ module.exports = {
     },
 
     setRoutes() {
-
         _.pairs(routes).forEach(pair => {
             try {
-                let router = require(this.get('commonPath')+`/routers/${pair[0]}`),
+                var router = require(this.get('commonPath')+`/routers/${pair[0]}`),
                     routerObj = new router;
-                routerObj.roites = pair[1]
-            } catch(e) {}
+            } catch(e) {
+                try {
+                    router = require(this.get('classPath')+`/routers/${pair[0]}`);
+                    routerObj = new router
+                } catch(e) {
+                    return
+                }
+            }
+            routerObj.routes = pair[1]
         })
     },
 

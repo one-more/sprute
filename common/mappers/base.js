@@ -1,59 +1,37 @@
 'use strict';
 
 let _ = require('underscore'),
-    knex = require('knex')({
-        client: 'mysql'
-    }),
-    connection = require(app.get('classPath')+'/connections/mysql');
+    queryBuilder;
+
+require('../query-builders/pg').then(builder => {
+    queryBuilder = builder
+});
 
 module.exports = class {
     constructor() {
-        //this.checkTable()
+        app.serverSide(this.checkTable.bind(this))
     }
 
     get queryBuilder() {
-        let connection = this.connection;
-        let parseResults = this.parseResults.bind(this);
-
-        function BuilderProto() {}
-        BuilderProto.prototype = Object.create(knex(this.tableName));
-        function Builder() {}
-        Builder.prototype = Object.create(BuilderProto.prototype);
-        Builder.prototype.then = function(onFulfilled, onRejected) {
-            let query = this.toSQL();
-            return new Promise((resolve, reject) => {
-                connection.query(query.sql, query.bindings, (err, results) => {
-                    if(err) {
-                        return reject(err)
-                    }
-                    resolve(parseResults(results))
-                });
-            }).then(onFulfilled, onRejected)
-        };
-        Builder.prototype.fetchMode = function(mode) {
-            this._fetchMode = mode
-        };
-        Builder.prototype.fetchModes = {};
-        return new Builder
+        return queryBuilder
     }
 
     get schemaBuilder() {
-
-    }
-
-    get connection() {
-        return connection
+        return require(app.get('classPath')+'/schema-builders/pg')
     }
 
     checkTable() {
-        this.queryBuilder.schema.hasTable(this.tableName).then(exists => {
-            if(!exists) {
-                return this.queryBuilder.schema.createTable(this.tableName, t => {
-                    this.afterTableCreated(t);
-                    this.addColumns(t)
-                })
-            }
-        })
+        if(this.schemaBuilder) {
+            let schemaBuilder = new this.schemaBuilder;
+            schemaBuilder.hasTable(this.tableName).then(exists => {
+                if(!exists) {
+                    return schemaBuilder.createTable(this.tableName, t => {
+                        this.afterTableCreated(t);
+                        this.addColumns(t)
+                    })
+                }
+            })
+        }
     }
 
     get collection() {
@@ -64,31 +42,30 @@ module.exports = class {
 
     addColumns(table) {}
 
-    parseResults(data) {
-        if(asOne) {
-            if(data.length) {
-                cb(_this.populateModel(data[0]))
-            } else {
-                cb()
-            }
-        } else {
-            cb(_this.getCollection(data.map(_this.populateModel, _this)))
-        }
-    }
-
     find() {
-        return this.queryBuilder.select()
+        return (new this.queryBuilder).select().from(this.tableName)
+            .dataParser(this.parseAsCollection.bind(this))
     }
 
     findOne() {
-        return this.queryBuilder.select()
+        return (new this.queryBuilder).select().from(this.tableName)
+            .dataParser(this.parseAsModel.bind(this))
     }
 
     populateModel(data) {
         return _.extend(new this.model, data)
     }
 
-    getCollection(data) {
+    parseAsModel(data) {
+        if(data.length) {
+            return this.populateModel(data[0])
+        } else {
+            return null
+        }
+    }
+
+    parseAsCollection(data) {
+        data = data.map(this.populateModel.bind(this));
         return new (this.collection.bind.apply(this.collection, [null].concat(data)))
     }
 };

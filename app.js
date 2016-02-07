@@ -36,8 +36,13 @@ module.exports = Object.setPrototypeOf({
 
     registerRoutes() {
         _.pairs(routes).forEach(pair => {
-            let router = require(`./common/routers/${pair[0]}`),
-                routerObj = new router;
+            try {
+                var router = require(this.get('commonPath')+`/routers/${pair[0]}`),
+                    routerObj = new router;
+            } catch(e) {
+                router = require(this.get('classPath')+`/routers/${pair[0]}`);
+                routerObj = new router
+            }
             _.pairs(pair[1]).forEach(pair => {
                 app.all(pair[0], routerObj[pair[1]].bind(routerObj))
             })
@@ -49,5 +54,9 @@ module.exports = Object.setPrototypeOf({
         app.use(cookieParser());
         app.use(bodyParser.urlencoded({ extended: false }));
         app.use(bodyParser.json());
+    },
+
+    serverSide(callback) {
+        typeof global != 'undefined' && callback()
     }
 }, app);

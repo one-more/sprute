@@ -1,18 +1,11 @@
 'use strict';
 
-let process = require('process');
-global.app = {
-    classPath: process.cwd()+'/back',
-    get(field) {
-        return this[field]
-    }
-};
-
-let BaseMapper = require(process.cwd()+'/common/mappers/base'),
+let process = require('process'),
+    BaseMapper = require(process.cwd()+'/common/mappers/base'),
     configuration = require(process.cwd()+'/configuration/connections'),
     adapter = require('knex')({
-        client: 'mysql',
-        connection: configuration.mysql
+        client: 'pg',
+        connection: configuration.pg
     }),
     assert = require('assert'),
     EventEmitter = require('events'),
@@ -30,7 +23,7 @@ class TestMapper extends BaseMapper {
         return TestModel
     }
 
-    afterTableCReated(table) {
+    afterTableCreated(table) {
         table.comment('table for running tests')
     }
 
@@ -86,7 +79,7 @@ describe('TestMapper', function() {
 function addData() {
     adapter.insert({
         field1: crypto.randomBytes(12).toString('hex'),
-        field2: Math.random() * (1 - 99) + 1,
+        field2: Math.round(Math.random() * (1 - 99) + 1),
         field3: crypto.randomBytes(12).toString('hex')
     }).into('test').then()
 }
