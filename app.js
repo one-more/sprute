@@ -58,5 +58,9 @@ module.exports = Object.setPrototypeOf({
 
     serverSide(callback) {
         typeof global != 'undefined' && callback()
+    },
+
+    clientSide(callback) {
+        typeof window != 'undefined' && callback()
     }
 }, app);

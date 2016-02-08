@@ -1,7 +1,16 @@
 'use strict';
 
-module.exports = new Promise(resolve => {
-    require(app.get('classPath')+'/connections/pg').then(connection => {
-        resolve(require('./knex-builder')('pg', connection))
-    })
+app.serverSide(() => {
+    let process = require('process'),
+        conf = require(process.cwd()+'/configuration/connections');
+    module.exports = require('./knex-builder')({
+        client: 'pg',
+        connection: conf.pg
+    });
+});
+
+app.clientSide(() => {
+    module.exports = require('./knex-builder')({
+        client: 'pg'
+    });
 });

@@ -1,34 +1,17 @@
 'use strict';
 
-module.exports = (client, connection) => {
-    let knex = require('knex')({
-        client
-    });
+module.exports = configuration => {
+    let knex = require('knex')(configuration);
 
-    let builderProto = {
-        then: {
-            value: function(onFulfilled, onRejected) {
-                let query = this.toSQL(); console.log(this.toSQL());
-                return new Promise((resolve, reject) => {
-                    connection.query(query.sql, query.bindings, (err, results) => {
-                        if(err) {
-                            return reject(err)
-                        }
-                        resolve(this.parser(results))
-                    });
-                }).then(onFulfilled, onRejected)
-            }
-        },
-        dataParser: {
-            value: function(parser) {
+    return class {
+        constructor() {
+            this.dataParser = parser => {
                 this.parser = parser;
                 return this
-            }
+            };
+
+            this.super = knex.queryBuilder();
+            Object.setPrototypeOf(this, this.super)
         }
-    };
-    function Builder() {
-        this.parser = data => data;
-        Object.setPrototypeOf(this, Object.create(knex.queryBuilder(), builderProto))
     }
-    return Builder
 };

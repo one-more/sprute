@@ -1,5 +1,16 @@
 'use strict';
 
-let connection = require(app.get('classPath')+'/connections/mysql');
+app.serverSide(() => {
+    let process = require('process'),
+        conf = require(process.cwd()+'/configuration/connections');
+    module.exports = require('./knex-builder')({
+        client: 'mysql',
+        connection: conf.mysql
+    });
+});
 
-module.exports = Promise.resolve(require('./knex-builder')('mysql', connection));
+app.clientSide(() => {
+    module.exports = require('./knex-builder')({
+        client: 'mysql'
+    });
+});

@@ -1,11 +1,7 @@
 'use strict';
 
 let _ = require('underscore'),
-    queryBuilder;
-
-require('../query-builders/pg').then(builder => {
-    queryBuilder = builder
-});
+    queryBuilder = require('../query-builders/pg');
 
 module.exports = class {
     constructor() {

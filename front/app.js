@@ -65,5 +65,13 @@ module.exports = {
         $(document).on('submit', 'form', function(e) {
             e.preventDefault();
         });
+    },
+
+    serverSide(callback) {
+        typeof global != 'undefined' && callback()
+    },
+
+    clientSide(callback) {
+        typeof window != 'undefined' && callback()
     }
 };
