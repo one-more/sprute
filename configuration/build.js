@@ -9,12 +9,12 @@ let process = require('process'),
 
 let vendorPath = 'bower_components';
 let vendorJS = [
-    vendorPath+'/backbone/**/backbone-min.js',
+    vendorPath+'/backbone/backbone.js',
     vendorPath+'/jquery/dist/**/*.js',
     vendorPath+'/jquery/*.json',
-    vendorPath+'/jsmart/**/jsmart.min.js',
+    vendorPath+'/jsmart/jsmart.min.js',
     vendorPath+'/smart-plurals/**/+(*.js|*.json)',
-    vendorPath+'/underscore/**/underscore-min.js',
+    vendorPath+'/underscore/underscore.js',
     traceur.RUNTIME_PATH
 ];
 
@@ -55,7 +55,8 @@ module.exports = {
                 'front/**/*.js',
                 'common/**/*.js',
                 'configuration/routes.js',
-                'configuration/runtime.js'
+                'configuration/runtime.js',
+                'configuration/components.js'
             ],
             options: bundleOptions
         }

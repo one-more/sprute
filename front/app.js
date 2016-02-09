@@ -4,6 +4,7 @@ let process = require('process'),
     Backbone = require('backbone'),
     _ = require('underscore'),
     routes = require('../configuration/routes'),
+    components = require('../configuration/components'),
     $ = require('jquery');
 
 module.exports = {
@@ -28,7 +29,7 @@ module.exports = {
         this.set('classPath', '/front');
         this.set('commonPath', process.cwd()+'/common');
 
-        let templateEngine = require(this.get('commonPath')+'/modules/template-engine/index');
+        let templateEngine = components.templatesEngine;
         this.set('templateEngine', templateEngine.init());
     },
 

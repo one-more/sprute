@@ -306,9 +306,24 @@ module.exports = configuration => {
         }
 
         then(callback) {
-            return this.knex.then(data => {
-                return callback(this.parser(data))
-            })
+            return new Promise(resolve => {
+                app.serverSide(() => {
+                    this.knex.then(data => {
+                        resolve(callback(this.parser(data)))
+                    })
+                });
+
+                app.clientSide(() => {
+                    let $ = require('jquery');
+                    let options = {
+                        query: this.knex.toSQL()
+                    };
+                    $.post(`/rest/${this.knex.client.config.client}/query`, options, null, 'json')
+                        .then(data => {
+                            resolve(callback(this.parser(data)))
+                        })
+                })
+            }).then(data => data)
         }
     }
 };

@@ -4,6 +4,7 @@ let express = require('express'),
     app = express(),
     configuration = {},
     routes = require('./configuration/routes'),
+    components = require('./configuration/components'),
     _ = require('underscore'),
     process = require('process'),
     morgan = require('morgan'),
@@ -30,7 +31,7 @@ module.exports = Object.setPrototypeOf({
         app.set('classPath', process.cwd()+'/back');
         app.set('commonPath', process.cwd()+'/common');
 
-        let templateEngine = require('./common/modules/template-engine/index');
+        let templateEngine = components.templatesEngine;
         app.set('templateEngine', templateEngine.init());
     },
 
