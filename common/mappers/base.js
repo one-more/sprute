@@ -1,7 +1,9 @@
 'use strict';
 
 let _ = require('underscore'),
-    queryBuilder = require('../query-builders/pg'),
+    process = require('process'),
+    conf = require(process.cwd()+'/configuration/components'),
+    queryBuilder = require(`../query-builders/${conf.db.defaultConnection}`),
     EventEmitter = require('events');
 
 module.exports = class extends EventEmitter {
@@ -16,7 +18,11 @@ module.exports = class extends EventEmitter {
     }
 
     get schemaBuilder() {
-        return require(app.get('classPath')+'/schema-builders/pg')
+        try {
+            return require(app.get('classPath')+`/schema-builders/${conf.db.defaultConnection}`)
+        } catch(e) {
+            return null
+        }
     }
 
     checkTable() {
