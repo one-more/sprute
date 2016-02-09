@@ -88,13 +88,13 @@ function checkSelect() {
     describe('#find()', function() {
         it('has to return model(s)', function(done) {
             mapper.find().where({id: 1}).then(data => {
-                assert(data.length == 1)
+                assert(data.length == 1 && data[0] instanceof TestModel)
             });
             mapper.find().where({id: 0}).then(data => {
                 assert(!data.length)
             });
             mapper.findOne().where({id: 1}).then(data => {
-                assert(!data.length)
+                assert(data instanceof TestModel)
             });
             mapper.findOne().where({id: 0}).then(data => {
                 assert(!data);
