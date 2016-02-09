@@ -306,7 +306,7 @@ module.exports = configuration => {
         }
 
         then(callback) {
-            return new Promise(resolve => {
+            return new Promise(resolve => { this.toSQL();
                 app.serverSide(() => {
                     this.knex.then(data => {
                         resolve(callback(this.parser(data)))
@@ -324,6 +324,10 @@ module.exports = configuration => {
                         })
                 })
             }).then(data => data)
+        }
+
+        toSQL() { console.log(this.knex);
+            return this.knex.toSQL()
         }
     }
 };

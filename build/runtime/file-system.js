@@ -2,9 +2,9 @@ var fileSystem = {
     addFile(file) {
         "use strict";
 
-        file.dirName = file.base.replace(file.cwd, '');
         file.pathName = file.path.replace(file.cwd, '');
         file.name = file.path.split('/').slice(-1)[0];
+        file.dirName = file.pathName.replace(file.name, '');
         let path = file.pathName.replace(file.name, '');
         let dir = path.split('/').filter(part => !!part).reduce((tree, dir) => {
             return tree[dir] || (tree[dir] = {parent: tree})

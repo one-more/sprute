@@ -4,12 +4,12 @@ let process = require('process'),
     Backbone = require('backbone'),
     _ = require('underscore'),
     routes = require('../configuration/routes'),
-    components = require('../configuration/components'),
     $ = require('jquery');
 
 module.exports = {
     start() {
         this.setVars();
+        this.loadComponents();
         this.setRoutes();
         this.registerEvents();
 
@@ -27,10 +27,16 @@ module.exports = {
 
     setVars() {
         this.set('classPath', '/front');
-        this.set('commonPath', process.cwd()+'/common');
+        this.set('commonPath', process.cwd()+'/common')
+    },
+
+    loadComponents() {
+        let components = require('../configuration/components');
 
         let templateEngine = components.templatesEngine;
-        this.set('templateEngine', templateEngine.init());
+        app.set('templateEngine', templateEngine.init());
+        let validationEngine = components.validationEngine;
+        app.set('validationEngine', validationEngine.init());
     },
 
     setRoutes() {

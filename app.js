@@ -4,7 +4,6 @@ let express = require('express'),
     app = express(),
     configuration = {},
     routes = require('./configuration/routes'),
-    components = require('./configuration/components'),
     _ = require('underscore'),
     process = require('process'),
     morgan = require('morgan'),
@@ -22,6 +21,7 @@ module.exports = Object.setPrototypeOf({
         });
         app.use(express.static(path.join(__dirname, 'static')));
         this.setVars();
+        this.loadComponents();
         this.addMiddleware();
         this.registerRoutes();
         return app
@@ -30,9 +30,15 @@ module.exports = Object.setPrototypeOf({
     setVars() {
         app.set('classPath', process.cwd()+'/back');
         app.set('commonPath', process.cwd()+'/common');
+    },
+
+    loadComponents() {
+        let components = require('./configuration/components');
 
         let templateEngine = components.templatesEngine;
         app.set('templateEngine', templateEngine.init());
+        let validationEngine = components.validationEngine;
+        app.set('validationEngine', validationEngine.init());
     },
 
     registerRoutes() {

@@ -15,6 +15,8 @@ let vendorJS = [
     vendorPath+'/jsmart/jsmart.min.js',
     vendorPath+'/smart-plurals/**/+(*.js|*.json)',
     vendorPath+'/underscore/underscore.js',
+    'node_modules/livr/*.json',
+    'node_modules/livr/lib/**/*.js',
     traceur.RUNTIME_PATH
 ];
 

@@ -33,7 +33,7 @@ function loadAsFile(dir, fileName) {
         return dir[fileName]
     }
     if(fileSystem.isFile(dir[fileName+'.min.js'])) {
-        return dir[fileName+'.js']
+        return dir[fileName+'.min.js']
     }
     if(fileSystem.isFile(dir[fileName+'.js'])) {
         return dir[fileName+'.js']
