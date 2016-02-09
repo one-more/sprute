@@ -1,10 +1,13 @@
 'use strict';
 
 let _ = require('underscore'),
-    queryBuilder = require('../query-builders/pg');
+    queryBuilder = require('../query-builders/pg'),
+    EventEmitter = require('events');
 
-module.exports = class {
+module.exports = class extends EventEmitter {
     constructor() {
+        super();
+
         app.serverSide(this.checkTable.bind(this))
     }
 
@@ -21,9 +24,11 @@ module.exports = class {
             let schemaBuilder = new this.schemaBuilder;
             schemaBuilder.hasTable(this.tableName).then(exists => {
                 if(!exists) {
-                    return schemaBuilder.createTable(this.tableName, t => {
-                        this.afterTableCreated(t);
+                    return schemaBuilder.createTableIfNotExists(this.tableName, t => {
+                        this.beforeCreateTable(t);
                         this.addColumns(t)
+                    }).then(() => {
+                        this.emit('table created')
                     })
                 }
             })
@@ -34,7 +39,7 @@ module.exports = class {
         return Array
     }
 
-    afterTableCreated(table) {}
+    beforeCreateTable(table) {}
 
     addColumns(table) {}
 
