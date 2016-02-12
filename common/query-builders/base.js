@@ -316,7 +316,7 @@ module.exports = configuration => {
                 app.clientSide(() => {
                     let $ = require('jquery');
                     let options = {
-                        query: this.knex.toSQL()
+                        query: this.toQuery()
                     };
                     $.post(`/rest/${this.knex.client.config.client}/query`, options, null, 'json')
                         .then(data => {
@@ -326,8 +326,24 @@ module.exports = configuration => {
             }).then(data => data)
         }
 
-        toSQL() { console.log(this.knex);
-            return this.knex.toSQL()
+        toQuery() {
+            return {
+                method: this.knex._method,
+                statements: this.knex._statements,
+                options: this.knex._options
+            }
+        }
+
+        validateQuery(queryObj) {
+            let validateEngine = app.get('validateEngine');
+            let validator = validateEngine.Validator({
+
+            });
+            return validator.validate(queryObj)
+        }
+
+        fromQuery(queryObj) {
+
         }
     }
 };
