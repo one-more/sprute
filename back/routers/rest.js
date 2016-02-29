@@ -1,15 +1,15 @@
 'use strict';
 
-let BaseRouter = require('./base'),
-    QueryBuilder = require(app.get('classPath')+'/query-builders/mysql');
+let BaseRouter = require('./base');
 
 module.exports = class extends BaseRouter {
-    mysqlQuery(req, res) {
-        let queryBuilder = new QueryBuilder, query;
-        if(query = queryBuilder.validateQuery(req.query)) {
-            queryBuilder.fromQuery(query).then(data => res.send(data))
-        } else {
-            res.status(400)
+    query(req, res) {
+        let mapper = req.mapper;
+        try {
+            let mapperClass = new require(app.get('commonPath')+`/mappers/${mapper}`);
+            res.send(mapperClass.fromQueryObject(req.queryObject))
+        } catch(e) {
+            res.status(400).send('bad request')
         }
     }
 };

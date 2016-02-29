@@ -1,63 +1,15 @@
 'use strict';
 
-let _ = require('underscore'),
-    process = require('process'),
-    conf = require(process.cwd()+'/configuration/components'),
-    queryBuilder = require(`../query-builders/${conf.db.defaultConnection}`),
-    EventEmitter = require('events');
+let _ = require('underscore');
 
-module.exports = class extends EventEmitter {
-    constructor() {
-        super();
-
-        app.serverSide(this.checkTable.bind(this))
-    }
-
-    get queryBuilder() {
-        return queryBuilder
-    }
-
-    get schemaBuilder() {
-        try {
-            return require(app.get('classPath')+`/schema-builders/${conf.db.defaultConnection}`)
-        } catch(e) {
-            return null
-        }
-    }
-
-    checkTable() {
-        if(this.schemaBuilder) {
-            let schemaBuilder = new this.schemaBuilder;
-            schemaBuilder.hasTable(this.tableName).then(exists => {
-                if(!exists) {
-                    return schemaBuilder.createTableIfNotExists(this.tableName, t => {
-                        this.beforeCreateTable(t);
-                        this.addColumns(t)
-                    }).then(() => {
-                        this.emit('table created')
-                    })
-                }
-            })
-        }
-    }
-
+module.exports = class {
     get collection() {
         return Array
     }
 
-    beforeCreateTable(table) {}
+    find() {}
 
-    addColumns(table) {}
-
-    find() {
-        return (new this.queryBuilder).select().from(this.tableName)
-            .dataParser(this.parseAsCollection.bind(this))
-    }
-
-    findOne() {
-        return (new this.queryBuilder).select().from(this.tableName)
-            .dataParser(this.parseAsModel.bind(this))
-    }
+    findOne() {}
 
     populateModel(data) {
         return _.extend(new this.model, data)

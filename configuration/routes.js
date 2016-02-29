@@ -5,7 +5,6 @@ module.exports = {
         '/': 'index'
     },
     rest: {
-        '/rest/mysql/query': 'mysqlQuery',
-        '/rest/pg/query': 'pgQuery'
+        '/rest/query': 'query'
     }
 };
