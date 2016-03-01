@@ -7,9 +7,17 @@ module.exports = class {
         return Array
     }
 
-    find() {}
+    find() {
+        throw new Error('mapper should specify find method')
+    }
 
-    findOne() {}
+    findOne() {
+        throw new Error('mapper should specify findOne method')
+    }
+
+    fromQueryObject() {
+        throw new Error('mapper should specify fromQueryObject method')
+    }
 
     populateModel(data) {
         return _.extend(new this.model, data)
