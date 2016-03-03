@@ -1,16 +1,18 @@
 'use strict';
 
 let process = require('process'),
-    BaseMapper = require(process.cwd()+'/common/mappers/base'),
+    KnexMapper = require(process.cwd()+'/common/mappers/knex-mapper'),
     configuration = require(process.cwd()+'/configuration/connections'),
-    mysqlAdapter = require('knex')({
+    mysqlConf = {
         client: 'mysql',
         connection: configuration.mysql
-    }),
-    pgAdapter = require('knex')({
+    },
+    mysqlAdapter = require('knex')(mysqlConf),
+    pgConf = {
         client: 'pg',
         connection: configuration.pg
-    }),
+    },
+    pgAdapter = require('knex')(pgConf),
     assert = require('assert'),
     crypto = require('crypto');
 
@@ -18,13 +20,9 @@ let tableName = 'test';
 
 class TestModel {}
 
-class MysqlMapper extends BaseMapper {
-    get queryBuilder() {
-        return require(app.get('commonPath')+'/query-builders/mysql')
-    }
-
-    get schemaBuilder() {
-        return require(app.get('classPath')+'/schema-builders/mysql')
+class MysqlMapper extends KnexMapper {
+    constructor() {
+        super(mysqlConf)
     }
 
     get tableName() {
@@ -47,13 +45,9 @@ class MysqlMapper extends BaseMapper {
     }
 }
 
-class PGMapper extends BaseMapper {
-    get queryBuilder() {
-        return require(app.get('commonPath')+'/query-builders/pg')
-    }
-
-    get schemaBuilder() {
-        return require(app.get('classPath')+'/schema-builders/pg')
+class PGMapper extends KnexMapper {
+    constructor() {
+        super(pgConf)
     }
 
     get tableName() {

@@ -7,6 +7,10 @@ module.exports = class {
         return Array
     }
 
+    get fileName() {
+        throw new Error('mapper should specify fileName')
+    }
+
     find() {
         throw new Error('mapper should specify find method')
     }

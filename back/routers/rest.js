@@ -5,11 +5,14 @@ let BaseRouter = require('./base');
 module.exports = class extends BaseRouter {
     query(req, res) {
         let mapper = req.mapper;
-        try {
-            let mapperClass = new require(app.get('commonPath')+`/mappers/${mapper}`);
-            res.send(mapperClass.fromQueryObject(req.queryObject))
-        } catch(e) {
-            res.status(400).send('bad request')
+
+        let path, paths = [app.get('commonPath'), app.get('classPath')];
+        while(path = paths.shift()) {
+            try {
+                let mapperClass = new require(`${path}/mappers/${mapper}`);
+                return mapperClass.fromQueryObject(req.queryObject).then(data => res.send(data))
+            } catch(e) {}
         }
+        return res.status(400).send('bad request')
     }
 };

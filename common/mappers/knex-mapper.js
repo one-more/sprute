@@ -1,12 +1,49 @@
 'use strict';
 
-let BaseMapper = require('./base');
+let BaseMapper = require('./base'),
+    EventEmitter = require('events');
 
 module.exports = class extends BaseMapper {
     constructor(knexConfig) {
         super();
 
-        this.queryBuilder = new QueryBuilder(require('knex')(knexConfig))
+        this.knex = require('knex')(knexConfig);
+        this.schemaBuilder = this.knex.schema;
+        this.emitter = new EventEmitter;
+        
+        app.serverSide(this.checkTable.bind(this));
+    }
+
+    get queryBuilder() {
+        return new QueryBuilder(this.knex(this.tableName), this)
+    }
+    
+    checkTable() {
+        this.schemaBuilder.hasTable(this.tableName).then(exists => {
+            if(!exists) {
+                return this.schemaBuilder.createTableIfNotExists(this.tableName, t => {
+                    this.beforeCreateTable(t);
+                    this.addColumns(t)
+                }).then(() => {
+                    this.emit('table created')
+                })
+            }
+        })
+    }
+    
+    beforeCreateTable(table) {}
+
+    addColumns(table) {}
+
+    on() {
+        return this.emitter.on.apply(this.emitter, arguments)
+    }
+    once() {
+        return this.emitter.once.apply(this.emitter, arguments)
+    }
+
+    emit() {
+        return this.emitter.emit.apply(this.emitter, arguments)
     }
 
     get tableName() {
@@ -14,23 +51,26 @@ module.exports = class extends BaseMapper {
     }
 
     find() {
-        return this.queryBuilder.select().from(this.tableName).dataParser(this.parseAsCollection)
+        return this.queryBuilder.select().dataParser(this.parseAsCollection.bind(this))
     }
 
     findOne() {
-        return this.queryBuilder.select().from(this.tableName).dataParser(this.parseAsModel)
+        return this.queryBuilder.select().dataParser(this.parseAsModel.bind(this))
     }
 
     fromQueryObject(queryObject) {
-
+        return this.queryBuilder.fromQueryObject(queryObject)
     }
 };
 
 class QueryBuilder {
-    constructor(knex) {
-        this.parser = data => data;
+    constructor(knex, mapper) {
+        this.knex = knex;
+        this.mapper = mapper
+    }
 
-        this.knex = knex.queryBuilder()
+    parser(data) {
+        return data
     }
 
     dataParser(parser) {
@@ -329,7 +369,7 @@ class QueryBuilder {
     }
 
     then(callback) {
-        return new Promise(resolve => { this.toSQL();
+        return new Promise(resolve => { console.log(this.toQueryObject());
             app.serverSide(() => {
                 this.knex.then(data => {
                     resolve(callback(this.parser(data)))
@@ -339,7 +379,8 @@ class QueryBuilder {
             app.clientSide(() => {
                 let $ = require('jquery');
                 let options = {
-                    queryObject: this.toSQLObject()
+                    mapper: this.mapper.fileName,
+                    queryObject: this.toQueryObject()
                 };
                 $.post(`/rest/query`, options, null, 'json')
                     .then(data => {
@@ -349,7 +390,28 @@ class QueryBuilder {
         }).then(data => data)
     }
 
-    toSQLObject() { console.log(this.knex);
-        return this.knex.toSQL()
+    toQueryObject() {
+        let obj = {};
+        Object.keys(this.knex).filter(key => key[0] == '_').forEach(key => obj[key] = this.knex[key]);
+        return obj
+    }
+    
+    fromQueryObject(queryObject) {
+        Object.assign(this.knex, queryObject);
+        let queryStr = this.knex.toString();
+        if(this.validateQuery(queryStr)) {
+            return this.knex.then(data => data)
+        } else {
+            throw new Error('invalid query')
+        }
+    }
+
+    validateQuery(queryStr) {
+        if(this.mapper.validateQuery) {
+            return this.mapper.validateQuery(queryStr)
+        } else {
+            return !/join|union|insert|update|delete/.test(queryStr)
+                && new RegExp(`from\\s+${this.mapper.tableName}`).test(queryStr)
+        }
     }
 }
