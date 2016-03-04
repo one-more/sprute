@@ -1,6 +1,7 @@
 .idea
 node_modules
 static/build
-#test
+tests
+tests-client
 bower_components
 configuration/connections.js
