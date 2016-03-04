@@ -9,9 +9,12 @@ let process = require('process'),
 module.exports = {
     start() {
         this.setVars();
-        this.loadComponents();
-        this.setRoutes();
-        this.registerEvents();
+
+        window.addEventListener('load', event => {
+            this.loadComponents();
+            this.setRoutes();
+            this.registerEvents();
+        });
 
         Backbone.history.start({pushState: true, silent: true});
         return this
@@ -41,18 +44,15 @@ module.exports = {
 
     setRoutes() {
         _.pairs(routes).forEach(pair => {
-            try {
-                var router = require(this.get('commonPath')+`/routers/${pair[0]}`),
-                    routerObj = new router;
-            } catch(e) {
+            let paths = [this.get('commonPath'), this.get('classPath')], path;
+            while(path = paths.shift()) {
                 try {
-                    router = require(this.get('classPath')+`/routers/${pair[0]}`);
-                    routerObj = new router
-                } catch(e) {
-                    return
-                }
+                    var router = require(`${path}/routers/${pair[0]}`),
+                        routerObj = new router;
+                    break
+                } catch(e) {}
             }
-            routerObj.routes = pair[1]
+            routerObj && (routerObj.routes = pair[1])
         })
     },
 

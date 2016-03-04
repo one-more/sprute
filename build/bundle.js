@@ -3,6 +3,7 @@
 let process = require('process'),
     build = require(process.cwd()+'/configuration/build'),
     gulp = require('gulp'),
+    gulpMerge = require('gulp-merge'),
     crypto = require('crypto'),
     concat = require('gulp-concat'),
     through = require('through2'),
@@ -65,7 +66,7 @@ function buildStyles(name, bundle) {
 }
 
 function buildTemplates(name, bundle) {
-    let fileName = isDev() ? `${name}.js` : `${getFileName(bundle.templates)}.${name}.js`;
+    let fileName = isDev() ? `${name}.tpl.js` : `${getFileName(bundle.templates)}.${name}.tpl.js`;
     writeToResultFile(name, 'templates', fileName);
     let options = Object.assign({
         transforms: {}
@@ -122,38 +123,24 @@ function buildSVG (name, bundle) {
 
 function buildRuntime() {
     let src = ['./build/runtime/**/*.js'];
+    let coreModulesSrc = ['./build/core-modules/**/*.js'];
     let fileName = isDev() ? 'runtime.js' : `${getFileName(src)}.runtime.js`;
     writeToResultFile('runtime', 'js', fileName);
-    combiner.obj([
-        gulp.src(src),
-        traceur(),
-        uglify(),
-        concat(fileName),
-        wrapCode(),
-        gulp.dest(build.build)
-    ])
-        .on('error', console.error.bind(console))
-        .on('finish', addGlobalModules.bind(null, fileName));
-}
 
-function addGlobalModules(fileName) {
-    let src = ['./build/global-modules/**/*.js'];
-
-    combiner.obj([
-        gulp.src(src),
-        traceur(),
-        uglify(),
-        require('./gulp-modules')(),
-        concat(fileName),
-        appendFile(fileName)
-    ]).on('error', console.error.bind(console));
-
-    function appendFile(fileName) {
-        return through.obj((file, encoding, callback) => {
-            fs.appendFile(`${build.build}/${fileName}`, `\n${file.contents.toString()}`);
-            return callback()
-        });
-    }
+    return gulpMerge(
+        gulp.src(src)
+            .pipe(traceur())
+            .pipe(uglify())
+            .pipe(concat('essentials.js'))
+            .pipe(wrapCode()),
+        gulp.src(coreModulesSrc)
+            .pipe(traceur())
+            .pipe(uglify())
+            .pipe(require('./gulp-modules')())
+            .pipe(concat('core-modules.js'))
+    )
+        .pipe(concat(fileName))
+        .pipe(gulp.dest(build.build))
 }
 
 function getFileName(src) {
