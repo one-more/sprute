@@ -1,1 +1,14 @@
-module.exports = {"runtime":{"js":"runtime.2d50631aa9987e04d4aef9b6.js"},"app-vendor":{"js":"app-vendor.f17990edc8b96a0e41dd3909.js"},"app":{"js":"app.d4472b8b405070a48c4df70b.js"},"theme-light":{"templates":"theme-light.32f58ac7d8990d0c069a59f2.js"}}
+module.exports = {
+    "runtime": {
+        "js": "runtime.js"
+    },
+    "app-vendor": {
+        "js": "app-vendor.js"
+    },
+    "app": {
+        "js": "app.js"
+    },
+    "theme-light": {
+        "templates": "theme-light.js"
+    }
+}

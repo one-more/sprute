@@ -20,8 +20,12 @@ function addWatch(src, cb) {
     watch(src, cb);
 }
 
+function isDev() {
+    return process.env.NODE_ENV ? process.env.NODE_ENV == 'development' : true
+}
+
 function buildJS(name, bundle) {
-    let fileName = `${name}.${getFileName(bundle.js)}.js`;
+    let fileName = isDev() ? `${name}.js` : `${getFileName(bundle.js)}.${name}.js`;
     writeToResultFile(name, 'js', fileName);
     let options = Object.assign({
         transforms: {}
@@ -41,7 +45,7 @@ function buildJS(name, bundle) {
 }
 
 function buildStyles(name, bundle) {
-    let fileName = `${name}.${getFileName(bundle.styles)}.js`;
+    let fileName = isDev() ? `${name}.css` : `${getFileName(bundle.styles)}.${name}.css`;
     writeToResultFile(name, 'styles', fileName);
     let options = Object.assign({
         transforms: {}
@@ -61,7 +65,7 @@ function buildStyles(name, bundle) {
 }
 
 function buildTemplates(name, bundle) {
-    let fileName = `${name}.${getFileName(bundle.templates)}.js`;
+    let fileName = isDev() ? `${name}.js` : `${getFileName(bundle.templates)}.${name}.js`;
     writeToResultFile(name, 'templates', fileName);
     let options = Object.assign({
         transforms: {}
@@ -118,7 +122,7 @@ function buildSVG (name, bundle) {
 
 function buildRuntime() {
     let src = ['./build/runtime/**/*.js'];
-    let fileName = `runtime.${getFileName(src)}.js`;
+    let fileName = isDev() ? 'runtime.js' : `${getFileName(src)}.runtime.js`;
     writeToResultFile('runtime', 'js', fileName);
     combiner.obj([
         gulp.src(src),
@@ -160,7 +164,7 @@ function writeToResultFile(bundle, section, fileName) {
     let buildResult = require(build.bundleResult);
     !buildResult[bundle] && (buildResult[bundle] = {});
     buildResult[bundle][section] = fileName;
-    fs.writeFileSync(build.bundleResult, `module.exports = ${JSON.stringify(buildResult)}`)
+    fs.writeFileSync(build.bundleResult, `module.exports = ${JSON.stringify(buildResult, null, 4)}`)
 }
 
 function emptyTransforms() {
