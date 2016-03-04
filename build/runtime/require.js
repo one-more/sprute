@@ -1,5 +1,14 @@
-function require (module, __dirname, path) {
+window.require = require;
+
+function require(module, __dirname, path) {
     "use strict";
+
+    //in case it's global code
+    if(arguments.length == 1) {
+        module = {};
+        __dirname = '';
+        path = arguments[0]
+    }
 
     if(window[path]) {
         return window[path]

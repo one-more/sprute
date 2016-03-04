@@ -15,6 +15,10 @@ gulp.task('bundle', () => {
     })
 });
 
+gulp.task('build-modules', () => {
+    bundle.build('modules', build.modules)
+});
+
 gulp.task('build-runtime', () => {
     bundle.buildRuntime()
 });
@@ -24,4 +28,4 @@ gulp.task('clean', () => {
         .pipe(rimraf())
 });
 
-gulp.task('default', ['clean', 'build-runtime', 'bundle']);
+gulp.task('default', ['clean', 'build-runtime', 'bundle', 'build-modules']);

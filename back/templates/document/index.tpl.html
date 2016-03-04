@@ -20,12 +20,12 @@
         </div>
 
         <script src="{$build.prefix}/{$bundleResult.runtime.js}"></script>
-        {foreach $build.bundles as $bundle=>$files}
+        {foreach $theme.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].js}
                 <script src="{$build.prefix}/{$bundleResult[$bundle].js}"></script>
             {/if}
         {/foreach}
-        {foreach $theme.bundles as $bundle=>$files}
+        {foreach $build.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].js}
                 <script src="{$build.prefix}/{$bundleResult[$bundle].js}"></script>
             {/if}
@@ -43,5 +43,6 @@
                 <script src="{$build.prefix}/{$bundleResult[$bundle].templates}"></script>
             {/if}
         {/foreach}
+        <script src="{$build.prefix}/{$bundleResult.modules.js}"></script>
     </body>
 </html>
