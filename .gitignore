@@ -5,3 +5,5 @@ tests
 tests-client
 bower_components
 configuration/connections.js
+.foreverignore
+mocha-bootstrap.js
