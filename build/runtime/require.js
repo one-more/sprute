@@ -97,36 +97,37 @@ function getLocalModule(path, baseDir) {
 function getGlobalModule(name) {
     "use strict";
 
-    let iterations = 0;
-    function findModule(dir) {
-        if(iterations++ > 300) {
-            return
+    let result, calls = 0;
+    function process(key, value) {
+        let file;
+        if(fileSystem.isDir(value) || fileSystem.isFile(value)) {
+            if(file = getLocalModule(`./${name}`, value)) {
+                return result = file
+            }
         }
-        let content = fileSystem.getContent(dir);
-        let subDirs = {}, file;
-        for(let key in content) {
-            let value = content[key];
-            if(fileSystem.isDir(value)) {
-                if(file = getLocalModule(`./${name}`, value)) {
-                    return file
-                } else {
-                    for(let subDir in value) {
-                        subDirs[subDir] = value[subDir]
-                    }
+
+        return false
+    }
+
+    function traverse(tree, func) {
+        //if(calls++ > 300) {
+        //    throw new RangeError('Maximum call stack size exceeded')
+        //}
+        for(let key in tree) {
+            if(tree.hasOwnProperty(key)) {
+                let value = tree[key];
+                if(func(key, value) || result) {
+                    return
+                }
+                if(fileSystem.isDir(value) && key != 'parent') {
+                    traverse(value, func);
                 }
             }
-            if(fileSystem.isFile(value)) {
-                if(file = getLocalModule(`./${name}`, dir)) {
-                    return file
-               }
-            }
-        }
-        if(Object.keys(subDirs).length) {
-            return findModule(subDirs)
         }
     }
 
-    return findModule(fileSystem)
+    traverse(fileSystem, process);
+    return result;
 }
 
 function runModule(currentModule, file) {
