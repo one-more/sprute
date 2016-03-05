@@ -1,26 +1,27 @@
 {
-    "name": "KIS",
-    "version": "1.0.0",
-    "authors": [
-        "one-more <greyjoi@yandex.ru>"
-    ],
-    "moduleType": [
-        "node"
-    ],
-    "license": "MIT",
-    "private": true,
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests"
-    ],
-    "dependencies": {
-        "jquery": "2.*",
-        "backbone": "*",
-        "underscore": "*",
-        "jsmart": "*",
-        "smart-plurals": "*"
-    }
+  "name": "KIS",
+  "version": "1.0.0",
+  "authors": [
+    "one-more <greyjoi@yandex.ru>"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "2.*",
+    "backbone": "*",
+    "underscore": "*",
+    "jsmart": "*",
+    "smart-plurals": "*",
+    "bluebird": "^3.3.3"
+  }
 }

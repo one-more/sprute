@@ -20,6 +20,7 @@ break anything with or without it. -->
 <!-- The source file we will be testing! Don't forget the data-cover attribute so Blanket will know which file will need to be instrumented for coverage. -->
 <script src="../../../static/build/runtime.js" ></script>
 <script src="../../../static/build/app-vendor.js" ></script>
+<script src="../../../static/build/modules.js" ></script>
 <script src="../../../static/build/app.js" data-cover></script>
 <!-- start runtime -->
 <script>
@@ -35,6 +36,8 @@ break anything with or without it. -->
     }
 // If we're in in the browser
     else {
-        mocha.run();
+        window.addEventListener('load', function() {
+            mocha.run();
+        })
     }
 </script>
