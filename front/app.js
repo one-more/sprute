@@ -75,10 +75,10 @@ module.exports = {
     },
 
     serverSide(callback) {
-        typeof global != 'undefined' && callback()
+
     },
 
     clientSide(callback) {
-        typeof window != 'undefined' && callback()
+        callback()
     }
 };
