@@ -369,7 +369,7 @@ class QueryBuilder {
     }
 
     then(callback) {
-        return new Promise(resolve => { console.log(this.toQueryObject());
+        return new Promise(resolve => {
             app.serverSide(() => {
                 this.knex.then(data => {
                     resolve(callback(this.parser(data)))

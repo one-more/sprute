@@ -16,15 +16,19 @@ configuration.app = require('./configuration/app');
 module.exports = Object.setPrototypeOf({
 
     start() {
-        app.listen(configuration.app.port, configuration.app.host, () => {
-            console.log(`start listening ${configuration.app.host}:${configuration.app.port}`)
-        });
-        app.use(express.static(path.join(__dirname, 'static')));
+        this.startServer();
         this.setVars();
         this.loadComponents();
         this.addMiddleware();
         this.registerRoutes();
         return app
+    },
+
+    startServer() {
+        app.listen(configuration.app.port, configuration.app.host, () => {
+            console.log(`start listening ${configuration.app.host}:${configuration.app.port}`)
+        });
+        app.use(express.static(path.join(__dirname, 'static')));
     },
 
     setVars() {
@@ -43,16 +47,20 @@ module.exports = Object.setPrototypeOf({
 
     registerRoutes() {
         _.pairs(routes).forEach(pair => {
-            try {
-                var router = require(this.get('commonPath')+`/routers/${pair[0]}`),
-                    routerObj = new router;
-            } catch(e) {
-                router = require(this.get('classPath')+`/routers/${pair[0]}`);
-                routerObj = new router
+            let paths = [this.get('commonPath'), this.get('classPath')], path;
+            while(path = paths.shift()) {
+                try {
+                    var router = require(`${path}/routers/${pair[0]}`),
+                        routerObj = new router;
+                    break
+                } catch(e) {}
             }
-            _.pairs(pair[1]).forEach(pair => {
-                app.all(pair[0], routerObj[pair[1]].bind(routerObj))
-            })
+            if(routerObj) {
+                _.pairs(pair[1]).forEach(pair => {
+                    let method = routerObj[pair[1]];
+                    app.all(pair[0], method.bind(routerObj))
+                })
+            }
         })
     },
 
@@ -64,10 +72,10 @@ module.exports = Object.setPrototypeOf({
     },
 
     serverSide(callback) {
-        typeof global != 'undefined' && callback()
+        callback()
     },
 
     clientSide(callback) {
-        typeof window != 'undefined' && callback()
+
     }
 }, app);
