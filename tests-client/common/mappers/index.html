@@ -10,14 +10,14 @@ break anything with or without it. -->
 </div>
 <!-- We need to insert our testing dependencies here -->
 <script src="../../node_modules/chai/chai.js"></script>
-<script src="../../node_modules/sinon-chai/lib/sinon-chai.js"></script>
-<script src="../../node_modules/sinon/pkg/sinon.js"></script>
+<!--<script src="../../node_modules/sinon-chai/lib/sinon-chai.js"></script>-->
+<!--<script src="../../node_modules/sinon/pkg/sinon.js"></script>-->
 <script src="../../node_modules/mocha/mocha.js"></script>
-<script src="../../node_modules/blanket/dist/mocha/blanket_mocha.js"></script>
-<script src="../../node_modules/grunt-blanket-mocha/support/mocha-blanket.js"></script>
+<!--<script src="../../node_modules/blanket/dist/mocha/blanket_mocha.js"></script>-->
+<!--<script src="../../node_modules/grunt-blanket-mocha/support/mocha-blanket.js"></script>-->
 <!-- We will using BDD-style assertions. See Mocha documentation for more info -->
 <script>mocha.setup('bdd');</script>
-<!-- The source file we will be testing! Don't forget the data-cover attribute so Blanket will know which file will need to be instrumented for coverage. -->
+
 <script src="../../../static/build/runtime.js" ></script>
 <script src="../../../static/build/app-vendor.js" ></script>
 <script src="../../../static/build/modules.js" ></script>
@@ -26,6 +26,9 @@ break anything with or without it. -->
 <script>
     start()
 </script>
+
+<!-- The source file we will be testing! Don't forget the data-cover attribute so Blanket will know which file will need to be instrumented for coverage. -->
+
 <!-- Our test suite needs to be after the source file, of course -->
 <script src="mysql.js"></script>
 <script src="pg.js"></script>
