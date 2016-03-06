@@ -154,7 +154,11 @@ function getFileName(src) {
 }
 
 function writeToResultFile(bundle, section, fileName) {
-    let buildResult = require(build.bundleResult);
+    try {
+        var buildResult = require(build.bundleResult);
+    } catch(e) {
+        buildResult = {}
+    }
     !buildResult[bundle] && (buildResult[bundle] = {});
     buildResult[bundle][section] = fileName;
     fs.writeFileSync(build.bundleResult, `module.exports = ${JSON.stringify(buildResult, null, 4)}`)

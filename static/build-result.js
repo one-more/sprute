@@ -2,6 +2,9 @@ module.exports = {
     "runtime": {
         "js": "runtime.js"
     },
+    "modules": {
+        "js": "modules.js"
+    },
     "app-vendor": {
         "js": "app-vendor.js"
     },
@@ -9,10 +12,13 @@ module.exports = {
         "js": "app.js"
     },
     "theme-light": {
-        "templates": "theme-light.tpl.js",
-        "styles": "theme-light.css"
+        "styles": "theme-light.css",
+        "templates": "theme-light.tpl.js"
     },
-    "modules": {
-        "js": "modules.js"
+    "tests-common": {
+        "js": "tests-common.js"
+    },
+    "theme-test": {
+        "templates": "theme-test.tpl.js"
     }
 }
