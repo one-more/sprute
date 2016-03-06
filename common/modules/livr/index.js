@@ -6,6 +6,6 @@ module.exports = {
     init() {
         LIVR.Validator.defaultAutoTrim(true);
 
-        return LIVR
+        return LIVR.Validator
     }
 };

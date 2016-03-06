@@ -7,6 +7,10 @@ module.exports = class {
         return Array
     }
 
+    get model() {
+        throw new Error('mapper should specify model')
+    }
+
     get fileName() {
         throw new Error('mapper should specify fileName')
     }
@@ -38,5 +42,21 @@ module.exports = class {
     parseAsCollection(data) {
         data = data.map(this.populateModel.bind(this));
         return new (this.collection.bind.apply(this.collection, [null].concat(data)))
+    }
+
+    save(model) {
+        if(model instanceof this.model) {
+            return this.update(model)
+        } else {
+            return this.insert(model)
+        }
+    }
+
+    insert() {
+        throw new Error('mapper should specify insert method')
+    }
+
+    update() {
+        throw new Error('mapper should specify update method')
     }
 };

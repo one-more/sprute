@@ -3,15 +3,15 @@
 var KnexMapper = require(app.get('commonPath')+'/mappers/knex-mapper'),
     process = require('process');
 
-class MysqlModel {}
+class PGModel {}
 
-class MysqlMapper extends KnexMapper {
+class PGMapper extends KnexMapper {
     constructor() {
         let conf = {
-            client: 'mysql'
+            client: 'pg'
         };
         app.serverSide(() => {
-            conf.connection = require(process.cwd()+'/configuration/connections').mysql
+            conf.connection = require(process.cwd()+'/configuration/connections').pg
         });
         super(conf)
     }
@@ -21,11 +21,11 @@ class MysqlMapper extends KnexMapper {
     }
 
     get fileName() {
-        return 'mysql'
+        return 'pg'
     }
 
     get model() {
-        return MysqlModel
+        return PGModel
     }
 
     get validator() {
@@ -46,5 +46,5 @@ class MysqlMapper extends KnexMapper {
 }
 
 if(typeof module != 'undefined') {
-    module.exports = MysqlMapper
+    module.exports = PGMapper
 }

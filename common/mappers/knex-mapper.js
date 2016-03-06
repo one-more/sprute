@@ -15,7 +15,7 @@ module.exports = class extends BaseMapper {
     }
 
     get queryBuilder() {
-        return new QueryBuilder(this.knex(this.tableName), this)
+        return new QueryBuilder(this.knex, this)
     }
     
     checkTable() {
@@ -61,11 +61,34 @@ module.exports = class extends BaseMapper {
     fromQueryObject(queryObject) {
         return this.queryBuilder.fromQueryObject(queryObject)
     }
+
+    insert(data) {
+        if(data = this.validateModel(data)) {
+            return this.queryBuilder.insert(data).then(data => data).catch(err => err)
+        } else {
+            throw new Error('invalid data')
+        }
+    }
+
+    update(model) {
+        let data;
+        if(data = this.validateModel(model)) {
+            return this.queryBuilder.update(data).where({id: model.id})
+                .then(data => data).catch(err => err)
+        } else {
+            throw new Error('invalid data')
+        }
+    }
+
+    validateModel() {
+        throw new Error('mapper should specify validateModel method')
+    }
 };
 
 class QueryBuilder {
     constructor(knex, mapper) {
         this.knex = knex;
+        this.queryBuilder = knex(mapper.tableName);
         this.mapper = mapper
     }
 
@@ -79,299 +102,299 @@ class QueryBuilder {
     }
 
     select() {
-        this.knex.select.apply(this.knex, arguments);
+        this.queryBuilder.select.apply(this.queryBuilder, arguments);
         return this
     }
 
     as() {
-        this.knex.as.apply(this.knex, arguments);
+        this.queryBuilder.as.apply(this.queryBuilder, arguments);
         return this
     }
 
     column() {
-        this.knex.column.apply(this.knex, arguments);
+        this.queryBuilder.column.apply(this.queryBuilder, arguments);
         return this
     }
 
     from() {
-        this.knex.from.apply(this.knex, arguments);
+        this.queryBuilder.from.apply(this.queryBuilder, arguments);
         return this
     }
 
     withSchema() {
-        this.knex.withSchema.apply(this.knex, arguments);
+        this.queryBuilder.withSchema.apply(this.queryBuilder, arguments);
         return this
     }
 
     where() {
-        this.knex.where.apply(this.knex, arguments);
+        this.queryBuilder.where.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereNot() {
-        this.knex.whereNot.apply(this.knex, arguments);
+        this.queryBuilder.whereNot.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereIn() {
-        this.knex.whereIn.apply(this.knex, arguments);
+        this.queryBuilder.whereIn.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereNotIn() {
-        this.knex.whereNotIn.apply(this.knex, arguments);
+        this.queryBuilder.whereNotIn.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereNull() {
-        this.knex.whereNull.apply(this.knex, arguments);
+        this.queryBuilder.whereNull.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereNotNull() {
-        this.knex.whereNotNull.apply(this.knex, arguments);
+        this.queryBuilder.whereNotNull.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereExists() {
-        this.knex.whereExists.apply(this.knex, arguments);
+        this.queryBuilder.whereExists.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereNotExists() {
-        this.knex.whereNotExists.apply(this.knex, arguments);
+        this.queryBuilder.whereNotExists.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereBetween() {
-        this.knex.whereBetween.apply(this.knex, arguments);
+        this.queryBuilder.whereBetween.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereNotBetween() {
-        this.knex.whereNotBetween.apply(this.knex, arguments);
+        this.queryBuilder.whereNotBetween.apply(this.queryBuilder, arguments);
         return this
     }
 
     whereRaw() {
-        this.knex.whereRaw.apply(this.knex, arguments);
+        this.queryBuilder.whereRaw.apply(this.queryBuilder, arguments);
         return this
     }
 
     innerJoin() {
-        this.knex.innerJoin.apply(this.knex, arguments);
+        this.queryBuilder.innerJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     leftJoin() {
-        this.knex.leftJoin.apply(this.knex, arguments);
+        this.queryBuilder.leftJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     leftOuterJoin() {
-        this.knex.leftOuterJoin.apply(this.knex, arguments);
+        this.queryBuilder.leftOuterJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     rightJoin() {
-        this.knex.rightJoin.apply(this.knex, arguments);
+        this.queryBuilder.rightJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     rightOuterJoin() {
-        this.knex.rightOuterJoin.apply(this.knex, arguments);
+        this.queryBuilder.rightOuterJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     outerJoin() {
-        this.knex.outerJoin.apply(this.knex, arguments);
+        this.queryBuilder.outerJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     fullOuterJoin() {
-        this.knex.fullOuterJoin.apply(this.knex, arguments);
+        this.queryBuilder.fullOuterJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     crossJoin() {
-        this.knex.crossJoin.apply(this.knex, arguments);
+        this.queryBuilder.crossJoin.apply(this.queryBuilder, arguments);
         return this
     }
 
     joinRaw() {
-        this.knex.joinRaw.apply(this.knex, arguments);
+        this.queryBuilder.joinRaw.apply(this.queryBuilder, arguments);
         return this
     }
 
     distinct() {
-        this.knex.distinct.apply(this.knex, arguments);
+        this.queryBuilder.distinct.apply(this.queryBuilder, arguments);
         return this
     }
 
     groupBy() {
-        this.knex.groupBy.apply(this.knex, arguments);
+        this.queryBuilder.groupBy.apply(this.queryBuilder, arguments);
         return this
     }
 
     groupByRaw() {
-        this.knex.groupByRaw.apply(this.knex, arguments);
+        this.queryBuilder.groupByRaw.apply(this.queryBuilder, arguments);
         return this
     }
 
     orderBy() {
-        this.knex.orderBy.apply(this.knex, arguments);
+        this.queryBuilder.orderBy.apply(this.queryBuilder, arguments);
         return this
     }
 
     orderByRaw() {
-        this.knex.orderByRaw.apply(this.knex, arguments);
+        this.queryBuilder.orderByRaw.apply(this.queryBuilder, arguments);
         return this
     }
 
     having() {
-        this.knex.having.apply(this.knex, arguments);
+        this.queryBuilder.having.apply(this.queryBuilder, arguments);
         return this
     }
 
     offset() {
-        this.knex.offset.apply(this.knex, arguments);
+        this.queryBuilder.offset.apply(this.queryBuilder, arguments);
         return this
     }
 
     limit() {
-        this.knex.limit.apply(this.knex, arguments);
+        this.queryBuilder.limit.apply(this.queryBuilder, arguments);
         return this
     }
 
     union() {
-        this.knex.union.apply(this.knex, arguments);
+        this.queryBuilder.union.apply(this.queryBuilder, arguments);
         return this
     }
 
     unionAll() {
-        this.knex.unionAll.apply(this.knex, arguments);
+        this.queryBuilder.unionAll.apply(this.queryBuilder, arguments);
         return this
     }
 
     insert() {
-        this.knex.insert.apply(this.knex, arguments);
+        this.queryBuilder.insert.apply(this.queryBuilder, arguments);
         return this
     }
 
     returning() {
-        this.knex.returning.apply(this.knex, arguments);
+        this.queryBuilder.returning.apply(this.queryBuilder, arguments);
         return this
     }
 
     update() {
-        this.knex.update.apply(this.knex, arguments);
+        this.queryBuilder.update.apply(this.queryBuilder, arguments);
         return this
     }
 
     del() {
-        this.knex.del.apply(this.knex, arguments);
+        this.queryBuilder.del.apply(this.queryBuilder, arguments);
         return this
     }
 
     transaction() {
-        this.knex.transaction.apply(this.knex, arguments);
+        this.queryBuilder.transaction.apply(this.queryBuilder, arguments);
         return this
     }
 
     transacting() {
-        this.knex.transacting.apply(this.knex, arguments);
+        this.queryBuilder.transacting.apply(this.queryBuilder, arguments);
         return this
     }
 
     forUpdate() {
-        this.knex.forUpdate.apply(this.knex, arguments);
+        this.queryBuilder.forUpdate.apply(this.queryBuilder, arguments);
         return this
     }
 
     forShare() {
-        this.knex.forShare.apply(this.knex, arguments);
+        this.queryBuilder.forShare.apply(this.queryBuilder, arguments);
         return this
     }
 
     count() {
-        this.knex.count.apply(this.knex, arguments);
+        this.queryBuilder.count.apply(this.queryBuilder, arguments);
         return this
     }
 
     min() {
-        this.knex.min.apply(this.knex, arguments);
+        this.queryBuilder.min.apply(this.queryBuilder, arguments);
         return this
     }
 
     max() {
-        this.knex.max.apply(this.knex, arguments);
+        this.queryBuilder.max.apply(this.queryBuilder, arguments);
         return this
     }
 
     sum() {
-        this.knex.sum.apply(this.knex, arguments);
+        this.queryBuilder.sum.apply(this.queryBuilder, arguments);
         return this
     }
 
     increment() {
-        this.knex.increment.apply(this.knex, arguments);
+        this.queryBuilder.increment.apply(this.queryBuilder, arguments);
         return this
     }
 
     decrement() {
-        this.knex.decrement.apply(this.knex, arguments);
+        this.queryBuilder.decrement.apply(this.queryBuilder, arguments);
         return this
     }
 
     truncate() {
-        this.knex.truncate.apply(this.knex, arguments);
+        this.queryBuilder.truncate.apply(this.queryBuilder, arguments);
         return this
     }
 
     pluck() {
-        this.knex.pluck.apply(this.knex, arguments);
+        this.queryBuilder.pluck.apply(this.queryBuilder, arguments);
         return this
     }
 
     first() {
-        this.knex.first.apply(this.knex, arguments);
+        this.queryBuilder.first.apply(this.queryBuilder, arguments);
         return this
     }
 
     clone() {
-        this.knex.clone.apply(this.knex, arguments);
+        this.queryBuilder.clone.apply(this.queryBuilder, arguments);
         return this
     }
 
     modify() {
-        this.knex.modify.apply(this.knex, arguments);
+        this.queryBuilder.modify.apply(this.queryBuilder, arguments);
         return this
     }
 
     columnInfo() {
-        this.knex.columnInfo.apply(this.knex, arguments);
+        this.queryBuilder.columnInfo.apply(this.queryBuilder, arguments);
         return this
     }
 
     debug() {
-        this.knex.debug.apply(this.knex, arguments);
+        this.queryBuilder.debug.apply(this.queryBuilder, arguments);
         return this
     }
 
     connection() {
-        this.knex.connection.apply(this.knex, arguments);
+        this.queryBuilder.connection.apply(this.queryBuilder, arguments);
         return this
     }
 
     options() {
-        this.knex.options.apply(this.knex, arguments);
+        this.queryBuilder.options.apply(this.queryBuilder, arguments);
         return this
     }
 
     then(callback) {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
             app.serverSide(() => {
-                this.knex.then(data => {
+                this.queryBuilder.then(data => {
                     resolve(callback(this.parser(data)))
                 })
             });
@@ -382,7 +405,10 @@ class QueryBuilder {
                     mapper: this.mapper.fileName,
                     queryObject: this.toQueryObject()
                 };
-                $.post(`/rest/query`, options, null, 'json')
+                $.post('/rest/query', options, null, 'json')
+                    .error((xhr, status, err) => {
+                        reject(xhr)
+                    })
                     .then(data => {
                         resolve(callback(this.parser(data)))
                     })
@@ -392,15 +418,37 @@ class QueryBuilder {
 
     toQueryObject() {
         let obj = {};
-        Object.keys(this.knex).filter(key => key[0] == '_').forEach(key => obj[key] = this.knex[key]);
+        Object.keys(this.queryBuilder).filter(key => key[0] == '_')
+            .forEach(key => obj[key] = this.queryBuilder[key]);
         return obj
+    }
+
+    toString() {
+        return this.queryBuilder.toString()
+    }
+
+    boolify(obj) {
+        for(let key in obj) {
+            if(obj.hasOwnProperty(key)) {
+                if(typeof obj[key] == 'object') {
+                    this.boolify(obj[key]);
+                }
+                if(obj[key] === 'false') {
+                    obj[key] = false;
+                }
+                if(obj[key] === 'true') {
+                    obj[key] = true;
+                }
+            }
+        }
     }
     
     fromQueryObject(queryObject) {
-        Object.assign(this.knex, queryObject);
-        let queryStr = this.knex.toString();
+        this.boolify(queryObject);
+        Object.assign(this.queryBuilder, queryObject);
+        let queryStr = this.queryBuilder.toString();
         if(this.validateQuery(queryStr)) {
-            return this.knex.then(data => data)
+            return this.queryBuilder.then(data => data)
         } else {
             throw new Error('invalid query')
         }
@@ -411,7 +459,7 @@ class QueryBuilder {
             return this.mapper.validateQuery(queryStr)
         } else {
             return !/join|union|insert|update|delete/.test(queryStr)
-                && new RegExp(`from\\s+${this.mapper.tableName}`).test(queryStr)
+                && new RegExp(`from\\s+\\S*${this.mapper.tableName}\\S*`).test(queryStr)
         }
     }
 }
