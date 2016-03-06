@@ -2,3 +2,4 @@
 
 global.app = require('./app');
 app.setVars();
+app.loadComponents();

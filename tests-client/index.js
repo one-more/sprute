@@ -24,8 +24,8 @@ Object.assign(app, {
                 case '/rest/query':
                     app.set('classPath', path.join(__dirname, 'common'));
                     break;
-
             }
+            next()
         });
 
         try {

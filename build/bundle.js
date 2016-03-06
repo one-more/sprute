@@ -41,6 +41,7 @@ function buildJS(name, bundle) {
     ]).on('error', console.error.bind(console));
 
     if(options.watchJS) {
+        bundle.options.watchJS = false;
         addWatch(bundle.js, buildJS.bind(null, name, bundle))
     }
 }
@@ -61,6 +62,7 @@ function buildStyles(name, bundle) {
     ]).on('error', console.error.bind(console));
 
     if(options.watchStyles) {
+        bundle.options.watchStyles = false;
         addWatch(bundle.styles, buildStyles.bind(null, name, bundle))
     }
 }
@@ -81,6 +83,7 @@ function buildTemplates(name, bundle) {
     ]).on('error', console.error.bind(console));
 
     if(options.watchTemplates) {
+        bundle.options.watchTemplates = false;
         addWatch(bundle.templates, buildTemplates.bind(null, name, bundle))
     }
 }
