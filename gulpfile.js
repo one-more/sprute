@@ -8,23 +8,27 @@ let build = require('./configuration/build'),
     rimraf = require('gulp-rimraf');
 
 gulp.task('bundle', () => {
-    [build].concat(_.pairs(themes).map(pair => pair[1])).forEach(obj => {
-        _.pairs(obj.bundles).forEach(pair => {
-            bundle.build.apply(null, pair)
-        });
-    })
+    return [build].concat(_.pairs(themes).map(pair => pair[1])).reduce((promise, obj) => {
+        return promise.then(() => {
+            return _.pairs(obj.bundles).reduce((promise, pair) => {
+                return promise.then(() => {
+                    return bundle.build.apply(null, pair)
+                })
+            }, Promise.resolve());
+        })
+    }, Promise.resolve())
 });
 
 gulp.task('build-modules', () => {
-    bundle.build('modules', build.modules)
+    return bundle.build('modules', build.modules)
 });
 
 gulp.task('build-runtime', () => {
-    bundle.buildRuntime()
+    return bundle.buildRuntime()
 });
 
 gulp.task('clean', () => {
-    return gulp.src(build.clean)
+    return gulp.src(build.clean, { read: false })
         .pipe(rimraf())
 });
 

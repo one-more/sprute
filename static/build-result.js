@@ -9,7 +9,8 @@ module.exports = {
         "js": "app.js"
     },
     "theme-light": {
-        "templates": "theme-light.tpl.js"
+        "templates": "theme-light.tpl.js",
+        "styles": "theme-light.css"
     },
     "modules": {
         "js": "modules.js"
