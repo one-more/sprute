@@ -31,19 +31,20 @@ function buildJS(name, bundle) {
     let options = Object.assign({
         transforms: {}
     }, bundle.options);
-    combiner.obj([
-        gulp.src(bundle.js),
-        (options.transforms.js || emptyTransforms)(),
-        (options.minifyJS ? uglify : emptyTransforms)(),
-        require('./gulp-modules')(),
-        concat(fileName),
-        gulp.dest(build.build)
-    ]).on('error', console.error.bind(console));
 
     if(options.watchJS) {
         bundle.options.watchJS = false;
         addWatch(bundle.js, buildJS.bind(null, name, bundle))
     }
+
+    return combiner.obj([
+        gulp.src(bundle.js),
+        (options.transforms.js || emptyTransforms)(),
+        require('./gulp-modules')(),
+        concat(fileName),
+        (options.minifyJS ? uglify : emptyTransforms)(),
+        gulp.dest(build.build)
+    ]).on('error', console.error.bind(console))
 }
 
 function buildStyles(name, bundle) {
@@ -52,19 +53,19 @@ function buildStyles(name, bundle) {
     let options = Object.assign({
         transforms: {}
     }, bundle.options);
-    combiner.obj([
-        gulp.src(bundle.styles),
-        (options.transforms.styles || emptyTransforms)(),
-        (options.minifyStyles ? cssmin : emptyTransforms)(),
-        require('./gulp-modules')(),
-        concat(fileName),
-        gulp.dest(build.build)
-    ]).on('error', console.error.bind(console));
 
     if(options.watchStyles) {
         bundle.options.watchStyles = false;
         addWatch(bundle.styles, buildStyles.bind(null, name, bundle))
     }
+
+    return combiner.obj([
+        gulp.src(bundle.styles),
+        (options.transforms.styles || emptyTransforms)(),
+        concat(fileName),
+        (options.minifyStyles ? cssmin : emptyTransforms)(),
+        gulp.dest(build.build)
+    ]).on('error', console.error.bind(console))
 }
 
 function buildTemplates(name, bundle) {
@@ -73,19 +74,21 @@ function buildTemplates(name, bundle) {
     let options = Object.assign({
         transforms: {}
     }, bundle.options);
-    combiner.obj([
-        gulp.src(bundle.templates),
-        (options.transforms.templates || emptyTransforms)(),
-        (options.minifyTemplates ? htmlmin : emptyTransforms)(),
-        require('./gulp-modules')(),
-        concat(fileName),
-        gulp.dest(build.build)
-    ]).on('error', console.error.bind(console));
 
     if(options.watchTemplates) {
         bundle.options.watchTemplates = false;
         addWatch(bundle.templates, buildTemplates.bind(null, name, bundle))
     }
+
+    return combiner.obj([
+        gulp.src(bundle.templates),
+        (options.transforms.templates || emptyTransforms)(),
+        (options.minifyTemplates ? htmlmin : emptyTransforms)(),
+        require('./gulp-modules')(),
+        concat(fileName),
+        uglify(),
+        gulp.dest(build.build)
+    ]).on('error', console.error.bind(console))
 }
 
 function buildSVG (name, bundle) {
@@ -180,16 +183,28 @@ function wrapCode() {
 
 module.exports = {
     build(name, bundle) {
-        if(bundle.js) {
-            buildJS(name, bundle)
-        }
-        if(bundle.styles) {
-            buildStyles(name, bundle)
-        }
-        if(bundle.templates) {
-            buildTemplates(name, bundle)
-        }
+        return new Promise(done => {
+            if(bundle.js) {
+                let stream = buildJS(name, bundle);
+                if(!bundle.styles && !bundle.templates) {
+                    stream.on('finish', done)
+                }
+            }
+            if(bundle.styles) {
+                let stream = buildStyles(name, bundle);
+                if(!bundle.templates) {
+                    stream.on('finish', done)
+                }
+            }
+            if(bundle.templates) {
+                buildTemplates(name, bundle).on('finish', done)
+            }
+        })
     },
 
-    buildRuntime: buildRuntime
+    buildRuntime: () => {
+        return new Promise(done => {
+            buildRuntime().on('end', done)
+        })
+    }
 };
