@@ -4,6 +4,10 @@ let through = require('through2'),
     _ = require('underscore');
 
 function makeModule(file) {
+    if(!file.contents) {
+        return file
+    }
+
     let fileCopy = _.clone(file);
     delete fileCopy._contents;
     delete fileCopy.stat;
