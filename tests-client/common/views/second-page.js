@@ -6,8 +6,8 @@ module.exports = class extends BaseView {
     constructor(theme) {
         super();
 
-        this.setTemplateDir(theme.templatesPath+'/first-page');
-        this.addTemplateDir(theme.templatesPath+'/action-button')
+        this.setTemplateDir(theme.templatesPath+'/second-page');
+        //this.addTemplateDir(theme.templatesPath+'/action-button')
     }
 
     render() {

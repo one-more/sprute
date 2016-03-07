@@ -10,10 +10,11 @@ process.chdir('../');
 let bundle = require(process.cwd()+'/build/bundle'),
     gulp = require('gulp'),
     themeTest = require(basePath+'/configuration/theme-test'),
+    themeSecond = require(basePath+'/configuration/theme-second'),
     _ = require('underscore');
 
 gulp.task('default', () => {
-    return [themeTest].reduce((promise, obj) => {
+    return [themeTest, themeSecond].reduce((promise, obj) => {
         return promise.then(() => {
             return _.pairs(obj.bundles).reduce((promise, pair) => {
                 return promise.then(() => {

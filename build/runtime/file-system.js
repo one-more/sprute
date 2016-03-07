@@ -16,13 +16,17 @@ var fileSystem = {
         "use strict";
 
         return path.split('/').reduce((path, part) => {
-            if(part.trim() == '.' || part.trim() == '') {
-                return path
+            try {
+                if(part.trim() == '.' || part.trim() == '') {
+                    return path
+                }
+                if(part.trim() == '..') {
+                    return path.parent
+                }
+                return path[part]
+            } catch(e) {
+                console.log(e, e.stack)
             }
-            if(part.trim() == '..') {
-                return path.parent
-            }
-            return path[part]
         }, root)
     },
 

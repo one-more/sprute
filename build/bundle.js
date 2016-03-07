@@ -188,6 +188,9 @@ function wrapCode() {
 module.exports = {
     build(name, bundle) {
         return new Promise(done => {
+            if(!bundle.js && !bundle.styles && !bundle.templates) {
+                done()
+            }
             if(bundle.js) {
                 let stream = buildJS(name, bundle);
                 if(!bundle.styles && !bundle.templates) {

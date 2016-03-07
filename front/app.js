@@ -48,11 +48,14 @@ module.exports = {
             while(path = paths.shift()) {
                 try {
                     var router = require(`${path}/routers/${pair[0]}`),
-                        routerObj = new router;
+                        routerObj = new router({
+                            routes: pair[1]
+                        });
                     break
-                } catch(e) {}
+                } catch(e) {
+                    //console.log(e)
+                }
             }
-            routerObj && (routerObj.routes = pair[1])
         })
     },
 
@@ -64,8 +67,7 @@ module.exports = {
                 && href.indexOf('javascript') == -1;
             if(navigate) {
                 e.preventDefault();
-                //this.get('router').navigate(href, {trigger:true});
-                Backbone.history.pushState(href)
+                Backbone.history.navigate(href, {trigger: true})
             }
         });
 

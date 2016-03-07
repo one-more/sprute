@@ -3,7 +3,7 @@
 let fs = require('fs');
 
 try {
-    var Backbone = require('Backbone');
+    var Backbone = require('backbone');
 } catch(e) {
     Backbone = {
         View: function () {}
@@ -21,15 +21,15 @@ module.exports = class extends Backbone.View {
     }
 
     getTemplate(name, data) {
-        let result;
-        this.templateDirs.forEach(dir => {
+        for(let i in this.templateDirs) {
+            let dir = this.templateDirs[i];
             let file = `${dir}/${name}`;
             if(fs.existsSync(file)) {
                 let tpl = fs.readFileSync(file, 'utf8');
-                result = this.compile(tpl, data)
+                return this.compile(tpl, data)
             }
-        });
-        return result
+        }
+        throw new Error(`cannot find template ${name}`)
     }
 
     compile(tpl, data) {

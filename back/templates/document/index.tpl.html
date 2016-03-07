@@ -33,6 +33,11 @@
         <script>
             start()
         </script>
+        <div id="init-block" data-block="init">
+            <script>
+                {$blocks.init}
+            </script>
+        </div>
         {foreach $build.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].templates}
                 <script src="{$build.prefix}/{$bundleResult[$bundle].templates}"></script>

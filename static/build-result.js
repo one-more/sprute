@@ -19,6 +19,11 @@ module.exports = {
         "js": "tests-common.js"
     },
     "theme-test": {
-        "templates": "theme-test.tpl.js"
+        "templates": "theme-test.tpl.js",
+        "js": "theme-test.js"
+    },
+    "theme-second": {
+        "js": "theme-second.js",
+        "templates": "theme-second.tpl.js"
     }
 }
