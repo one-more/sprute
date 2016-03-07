@@ -1,18 +1,22 @@
 'use strict';
 
 let through = require('through2'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    process = require('process');
 
 function makeModule(file) {
     if(!file.contents) {
         return file
     }
 
-    let fileCopy = _.clone(file);
-    delete fileCopy._contents;
-    delete fileCopy.stat;
-    fileCopy.path = file.path;
+    let fileCopy = {};
+
+    fileCopy.path = file.path.replace(process.cwd(), '');
+    fileCopy.pathName = file.path.replace(file.cwd, '');
+    fileCopy.name = file.path.split('/').slice(-1)[0];
+    fileCopy.dirName = fileCopy.pathName.slice(0, -fileCopy.name.length);
     fileCopy.contents = file.contents.toString();
+
     let module = `loadFile(${JSON.stringify(fileCopy)});`;
     if(file.isStream()) {
         let stream = through();
