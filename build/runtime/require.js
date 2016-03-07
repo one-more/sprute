@@ -1,5 +1,7 @@
 window.require = require;
 
+let cachedModules = {};
+
 function require(module, __dirname, path) {
     "use strict";
 
@@ -12,16 +14,18 @@ function require(module, __dirname, path) {
 
     if(window[path]) {
         return window[path]
+    } else if(cachedModules[path]) {
+        return cachedModules[path]
     } else {
         let file;
         if(isPathRelative(path)) {
             let baseDir = fileSystem.getDir(__dirname, fileSystem);
             if(file = getLocalModule(path, baseDir)) {
-                return runModule(module, file)
+                return cachedModules[path] = runModule(module, file)
             }
         } else {
             if(file = getGlobalModule(path)) {
-                return runModule(module, file)
+                return cachedModules[path] = runModule(module, file)
             }
         }
     }
@@ -78,7 +82,7 @@ function getLocalModule(path, baseDir) {
 
     let file;
     let fileName = path.split('/').slice(-1)[0];
-    let dirName = path.replace(fileName, '');
+    let dirName = path.slice(0, -fileName.length);
     if(path[0] == '/') {
         var dir = fileSystem.getFile(dirName, '/')
     } else {

@@ -1,7 +1,11 @@
 'use strict';
 
-let themePath = basePath+'/themes/test',
+let process = require('process'),
+    basePath = process.cwd()+'/tests-client',
+    themePath = process.cwd()+'/tests-client/themes/test',
     templatesPath = themePath+'/templates',
+    jsPath = themePath+'/js',
+    viewsPath = jsPath+'/views',
     commonPath = basePath+'/common';
 
 let bundleOptions = {
@@ -12,18 +16,21 @@ let bundleOptions = {
 module.exports = {
     path: themePath,
     templatesPath,
+    viewsPath,
     bundles: {
         'tests-common': {
             js: [
                 commonPath+'/routers/**/*.js',
                 commonPath+'/views/**/*.js',
-                commonPath+'/configuration/theme-test.js'
+                basePath+'/configuration/theme-test.js',
+                basePath+'/configuration/theme-second.js'
             ],
-            options: bundleOptions
+            options: Object.assign({}, bundleOptions)
         },
         'theme-test': {
             templates: [templatesPath+'/**/*.html'],
-            options: bundleOptions
+            js: [jsPath+'/**/*.js'],
+            options: Object.assign({}, bundleOptions)
         }
     }
 };

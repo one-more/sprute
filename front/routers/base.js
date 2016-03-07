@@ -1,7 +1,9 @@
 'use strict';
 
+let Backbone = require('backbone');
+
 module.exports = class extends Backbone.Router {
-    loadPage(domDocument) {
+    loadPage() {
         this.trigger('PageLoaded')
     }
 };

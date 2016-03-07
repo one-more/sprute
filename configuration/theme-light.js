@@ -4,7 +4,7 @@ let process = require('process'),
     themePath = process.cwd()+'/themes/theme-light',
     templatesPath = themePath+'/templates',
     stylesPath = themePath+'/styles',
-    jsPath = themePath+'/js',
+    viewsPath = themePath+'/js/views',
     lazypipe = require('lazypipe'),
     stylus = require('gulp-stylus'),
     nib = require('nib');
@@ -25,12 +25,13 @@ let bundleOptions = {
 
 module.exports = {
     path: themePath,
-    templatesPath: templatesPath,
+    templatesPath,
+    viewsPath,
     bundles: {
         'theme-light': {
             templates: [templatesPath+'/**/*.tpl.html'],
             styles: [stylesPath+'/**/*.styl'],
-            options: bundleOptions
+            options: Object.assign({}, bundleOptions)
         }
     }
 };
