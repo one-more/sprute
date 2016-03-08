@@ -1,6 +1,6 @@
 window.require = require;
 
-let cachedModules = {};
+let cachedModules = {}, noCacheModules = ['fs'];
 
 function require(module, __dirname, path) {
     "use strict";
@@ -14,7 +14,7 @@ function require(module, __dirname, path) {
 
     if(window[path]) {
         return window[path]
-    } else if(cachedModules[path]) {
+    } else if(cachedModules[path] && !noCacheModules.includes(path)) {
         return cachedModules[path]
     } else {
         let file;
@@ -149,7 +149,10 @@ function runModule(currentModule, file) {
         loaded: true,
         parent: currentModule
     }, exports = module.exports;
-    let env = new Function('module', 'exports', 'require', file.contents);
-    env(module, exports, require.bind(null, module, file.dirName));
+    let env = new Function('module','exports','require','readFile','readDir', file.contents);
+    let _readFile = readFile.bind(null, currentModule.dirName), //for fs module
+        _readDir = readDir.bind(null, currentModule.dirName),
+        _require = require.bind(null, module, file.dirName);
+    env(module, exports, _require, _readFile, _readDir);
     return module.exports
 }

@@ -12,6 +12,10 @@ module.exports = class {
         }
     }
 
+    loadTheme() {
+        return Promise.resolve()
+    }
+
     setBlock(name, data) {
         this.blocks[name] = data
     }

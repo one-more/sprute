@@ -133,20 +133,26 @@ function buildRuntime() {
     let fileName = isDev() ? 'runtime.js' : `${getFileName(src)}.runtime.js`;
     writeToResultFile('runtime', 'js', fileName);
 
-    return gulpMerge(
-        gulp.src(src)
-            .pipe(traceur())
-            .pipe(uglify())
-            .pipe(concat('essentials.js'))
-            .pipe(wrapCode()),
-        gulp.src(coreModulesSrc)
-            .pipe(traceur())
-            .pipe(uglify())
-            .pipe(require('./gulp-modules')())
-            .pipe(concat('core-modules.js'))
-    )
-        .pipe(concat(fileName))
-        .pipe(gulp.dest(build.build))
+    let run = () => {
+        return gulpMerge(
+            gulp.src(src)
+                .pipe(traceur())
+                .pipe(uglify())
+                .pipe(concat('essentials.js'))
+                .pipe(wrapCode()),
+            gulp.src(coreModulesSrc)
+                .pipe(traceur())
+                .pipe(uglify())
+                .pipe(require('./gulp-modules')())
+                .pipe(concat('core-modules.js'))
+        )
+            .pipe(concat(fileName))
+            .pipe(gulp.dest(build.build))
+    };
+
+    addWatch(src.concat(coreModulesSrc), run);
+
+    return run()
 }
 
 function getFileName(src) {

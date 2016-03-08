@@ -24,10 +24,13 @@ module.exports = class extends Backbone.View {
         for(let i in this.templateDirs) {
             let dir = this.templateDirs[i];
             let file = `${dir}/${name}`;
-            if(fs.existsSync(file)) {
+            try {
+                fs.accessSync(file);
                 let tpl = fs.readFileSync(file, 'utf8');
-                return this.compile(tpl, data)
-            }
+                if(tpl) {
+                    return this.compile(tpl, data)
+                }
+            } catch(e) {}
         }
         throw new Error(`cannot find template ${name}`)
     }

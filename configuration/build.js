@@ -5,7 +5,8 @@ let process = require('process'),
     lazypipe = require('lazypipe'),
     uglify = require('gulp-uglify'),
     filter = require('gulp-filter'),
-    jsonminify = require('gulp-jsonminify');
+    jsonminify = require('gulp-jsonminify'),
+    staticParams = require('./static');
 
 let vendorPath = 'bower_components';
 let vendorJS = [
@@ -75,7 +76,9 @@ module.exports = {
                 'common/**/*.js',
                 'configuration/routes.js',
                 'configuration/runtime.js',
-                'configuration/components.js'
+                'configuration/components.js',
+                'configuration/static.js',
+                'static/build-result.js'
             ],
             options: bundleOptions
         }
@@ -84,8 +87,8 @@ module.exports = {
         js: modulesJS,
         options: modulesOptions
     },
-    build: process.cwd()+'/static/build',
-    bundleResult: process.cwd()+'/static/build-result.js',
-    clean: 'static/build/*',
-    prefix: '/build'
+    build: staticParams.build,
+    bundleResult: staticParams.bundleResult,
+    clean: staticParams.clean,
+    prefix: staticParams.prefix
 };
