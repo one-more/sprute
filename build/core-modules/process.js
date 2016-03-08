@@ -1,26 +1,28 @@
 'use strict';
 
-let cwd = '';
+let cwd = '/';
 
-module.exports = {
-    cwd() {
-        return cwd
-    },
+exports.cwd = () => cwd;
 
-    chdir(path) {
-        try {
-            if(path.startsWith('./')) {
-                var dir = readDir(path.slice(1));
-            } else if(path.startsWith('../')) {
-                return
-            } else if(path.startsWith('/')) {
-                dir = readDir(path);
-            } else {
-                dir = readDir('/'+path);
-            }
-            cwd = dir.pathName
-        } catch(e) {
-            throw new Error(`can not change dir to ${path}`)
+exports.chdir = path => {
+    try {
+        if(path.startsWith('./')) {
+            var dir = readDir(cwd+'/'+path.slice(1));
+        } else if(path.startsWith('../')) {
+            dir = readDir(`${cwd}/${path}`)
+        } else if(path.startsWith('/')) {
+            dir = readDir(path);
+        } else {
+            dir = readDir('/'+path);
         }
+        cwd = dir.pathName || '/'
+    } catch(e) {
+        throw new Error(`can not change dir to ${path}`)
     }
+};
+
+exports.env = {};
+
+exports.nextTick = cb => {
+    return setTimeout(cb, 0)
 };

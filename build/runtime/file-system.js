@@ -29,13 +29,13 @@ var fileSystem = {
     getDir(path, root) {
         "use strict";
 
-        if(typeof root == 'string') {
+        if(this.isString(root)) {
             if(this.isPathRelative(path)) {
                 root = this.getDir(root, this)
             } else {
                 root = this
             }
-        } else if(typeof root != 'object') {
+        } else if(!this.isObject(root)) {
             root = this
         }
 
@@ -45,12 +45,12 @@ var fileSystem = {
                     return path
                 }
                 if(part.trim() == '..') {
-                    return path.parent
+                    return path.parent || {}
                 }
                 return path[part]
             } catch(e) {
-                console.log(arguments[0], path, part);
-                console.log(e, e.stack)
+                //console.log(arguments[0], path, part);
+                //console.log(e, e.stack)
             }
         }, root)
     },
@@ -80,6 +80,12 @@ var fileSystem = {
         return Object.prototype.toString.call(obj).includes('[object Object]')
     },
 
+    isString(obj) {
+        "use strict";
+
+        return (Object.prototype.toString.call(obj) === '[object String]')
+    },
+
     isDir(obj) {
         "use strict";
 
@@ -103,13 +109,17 @@ function readDir(__baseDir, path) {
     try {
         let dir = fileSystem.getDir(path, __baseDir);
         return Object.keys(dir).map(key => [key, dir[key]]).filter(pair => {
-            return (fileSystem.isFile(pair[1]) || fileSystem.isDir(pair[1]))
+            return (
+                    fileSystem.isFile(pair[1])
+                    || fileSystem.isDir(pair[1])
+                    || ['name', 'pathName'].includes(pair[0])
+                )
                 && !['parent'].includes(pair[0])
         }).reduce((obj, pair) => {
-            return obj[pair[0]] = pair[1]
+            return (obj[pair[0]] = pair[1], obj)
         }, {})
     } catch(e) {
-        console.log(e);
+        //console.log(e);
         throw new Error(`${path} is not a directory`)
     }
 }
