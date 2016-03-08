@@ -12,8 +12,8 @@ module.exports = class extends BaseRouter {
             let view = new (require('../views/first-page'))(themeTest);
             view.render().then(html => {
                 domDocument.setBlock('main', html);
-                this.loadPage(domDocument, res);
                 domDocument.initViews(['action-button']);
+                this.loadPage(domDocument, res);
             })
         })
     }
@@ -24,8 +24,8 @@ module.exports = class extends BaseRouter {
             let view = new (require('../views/second-page'))(themeSecond);
             view.render().then(html => {
                 domDocument.setBlock('main', html);
-                this.loadPage(domDocument, res);
                 //domDocument.initViews(['action-button']);
+                this.loadPage(domDocument, res);
             })
         })
     }
