@@ -14,7 +14,8 @@ let vendorJS = [
     vendorPath+'/jquery/dist/jquery.js',
     vendorPath+'/jquery/bower.json',
     vendorPath+'/underscore/underscore.js',
-    traceur.RUNTIME_PATH
+    traceur.RUNTIME_PATH,
+    'static/build-result.js'
 ];
 
 let modulesJS = [
@@ -78,7 +79,7 @@ module.exports = {
                 'configuration/runtime.js',
                 'configuration/components.js',
                 'configuration/static.js',
-                'static/build-result.js'
+                'configuration/theme-light.js'
             ],
             options: bundleOptions
         }

@@ -8,7 +8,9 @@ module.exports = class {
         this.theme = theme;
         this.blocks = {
             init: '',
-            main: ''
+            main: '',
+            title: '',
+            meta: ''
         }
     }
 
@@ -22,12 +24,21 @@ module.exports = class {
 
     initViews(views) {
         let theme = {};
-        theme.templatesPath = this.theme.templatesPath;
-        theme.path = this.theme.path;
+        ['templatesPath', 'path'].forEach(key => {
+            theme[key] = this.theme[key].replace(process.cwd(), '')
+        });
         views.forEach(name => {
             let path = (this.theme.viewsPath.replace(process.cwd(), ''))+`/${name}`;
             this.blocks['init'] += `new (require('${path}'))(${JSON.stringify(theme)});`
         })
+    }
+
+    setTitle(title) {
+        this.setBlock('title', title)
+    }
+
+    setMeta(meta) {
+        this.setBlock('meta', meta)
     }
 
     toHTML() {

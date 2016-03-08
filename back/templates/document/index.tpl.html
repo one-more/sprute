@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>{$blocks.title}</title>
+
+        {$blocks.meta}
+
         {foreach $build.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].styles}
                 <link rel="stylesheet" href="{$build.prefix}/{$bundleResult[$bundle].styles}">
