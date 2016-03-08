@@ -22,6 +22,7 @@ module.exports = {
             js: [
                 commonPath+'/routers/**/*.js',
                 commonPath+'/views/**/*.js',
+                commonPath+'/mappers/**/*.js',
                 basePath+'/configuration/theme-test.js',
                 basePath+'/configuration/theme-second.js'
             ],

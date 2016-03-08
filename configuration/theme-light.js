@@ -4,24 +4,28 @@ let process = require('process'),
     themePath = process.cwd()+'/themes/theme-light',
     templatesPath = themePath+'/templates',
     stylesPath = themePath+'/styles',
-    viewsPath = themePath+'/js/views',
-    lazypipe = require('lazypipe'),
-    stylus = require('gulp-stylus'),
-    nib = require('nib');
+    viewsPath = themePath+'/js/views';
 
-let bundleOptions = {
-    minifyTemplates: true,
-    watchTemplates: true,
-    minifyStyles: true,
-    watchStyles: true,
-    transforms: {
-        styles: lazypipe().pipe(stylus, {
-            include: [themePath+'/includes/stylus'],
-            import: ['_variables', 'nib'],
-            use: nib()
-        })
-    }
-};
+try {
+    var lazypipe = require('lazypipe'),
+        stylus = require('gulp-stylus'),
+        nib = require('nib'),
+        bundleOptions = {
+        minifyTemplates: true,
+        watchTemplates: true,
+        minifyStyles: true,
+        watchStyles: true,
+        transforms: {
+            styles: lazypipe().pipe(stylus, {
+                include: [themePath+'/includes/stylus'],
+                import: ['_variables', 'nib'],
+                use: nib()
+            })
+        }
+    };
+} catch(e) {
+    bundleOptions = {}
+}
 
 module.exports = {
     path: themePath,

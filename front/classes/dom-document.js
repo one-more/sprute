@@ -72,7 +72,7 @@ function checkStyles(name, bundle) {
             if(links.find(link => link.getAttribute('href') == href)) {
                 resolve()
             } else {
-                return loadStyles(href)
+                loadStyles(href).then(resolve)
             }
         } else {
             resolve()
@@ -119,6 +119,17 @@ module.exports = class {
 
     setBlock(name, content) {
         $(document.all[`${name}-block`]).html(content)
+    }
+
+    setTitle(title) {
+        document.title = title
+    }
+
+    setMeta(meta) {
+        Array.from(document.head.querySelectorAll('meta')).forEach(tag => {
+            document.head.removeChild(tag)
+        });
+        $(document.head).append(meta)
     }
 
     initViews(views) {

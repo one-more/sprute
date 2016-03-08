@@ -1,11 +1,12 @@
 <script>
     window['../configuration/routes'] = {
         '../../tests-client/common/routers/test': {
-            'page1': 'first',
-            'page2': 'second'
+            '/page1': 'first',
+            '/page2': 'second'
         }
     }
 </script>
 
 <h1>second page</h1>
 <a href="/page1">go to page1</a>
+{include file="render-btn.tpl.html"}

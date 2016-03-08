@@ -1,0 +1,17 @@
+<table>
+    <thead>
+        <tr>
+            {foreach $rows[0] as $header=>$cell}
+                <th>{$header}</th>
+            {/foreach}
+        </tr>
+    </thead>
+
+    {foreach $rows as $row}
+        <tr>
+            {foreach $row as $cell}
+                <td>{$cell}</td>
+            {/foreach}
+        </tr>
+    {/foreach}
+</table>

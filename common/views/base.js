@@ -28,7 +28,11 @@ module.exports = class extends Backbone.View {
                 fs.accessSync(file);
                 let tpl = fs.readFileSync(file, 'utf8');
                 if(tpl) {
-                    return this.compile(tpl, data)
+                    try {
+                        return this.compile(tpl, data)
+                    } catch(e) {
+                        console.log(e)
+                    }
                 }
             } catch(e) {}
         }
