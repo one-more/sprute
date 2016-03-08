@@ -4,7 +4,18 @@ var fileSystem = {
 
         let path = file.pathName.slice(0, -file.name.length);
         let dir = path.split('/').filter(part => !!part).reduce((tree, dir) => {
-            return tree[dir] || (tree[dir] = {parent: tree})
+            return tree[dir] || (tree[dir] = {
+                    parent: tree,
+                    name: dir,
+                    get pathName() {
+                        let parent, parts = [this.name], part = this;
+                        while(parent = part.parent) {
+                            parts.unshift(parent.name);
+                            part = parent
+                        }
+                        return parts.join('/')
+                    }
+                })
         }, this);
         dir[file.path.split('/').slice(-1)] = file;
     },
@@ -12,7 +23,7 @@ var fileSystem = {
     isPathRelative(path) {
         "use strict";
 
-        return path.slice(0,2) == './' || path.slice(0,3) == '../'
+        return path.startsWith('./') || path.startsWith('../')
     },
 
     getDir(path, root) {
@@ -24,6 +35,8 @@ var fileSystem = {
             } else {
                 root = this
             }
+        } else if(typeof root != 'object') {
+            root = this
         }
 
         return path.split('/').reduce((path, part) => {
@@ -76,7 +89,7 @@ var fileSystem = {
     isFile(obj) {
         "use strict";
 
-        return !!obj && !!obj.pathName
+        return !!obj && !!obj.contents
     }
 };
 
@@ -88,13 +101,15 @@ window.loadFile = (file) => {
 
 function readDir(__baseDir, path) {
     try {
-        return _.pairs(fileSystem.getDir(path, __baseDir)).filter(pair => {
+        let dir = fileSystem.getDir(path, __baseDir);
+        return Object.keys(dir).map(key => [key, dir[key]]).filter(pair => {
             return (fileSystem.isFile(pair[1]) || fileSystem.isDir(pair[1]))
                 && !['parent'].includes(pair[0])
         }).reduce((obj, pair) => {
             return obj[pair[0]] = pair[1]
         }, {})
     } catch(e) {
+        console.log(e);
         throw new Error(`${path} is not a directory`)
     }
 }
@@ -103,6 +118,7 @@ function readFile(__baseDir, path) {
     try {
         return fileSystem.getFile(path, __baseDir)
     } catch(e) {
+        //console.log(e);
         throw new Error(`${path} is not a file`)
     }
 }
