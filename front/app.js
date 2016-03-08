@@ -53,7 +53,7 @@ module.exports = {
                         });
                     break
                 } catch(e) {
-                    //console.log(e)
+                    console.log(e)
                 }
             }
         })

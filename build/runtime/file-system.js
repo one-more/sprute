@@ -9,8 +9,22 @@ var fileSystem = {
         dir[file.path.split('/').slice(-1)] = file;
     },
 
+    isPathRelative(path) {
+        "use strict";
+
+        return path.slice(0,2) == './' || path.slice(0,3) == '../'
+    },
+
     getDir(path, root) {
         "use strict";
+
+        if(typeof root == 'string') {
+            if(this.isPathRelative(path)) {
+                root = this.getDir(root, this)
+            } else {
+                root = this
+            }
+        }
 
         return path.split('/').reduce((path, part) => {
             try {
@@ -22,6 +36,7 @@ var fileSystem = {
                 }
                 return path[part]
             } catch(e) {
+                console.log(arguments[0], path, part);
                 console.log(e, e.stack)
             }
         }, root)
@@ -30,8 +45,7 @@ var fileSystem = {
     getFile(path, __dirname) {
         "use strict";
 
-        let baseDir = this.getDir(__dirname, this);
-        return this.getDir(path, baseDir)
+        return this.getDir(path, __dirname)
     },
 
     getContent(dir) {
@@ -65,3 +79,30 @@ var fileSystem = {
         return !!obj && !!obj.pathName
     }
 };
+
+window.loadFile = (file) => {
+    "use strict";
+
+    fileSystem.addFile(file)
+};
+
+function readDir(__baseDir, path) {
+    try {
+        return _.pairs(fileSystem.getDir(path, __baseDir)).filter(pair => {
+            return (fileSystem.isFile(pair[1]) || fileSystem.isDir(pair[1]))
+                && !['parent'].includes(pair[0])
+        }).reduce((obj, pair) => {
+            return obj[pair[0]] = pair[1]
+        }, {})
+    } catch(e) {
+        throw new Error(`${path} is not a directory`)
+    }
+}
+
+function readFile(__baseDir, path) {
+    try {
+        return fileSystem.getFile(path, __baseDir)
+    } catch(e) {
+        throw new Error(`${path} is not a file`)
+    }
+}
