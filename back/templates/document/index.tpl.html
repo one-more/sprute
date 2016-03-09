@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{$blocks.title}</title>
+        <title>{$blocks.title || ''}</title>
 
-        {$blocks.meta}
+        {$blocks.meta || ''}
 
         {foreach $build.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].styles}
@@ -19,7 +19,7 @@
     <body>
         <div id="all">
             <div id="main-block" data-block="main">
-                {$blocks.main}
+                {$blocks.main || ''}
             </div>
         </div>
 
@@ -39,7 +39,7 @@
         </script>
         <div id="init-block" data-block="init">
             <script>
-                {$blocks.init}
+                {$blocks.init || ''}
             </script>
         </div>
         {foreach $build.bundles as $bundle=>$files}

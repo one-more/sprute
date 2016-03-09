@@ -95,7 +95,7 @@ var fileSystem = {
     isFile(obj) {
         "use strict";
 
-        return !!obj && !!obj.contents
+        return this.isObject(obj) && !!obj.contents
     }
 };
 
@@ -107,28 +107,26 @@ window.loadFile = (file) => {
 
 function readDir(__baseDir, path) {
     try {
-        let dir = fileSystem.getDir(path, __baseDir);
-        return Object.keys(dir).map(key => [key, dir[key]]).filter(pair => {
-            return (
-                    fileSystem.isFile(pair[1])
-                    || fileSystem.isDir(pair[1])
-                    || ['name', 'pathName'].includes(pair[0])
-                )
-                && !['parent'].includes(pair[0])
-        }).reduce((obj, pair) => {
-            return (obj[pair[0]] = pair[1], obj)
-        }, {})
+        var dir = fileSystem.getDir(path, __baseDir);
     } catch(e) {
-        //console.log(e);
+        throw new Error(`can not find dir ${path}`)
+    }
+    if(!fileSystem.isDir(dir)) {
         throw new Error(`${path} is not a directory`)
     }
+    dir = Object.assign(dir);
+    delete dir.parent;
+    return dir
 }
 
 function readFile(__baseDir, path) {
     try {
-        return fileSystem.getFile(path, __baseDir)
+        var file = fileSystem.getFile(path, __baseDir)
     } catch(e) {
-        //console.log(e);
+        throw new Error(`can not find file ${path}`)
+    }
+    if(!fileSystem.isFile(file)) {
         throw new Error(`${path} is not a file`)
     }
+    return file
 }
