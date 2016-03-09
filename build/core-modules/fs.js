@@ -1,3 +1,5 @@
+'use strict';
+
 let fs = exports;
 
 exports.F_OK = 0;
@@ -6,39 +8,51 @@ exports.W_OK = 2;
 exports.X_OK = 1;
 
 exports.readFile = (path, options, cb) => {
-    cb(readFile(path).contents)
+    if(typeof options == "function") {
+        cb = options
+    }
+    try {
+        cb(null, fs.readFileSync(path, options))
+    } catch(e) {
+        cb(e)
+    }
 };
 
 exports.readFileSync = path => {
     return readFile(path).contents
 };
 
+exports.readdir = (path, cb) => {
+    try {
+        cb(null, fs.readdirSync(path))
+    } catch(e) {
+        cb(e)
+    }
+};
+
+exports.readdirSync = path => {
+    let dir = readDir(path);
+    return Object.keys(dir).filter(key => typeof dir[key] == 'object')
+};
+
 exports.exists = (path, cb) => {
     try {
-        cb(!!readFile(path).contents)
+        cb(fs.existsSync(path))
     } catch(e) {
         cb(false)
     }
 };
 
 exports.existsSync = path => {
-    try {
-        return !!readFile(path).contents
-    } catch(e) {
-        return false
-    }
-};
-
-exports.readdir = (path, cb) => {
-    try {
-        cb(null, Object.keys(readDir(path)))
-    } catch(e) {
-        cb(e, [])
-    }
-};
-
-exports.readdirSync = path => {
-    return Object.keys(readDir(path))
+    return [readFile, readDir].reduce((condition, func) => {
+        if(condition) {
+            return condition
+        }
+        try {
+            func(path);
+            return true
+        } catch(e) {}
+    }, false)
 };
 
 exports.access = (path, mode, cb) => {
