@@ -15,7 +15,7 @@ exports.chdir = path => {
         } else {
             dir = readDir('/'+path);
         }
-        cwd = dir.pathName || '/'
+        cwd = (dir && dir.pathName, dir.pathName) || '/'
     } catch(e) {
         throw new Error(`can not change dir to ${path}`)
     }
@@ -24,5 +24,14 @@ exports.chdir = path => {
 exports.env = {};
 
 exports.nextTick = cb => {
-    return setTimeout(cb, 0)
+    return function() {
+        let prefixes = 'r webkitR mozR msR oR'.split(' '),
+            nextTick = 'nextTick',
+            i = 0,
+            p = {};
+        while(!p[nextTick] && i < prefixes.length) {
+             p[nextTick] = window[prefixes[i++] + 'equestAnimationFrame']
+        }
+        return (p[nextTick] || (p[nextTick] = window.setImmediate || window.setTimeout))(cb)
+    }()
 };

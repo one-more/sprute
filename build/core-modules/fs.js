@@ -32,7 +32,9 @@ exports.readdir = (path, cb) => {
 
 exports.readdirSync = path => {
     let dir = readDir(path);
-    return Object.keys(dir).filter(key => typeof dir[key] == 'object')
+    return Object.keys(dir)
+        .filter(key => typeof dir[key] == 'object')
+        .filter(key => !['parent'].includes(key))
 };
 
 exports.exists = (path, cb) => {
@@ -74,9 +76,20 @@ exports.access = (path, mode, cb) => {
 exports.accessSync = (path, mode) => {
     !mode && (mode = fs.F_OK);
     mode = mode | 0;
-    readFile(path);
+    try {
+        readFile(path);
+    } catch(e) {
+        try {
+            readDir(path)
+        } catch(e) {
+            throw new Error('no such file or directory')
+        }
+    }
     let filePerms = fs.F_OK | fs.R_OK;
-    if(mode >= filePerms) {
+    if(mode > 7) {
+        throw new Error('invalid argument')
+    }
+    if((mode & filePerms) != mode) {
         throw new Error('permission denied')
     }
 };
