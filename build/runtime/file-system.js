@@ -114,8 +114,6 @@ function readDir(__baseDir, path) {
     if(!fileSystem.isDir(dir)) {
         throw new Error(`${path} is not a directory`)
     }
-    dir = Object.assign(dir);
-    delete dir.parent;
     return dir
 }
 
