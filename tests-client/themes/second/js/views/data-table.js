@@ -7,7 +7,7 @@ module.exports = class extends BaseView {
     constructor(theme) {
         super();
 
-        this.setTemplateDir(theme.templatesPath+'/data-table')
+        this.setTemplateDir(theme.templatesPath+'/data')
     }
 
     get el() {

@@ -30,7 +30,7 @@ module.exports = class extends BaseRouter {
             let view = new (require('../views/second-page'))(themeSecond);
             view.render().then(html => {
                 domDocument.setBlock('main', html);
-                domDocument.initViews(['data-table']);
+                domDocument.initViews(['data-table', 'data-form']);
                 domDocument.setTitle('second page');
                 domDocument.setMeta([
                     new meta.Description('second test page'),
