@@ -14,18 +14,21 @@ function require(module, __dirname, path) {
 
     if(window[path]) {
         return window[path]
-    } else if(cachedModules[path] && !noCacheModules.includes(path)) {
-        return cachedModules[path]
     } else {
         let file;
         if(isPathRelative(path)) {
             let baseDir = fileSystem.getDir(__dirname, fileSystem);
             if(file = getLocalModule(path, baseDir)) {
-                return cachedModules[path] = runModule(module, file)
+                if(getFromCache(file.pathName)) {
+                    return getFromCache(file.pathName)
+                }
+                return addToCache(file.pathName, runModule(module, file))
             }
         } else {
-            if(file = getGlobalModule(path)) {
-                return cachedModules[path] = runModule(module, file)
+            if(getFromCache(path)) {
+                return getFromCache(path)
+            } else if(file = getGlobalModule(path)) {
+                return addToCache(path, runModule(module, file))
             }
         }
     }
@@ -33,10 +36,27 @@ function require(module, __dirname, path) {
     throw new Error(`cannot find module ${path}`)
 }
 
+function getFromCache(path) {
+    "use strict";
+
+    if(cachedModules[path] && !noCacheModules.includes(path)) {
+        return cachedModules[path]
+    }
+}
+
+function addToCache(path, module) {
+    "use strict";
+
+    if(noCacheModules.includes(path)) {
+        return module
+    }
+    return cachedModules[path] = module
+}
+
 function isPathRelative(path) {
     "use strict";
 
-    return path[0] == '/' || path.slice(0,2) == './' || path.slice(0,3) == '../'
+    return path.startsWith('/')  || path.startsWith('./') || path.startsWith('../')
 }
 
 function loadAsFile(dir, fileName) {
@@ -101,7 +121,7 @@ function getLocalModule(path, baseDir) {
 function getGlobalModule(name) {
     "use strict";
 
-    let result, calls = 0;
+    let result;
     function process(key, value) {
         let file;
         if(fileSystem.isDir(value) || fileSystem.isFile(value)) {
@@ -114,9 +134,6 @@ function getGlobalModule(name) {
     }
 
     function traverse(tree, func) {
-        //if(calls++ > 300) {
-        //    throw new RangeError('Maximum call stack size exceeded')
-        //}
         for(let key in tree) {
             if(tree.hasOwnProperty(key)) {
                 let value = tree[key];

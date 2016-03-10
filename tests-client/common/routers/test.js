@@ -40,4 +40,22 @@ module.exports = class extends BaseRouter {
             })
         })
     }
+
+    addData(req, res) {
+        let mapper = new (require('../mappers/mysql')),
+            AjaxResponse = require(app.get('commonPath')+'/classes/ajax-response'),
+            response = new AjaxResponse;
+
+        let data = req.body;
+        try {
+            mapper.save(data).then(() => {
+                response.status = AjaxResponse.statusOK;
+                res.send(response)
+            })
+        } catch(e) {
+            response.status = AjaxResponse.statusError;
+            response.errors = mapper.validationErrors;
+            res.send(response)
+        }
+    }
 }

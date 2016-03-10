@@ -83,6 +83,10 @@ module.exports = class extends BaseMapper {
     validateModel() {
         throw new Error('mapper should specify validateModel method')
     }
+
+    get validationErrors() {
+        throw new Error('mapper should specify getter for validation errors')
+    }
 };
 
 class QueryBuilder {

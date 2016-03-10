@@ -12,7 +12,7 @@ module.exports = class extends BaseRouter {
                 let mapperClass = new (require(`${path}/mappers/${mapper}`));
                 return mapperClass.fromQueryObject(req.body.queryObject).then(data => res.send(data))
             } catch(e) {
-                console.error(e)
+                //console.error(e)
             }
         }
         return res.status(400).send('bad request')
