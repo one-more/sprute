@@ -7,7 +7,8 @@ module.exports = class extends BaseView {
         super();
 
         this.setTemplateDir(theme.templatesPath+'/second-page');
-        this.addTemplateDir(theme.templatesPath+'/data')
+        this.addTemplateDir(theme.templatesPath+'/data');
+        this.addTemplateDir(theme.templatesPath+'/album')
     }
 
     render() {

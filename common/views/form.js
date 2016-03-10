@@ -17,7 +17,7 @@ module.exports = class extends BaseView {
         let form = event.target,
             data = this.validate(this.serializeData(form));
         if(data) {
-            this.send(form.action, data).then(result => {
+            this.send(form.action, this.processData(data, form)).then(result => {
                 if(this.isRequestSuccess(result)) {
                     this.onSuccess(result)
                 } else {
@@ -27,6 +27,10 @@ module.exports = class extends BaseView {
         } else {
             this.onValidationError()
         }
+    }
+
+    processData(data) {
+        return data
     }
 
     isRequestSuccess(result) {

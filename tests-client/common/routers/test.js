@@ -4,7 +4,8 @@ let BaseRouter = require(app.get('classPath')+'/routers/base'),
     DomDocumentClass = require(app.get('classPath')+'/classes/dom-document'),
     themeTest = require('../../configuration/theme-test'),
     themeSecond = require('../../configuration/theme-second'),
-    meta = require(app.get('commonPath')+'/modules/meta');
+    meta = require(app.get('commonPath')+'/modules/meta'),
+    formidable = require('formidable');
 
 module.exports = class extends BaseRouter {
     first(req, res) {
@@ -30,7 +31,7 @@ module.exports = class extends BaseRouter {
             let view = new (require('../views/second-page'))(themeSecond);
             view.render().then(html => {
                 domDocument.setBlock('main', html);
-                domDocument.initViews(['data-table', 'data-form']);
+                domDocument.initViews(['data-table', 'data-form', 'album-form']);
                 domDocument.setTitle('second page');
                 domDocument.setMeta([
                     new meta.Description('second test page'),
@@ -57,5 +58,12 @@ module.exports = class extends BaseRouter {
             response.errors = mapper.validationErrors;
             res.send(response)
         }
+    }
+
+    uploadImages(req, res) {
+        let form = new formidable.IncomingForm();
+        form.parse(req, function(err, fields, files) {
+            console.log(fields, files)
+        })
     }
 }
