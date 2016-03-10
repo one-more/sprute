@@ -5,7 +5,8 @@ let BaseRouter = require(app.get('classPath')+'/routers/base'),
     themeTest = require('../../configuration/theme-test'),
     themeSecond = require('../../configuration/theme-second'),
     meta = require(app.get('commonPath')+'/modules/meta'),
-    formidable = require('formidable');
+    AjaxResponse = require(app.get('commonPath')+'/classes/ajax-response'),
+    process = require('process');
 
 module.exports = class extends BaseRouter {
     first(req, res) {
@@ -44,7 +45,6 @@ module.exports = class extends BaseRouter {
 
     addData(req, res) {
         let mapper = new (require('../mappers/mysql')),
-            AjaxResponse = require(app.get('commonPath')+'/classes/ajax-response'),
             response = new AjaxResponse;
 
         let data = req.body;
@@ -61,9 +61,15 @@ module.exports = class extends BaseRouter {
     }
 
     uploadImages(req, res) {
-        let form = new formidable.IncomingForm();
+        let formidable = require('formidable'),
+            form = new formidable.IncomingForm(),
+            response = new AjaxResponse;
+        form.uploadDir = process.cwd()+'/static/images';
+        form.keepExtensions = true;
+        form.type = 'multipart/form-data';
         form.parse(req, function(err, fields, files) {
-            console.log(fields, files)
+            response.status = AjaxResponse.statusOK;
+            res.send(response)
         })
     }
 }

@@ -22,7 +22,9 @@ module.exports = class extends FormView {
                                 ].reduce((hash, key) => {
                                     return (hash[key] = file[key], hash)
                                 }, {})
-                            }),
+                            }).concat(function() {
+                                return fields[input.name] || []
+                            }()),
                         fields
                     )
                 }, {})
