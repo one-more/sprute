@@ -45,7 +45,8 @@ Object.assign(app, {
         let routes = {
             '/page1': 'first',
             '/page2': 'second',
-            '/data/add': 'addData'
+            '/data/add': 'addData',
+            '/images/upload': 'uploadImages'
         }, routerClass = require(commonPath+'/routers/test'),
             router = new routerClass;
         _.pairs(routes).forEach(pair => {
