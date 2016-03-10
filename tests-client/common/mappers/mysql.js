@@ -43,6 +43,10 @@ class MysqlMapper extends KnexMapper {
     validateModel(model) {
         return this.validator.validate(model)
     }
+
+    get validationErrors() {
+        return this.validator.getErrors()
+    }
 }
 
 if(typeof module != 'undefined') {

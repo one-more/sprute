@@ -24,7 +24,7 @@ module.exports = class {
 
     initViews(views) {
         let theme = {};
-        ['templatesPath', 'path'].forEach(key => {
+        ['templatesPath', 'path', 'viewsPath'].forEach(key => {
             theme[key] = this.theme[key].replace(process.cwd(), '')
         });
         views.forEach(name => {

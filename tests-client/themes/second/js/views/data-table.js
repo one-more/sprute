@@ -1,13 +1,21 @@
 'use strict';
 
 let BaseView = require(app.get('commonPath')+'/views/base'),
-    mapper = require('../../../../common/mappers/mysql');
+    mapper = require('../../../../common/mappers/mysql'),
+    dataEvents = require('../events/data');
 
 module.exports = class extends BaseView {
     constructor(theme) {
         super();
 
-        this.setTemplateDir(theme.templatesPath+'/data')
+        this.setTemplateDir(theme.templatesPath+'/data');
+        this.registerEvents()
+    }
+
+    registerEvents() {
+        dataEvents.on('add', () => {
+            this.renderTable()
+        })
     }
 
     get el() {

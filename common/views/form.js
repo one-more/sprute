@@ -1,7 +1,8 @@
 'use strict';
 
 let BaseView = require('./base'),
-    $ = require('jquery');
+    $ = require('jquery'),
+    AjaxResponse = require('../classes/ajax-response');
 
 module.exports = class extends BaseView {
     get events() {
@@ -10,33 +11,33 @@ module.exports = class extends BaseView {
         }
     }
 
-    get statusOK() {
-        return 1
-    }
-
-    get statusError() {
-        return 0
-    }
-
     submit(event) {
         event.preventDefault();
 
         let form = event.target,
-            data = this.validate(this.processData(form));
+            data = this.validate(this.serializeData(form));
         if(data) {
             this.send(form.action, data).then(result => {
-
+                if(this.isRequestSuccess(result)) {
+                    this.onSuccess(result)
+                } else {
+                    this.onError(result)
+                }
             })
         } else {
             this.onValidationError()
         }
     }
 
-    status(result) {
-        return result
+    isRequestSuccess(result) {
+        return result.status == AjaxResponse.statusOK
     }
+    
+    onSuccess() {}
+    
+    onError() {}
 
-    processData(form) {
+    serializeData(form) {
         return this.toJSON.call(form)
     }
 
@@ -56,19 +57,19 @@ module.exports = class extends BaseView {
             };
 
 
-        this.build = (base, key, value) => {
+        let build = (base, key, value) => {
             base[key] = value;
             return base;
         };
 
-        this.push_counter = key => {
+        let pushCounter = key => {
             if(push_counters[key] === undefined){
                 push_counters[key] = 0;
             }
             return push_counters[key]++;
         };
 
-        $.each($(this).serializeArray(), () => {
+        $.each($(this).serializeArray(), function() {
             // skip invalid keys
             if(!patterns.validate.test(this.name)){
                 return;
@@ -85,17 +86,17 @@ module.exports = class extends BaseView {
 
                 // push
                 if(k.match(patterns.push)){
-                    merge = self.build([], self.push_counter(reverse_key), merge);
+                    merge = build([], pushCounter(reverse_key), merge);
                 }
 
                 // fixed
                 else if(k.match(patterns.fixed)){
-                    merge = self.build([], k, merge);
+                    merge = build([], k, merge);
                 }
 
                 // named
                 else if(k.match(patterns.named)){
-                    merge = self.build({}, k, merge);
+                    merge = build({}, k, merge);
                 }
             }
 
@@ -109,7 +110,5 @@ module.exports = class extends BaseView {
         return data
     }
 
-    onValidationError() {
-
-    }
+    onValidationError() {}
 };
