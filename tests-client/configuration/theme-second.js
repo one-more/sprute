@@ -15,6 +15,7 @@ try {
             watchJS: true,
             watchTemplates: true,
             watchStyles: true,
+            watchSVG: true,
             transforms: {
                 styles: lazypipe().pipe(stylus, {
                     include: [themePath+'/includes/stylus'],
@@ -37,7 +38,8 @@ module.exports = {
             templates: [templatesPath+'/**/*.html'],
             js: [jsPath+'/**/*.js'],
             styles: [stylesPath+'/**/*.styl'],
-            options: Object.assign({}, bundleOptions)
+            options: Object.assign({}, bundleOptions),
+            svg: [themePath+'/svg/**/*.svg']
         }
     }
 };

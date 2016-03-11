@@ -15,7 +15,7 @@ module.exports = class extends FileUploadView {
 
     onFileChosen(event) {
         if(event.target.files.length) {
-            this.$el.find('input[type=file]').clone().appendTo('#album-previews')
+            this.$el.find('input[type=file]').eq(0).clone().appendTo('#album-previews')
         }
     }
 
@@ -24,7 +24,7 @@ module.exports = class extends FileUploadView {
             let vE = app.get('validationEngine');
             this._validator = new vE({
                 title: ['required', 'not_empty'],
-                images: ['not_empty_list', {
+                'images[]': ['not_empty_list', {
                     'list_of_objects': {
                         type: ['required', {
                             'one_of': ['image/png', 'image/jpg', 'image/jpeg']
