@@ -14,7 +14,6 @@ let vendorJS = [
     vendorPath+'/jquery/dist/jquery.js',
     vendorPath+'/jquery/bower.json',
     vendorPath+'/underscore/underscore.js',
-    //traceur.RUNTIME_PATH,
     'static/build-result.js'
 ];
 

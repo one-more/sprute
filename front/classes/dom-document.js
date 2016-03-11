@@ -98,6 +98,30 @@ function checkTemplates(name, bundle) {
     }
 }
 
+function checkSVG(name, bundle) {
+    if(bundle.svg) {
+        let src = `${build.prefix}/${buildResult[name].svg}`;
+        return new Promise(resolve => {
+            if(document.querySelector(`[data-load="${src}"]`)) {
+                resolve()
+            } else {
+                let ajax = new XMLHttpRequest();
+                ajax.open("GET", src, true);
+                ajax.send();
+                ajax.onload = function() {
+                    var div = document.createElement("div");
+                    div.innerHTML = ajax.responseText;
+                    div.style.display = 'none';
+                    document.body.insertBefore(div, document.body.childNodes[0]);
+                    resolve()
+                }
+            }
+        })
+    } else {
+        return Promise.resolve()
+    }
+}
+
 module.exports = class {
     constructor(theme) {
         this.theme = theme
@@ -110,7 +134,8 @@ module.exports = class {
                     return Promise.all([
                         checkStyles.apply(null, pair),
                         checkJS.apply(null, pair),
-                        checkTemplates.apply(null, pair)
+                        checkTemplates.apply(null, pair),
+                        checkSVG.apply(null, pair)
                     ])
                 })
             }, Promise.resolve()).then(resolve)

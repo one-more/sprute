@@ -1,7 +1,6 @@
 'use strict';
 
 let FormView = require('./form'),
-    _ = require('underscore'),
     $ = require('jquery');
 
 module.exports = class extends FormView {

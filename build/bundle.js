@@ -92,8 +92,18 @@ function buildTemplates(name, bundle) {
 }
 
 function buildSVG (name, bundle) {
+    let fileName = isDev() ? `${name}.svg` : `${getFileName(bundle.svg)}.${name}.svg`;
+    writeToResultFile(name, 'svg', fileName);
+    let options = Object.assign({
+        transforms: {}
+    }, bundle.options);
 
-    gulp.src([bundle.svg])
+    if(options.watchSVG) {
+        bundle.options.watchSVG = false;
+        addWatch(bundle.svg, buildSVG.bind(null, name, bundle))
+    }
+
+    return gulp.src(bundle.svg)
         .pipe(svgSprite({
             shape: {
                 id: {
@@ -123,8 +133,8 @@ function buildSVG (name, bundle) {
                 }
             }
         }))
-        .on('error', console.log)
-        .pipe(gulp.dest(dest));
+        .pipe(concat(fileName))
+        .pipe(gulp.dest(build.build));
 }
 
 function buildRuntime() {
@@ -194,23 +204,34 @@ function wrapCode() {
 module.exports = {
     build(name, bundle) {
         return new Promise(done => {
-            if(!bundle.js && !bundle.styles && !bundle.templates) {
+            let sources = ['js', 'styles', 'templates', 'svg'];
+            function hasSource(source) {
+                return !!bundle[source]
+            }
+            if(!sources.some(hasSource)) {
                 done()
             }
             if(bundle.js) {
                 let stream = buildJS(name, bundle);
-                if(!bundle.styles && !bundle.templates) {
+                if(!sources.slice(1).some(hasSource)) {
                     stream.on('finish', done)
                 }
             }
             if(bundle.styles) {
                 let stream = buildStyles(name, bundle);
-                if(!bundle.templates) {
+                if(!sources.slice(2).some(hasSource)) {
                     stream.on('finish', done)
                 }
             }
             if(bundle.templates) {
-                buildTemplates(name, bundle).on('finish', done)
+                let stream = buildTemplates(name, bundle);
+                if(!sources.slice(3).some(hasSource)) {
+                    stream.on('finish', done)
+                }
+            }
+            if(bundle.svg) {
+                let stream = buildSVG(name, bundle);
+                stream.on('end', done)
             }
         })
     },

@@ -17,6 +17,21 @@
         {/foreach}
     </head>
     <body>
+        {foreach $theme.bundles as $bundle=>$files}
+            {if $bundleResult[$bundle].svg}
+                <script data-load="{$bundleResult[$bundle].svg}">
+                    var ajax = new XMLHttpRequest();
+                    ajax.open("GET", '{$build.prefix}/{$bundleResult[$bundle].svg}', true);
+                    ajax.send();
+                    ajax.onload = function() {
+                        var div = document.createElement("div");
+                        div.innerHTML = ajax.responseText;
+                        div.style.display = 'none';
+                        document.body.insertBefore(div, document.body.childNodes[0]);
+                    }
+                </script>
+            {/if}
+        {/foreach}
         <div id="all">
             <div id="main-block" data-block="main">
                 {$blocks.main || ''}

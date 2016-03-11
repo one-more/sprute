@@ -25,6 +25,7 @@ module.exports = {
     "theme-second": {
         "js": "theme-second.js",
         "templates": "theme-second.tpl.js",
-        "styles": "theme-second.css"
+        "styles": "theme-second.css",
+        "svg": "theme-second.svg"
     }
 }
