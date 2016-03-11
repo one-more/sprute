@@ -8,7 +8,7 @@ let process = require('process'),
     concat = require('gulp-concat'),
     through = require('through2'),
     fs = require('fs'),
-    traceur = require('gulp-traceur'),
+    to5 = require('gulp-6to5'),
     uglify = require('gulp-uglify'),
     combiner = require('stream-combiner2'),
     lazypipe = require('lazypipe'),
@@ -136,12 +136,12 @@ function buildRuntime() {
     let run = () => {
         return gulpMerge(
             gulp.src(src)
-                .pipe(traceur())
+                .pipe(to5())
                 .pipe(uglify())
                 .pipe(concat('essentials.js'))
                 .pipe(wrapCode()),
             gulp.src(coreModulesSrc)
-                .pipe(traceur())
+                .pipe(to5())
                 .pipe(uglify())
                 .pipe(require('./gulp-modules')())
                 .pipe(concat('core-modules.js'))

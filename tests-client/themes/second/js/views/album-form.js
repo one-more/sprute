@@ -7,6 +7,18 @@ module.exports = class extends FileUploadView {
         return '#album-form'
     }
 
+    get events() {
+        return Object.assign(super.events, {
+            'change input[type=file]': 'onFileChosen'
+        })
+    }
+
+    onFileChosen(event) {
+        if(event.target.files.length) {
+            this.$el.find('input[type=file]').clone().appendTo('#album-previews')
+        }
+    }
+
     get validator() {
         if(!this._validator) {
             let vE = app.get('validationEngine');
