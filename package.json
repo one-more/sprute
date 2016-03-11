@@ -37,7 +37,7 @@
         "gulp-rimraf": "*",
         "gulp-stylus": "^2.0.3",
         "gulp-svg-sprite": "*",
-        "gulp-traceur": "^0.17.1",
+        "gulp-6to5": "*",
         "gulp-uglify": "*",
         "gulp-watch": "*",
         "gulp-concat": "*",

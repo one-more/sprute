@@ -1,7 +1,7 @@
 'use strict';
 
 let process = require('process'),
-    traceur = require('gulp-traceur'),
+    to5 = require('gulp-6to5'),
     lazypipe = require('lazypipe'),
     uglify = require('gulp-uglify'),
     filter = require('gulp-filter'),
@@ -14,7 +14,7 @@ let vendorJS = [
     vendorPath+'/jquery/dist/jquery.js',
     vendorPath+'/jquery/bower.json',
     vendorPath+'/underscore/underscore.js',
-    traceur.RUNTIME_PATH,
+    //traceur.RUNTIME_PATH,
     'static/build-result.js'
 ];
 
@@ -31,7 +31,7 @@ let modulesJS = [
 
 let bundleOptions = {
     transforms: {
-        js: lazypipe().pipe(traceur)
+        js: lazypipe().pipe(to5)
     },
     minifyJS: true,
     minifyStyles: true,
