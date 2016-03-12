@@ -1,0 +1,13 @@
+{
+    "name": "client-side-testing",
+    "version": "0.1.0",
+    "contributors": [
+        {
+            "name": "Dmitriy Nikolaev"
+        }
+    ],
+    "dependencies": {
+        "mysql": "*",
+        "pg": "*"
+    }
+}

@@ -12,7 +12,7 @@
     },
     "keywords": [
         "kis",
-        "node",
+        "isomorphic",
         "framework"
     ],
     "author": "Nikolaev D.",
@@ -22,10 +22,8 @@
     },
     "homepage": "https://github.com/one-more/KIS#readme",
     "dependencies": {
-        "bcrypt": "*",
         "body-parser": "*",
         "cookie-parser": "*",
-        "crypto": "*",
         "express": "^4.13.4",
         "express-session": "*",
         "gulp": "^3.8.11",
