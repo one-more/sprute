@@ -7,11 +7,7 @@
         }
     ],
     "dependencies": {
-        "chai": "*",
-        "sinon": "*",
-        "sinon-chai": "*",
-        "mocha": "*",
-        "dalekjs": "*",
-        "dalek-browser-chrome": "*"
+        "mysql": "*",
+        "pg": "*"
     }
 }
