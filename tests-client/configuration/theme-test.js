@@ -24,7 +24,8 @@ module.exports = {
                 commonPath+'/views/**/*.js',
                 commonPath+'/mappers/**/*.js',
                 basePath+'/configuration/theme-test.js',
-                basePath+'/configuration/theme-second.js'
+                basePath+'/configuration/theme-second.js',
+                basePath+'/configuration/seo.js'
             ],
             options: Object.assign({}, bundleOptions)
         },

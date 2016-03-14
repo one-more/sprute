@@ -27,7 +27,7 @@ module.exports = class extends FileUploadView {
                 'images[]': ['not_empty_list', {
                     'list_of_objects': {
                         type: ['required', {
-                            'one_of': ['image/png', 'image/jpg', 'image/jpeg']
+                            'one_of': ['image/png']
                         }]
                     }
                 }]

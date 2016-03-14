@@ -15,11 +15,10 @@
                 <link rel="stylesheet" href="{$build.prefix}/{$bundleResult[$bundle].styles}">
             {/if}
         {/foreach}
-    </head>
-    <body>
+
         {foreach $theme.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].svg}
-                <script data-load="{$bundleResult[$bundle].svg}">
+                <script data-src="{$build.prefix}/{$bundleResult[$bundle].svg}">
                     var ajax = new XMLHttpRequest();
                     ajax.open("GET", '{$build.prefix}/{$bundleResult[$bundle].svg}', true);
                     ajax.send();
@@ -32,6 +31,8 @@
                 </script>
             {/if}
         {/foreach}
+    </head>
+    <body>
         <div id="all">
             <div id="main-block" data-block="main">
                 {$blocks.main || ''}
