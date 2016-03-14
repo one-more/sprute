@@ -102,14 +102,15 @@ function checkSVG(name, bundle) {
     if(bundle.svg) {
         let src = `${build.prefix}/${buildResult[name].svg}`;
         return new Promise(resolve => {
-            if(document.querySelector(`[data-load="${src}"]`)) {
+            if(document.querySelector(`[data-src="${src}"]`)) {
                 resolve()
             } else {
                 let ajax = new XMLHttpRequest();
-                ajax.open("GET", src, true);
+                ajax.open('GET', src, true);
                 ajax.send();
                 ajax.onload = function() {
-                    var div = document.createElement("div");
+                    var div = document.createElement('div');
+                    div.setAttribute('data-src', src);
                     div.innerHTML = ajax.responseText;
                     div.style.display = 'none';
                     document.body.insertBefore(div, document.body.childNodes[0]);

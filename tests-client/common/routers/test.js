@@ -6,7 +6,8 @@ let BaseRouter = require(app.get('classPath')+'/routers/base'),
     themeSecond = require('../../configuration/theme-second'),
     meta = require(app.get('commonPath')+'/modules/meta'),
     AjaxResponse = require(app.get('commonPath')+'/classes/ajax-response'),
-    process = require('process');
+    process = require('process'),
+    seo = require('../../configuration/seo');
 
 module.exports = class extends BaseRouter {
     first(req, res) {
@@ -16,10 +17,10 @@ module.exports = class extends BaseRouter {
             view.render().then(html => {
                 domDocument.setBlock('main', html);
                 domDocument.initViews(['action-button']);
-                domDocument.setTitle('first page');
+                domDocument.setTitle(seo.page1.title);
                 domDocument.setMeta([
-                    new meta.Description('isomorphic framework with robust architecture'),
-                    new meta.Keywords(['framework', 'isomorphic', 'architecture'])
+                    new meta.Description(seo.page1.description),
+                    new meta.Keywords(seo.page1.keywords)
                 ].reduce((meta, obj) => `${meta}\n${obj.toString()}`, ''));
                 this.loadPage(domDocument, res);
             })
@@ -33,10 +34,10 @@ module.exports = class extends BaseRouter {
             view.render().then(html => {
                 domDocument.setBlock('main', html);
                 domDocument.initViews(['data-table', 'data-form', 'album-form']);
-                domDocument.setTitle('second page');
+                domDocument.setTitle(seo.page2.title);
                 domDocument.setMeta([
-                    new meta.Description('second test page'),
-                    new meta.Keywords(['framework', 'testing'])
+                    new meta.Description(seo.page2.description),
+                    new meta.Keywords(seo.page2.keywords)
                 ].reduce((meta, obj) => `${meta}\n${obj.toString()}`, ''));
                 this.loadPage(domDocument, res);
             })
