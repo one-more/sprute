@@ -10,8 +10,6 @@
         "chai": "*",
         "sinon": "*",
         "sinon-chai": "*",
-        "mocha": "*",
-        "dalekjs": "*",
-        "dalek-browser-chrome": "*"
+        "mocha": "*"
     }
 }

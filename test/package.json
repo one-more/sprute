@@ -8,6 +8,8 @@
     ],
     "dependencies": {
         "mysql": "*",
-        "pg": "*"
+        "pg": "*",
+        "selenium-webdriver": "*",
+        "chromedriver": "*"
     }
 }
