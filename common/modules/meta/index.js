@@ -49,7 +49,7 @@ exports.Keywords = class extends Tag {
     constructor(keywords) {
         super();
 
-        this.attributes.mame = 'keywords';
+        this.attributes.name = 'keywords';
         if(typeof keywords == 'string') {
             this.attributes.content = keywords
         } else if(keywords instanceof Array) {
