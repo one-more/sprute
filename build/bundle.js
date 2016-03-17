@@ -40,6 +40,7 @@ function buildJS(name, bundle) {
     return combiner.obj([
         gulp.src(bundle.js),
         (options.transforms.js || emptyTransforms)(),
+        (options.minifyJS ? uglify : emptyTransforms)(),
         require('./gulp-modules')(),
         concat(fileName),
         (options.minifyJS ? uglify : emptyTransforms)(),
@@ -62,6 +63,7 @@ function buildStyles(name, bundle) {
     return combiner.obj([
         gulp.src(bundle.styles),
         (options.transforms.styles || emptyTransforms)(),
+        (options.minifyStyles ? cssmin : emptyTransforms)(),
         concat(fileName),
         (options.minifyStyles ? cssmin : emptyTransforms)(),
         gulp.dest(build.build)
@@ -156,6 +158,7 @@ function buildRuntime() {
                 .pipe(require('./gulp-modules')())
                 .pipe(concat('core-modules.js'))
         )
+            .pipe(uglify())
             .pipe(concat(fileName))
             .pipe(gulp.dest(build.build))
     };
