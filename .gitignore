@@ -1,7 +1,6 @@
 .idea
 node_modules
 static/build
-static/build-result.js
-#test
+static/bundle-result.js
 bower_components
 configuration/connections.js

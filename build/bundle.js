@@ -171,13 +171,13 @@ function getFileName(src) {
 
 function writeToResultFile(bundle, section, fileName) {
     try {
-        var buildResult = require(build.bundleResult);
+        var bundleResult = require(build.bundleResult);
     } catch(e) {
-        buildResult = {}
+        bundleResult = {}
     }
-    !buildResult[bundle] && (buildResult[bundle] = {});
-    buildResult[bundle][section] = fileName;
-    fs.writeFileSync(build.bundleResult, `module.exports = ${JSON.stringify(buildResult, null, 4)}`)
+    !bundleResult[bundle] && (bundleResult[bundle] = {});
+    bundleResult[bundle][section] = fileName;
+    fs.writeFileSync(build.bundleResult, `module.exports = ${JSON.stringify(bundleResult, null, 4)}`)
 }
 
 function emptyTransforms() {

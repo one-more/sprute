@@ -12,7 +12,8 @@ process.chdir('../');
 
 let commonPath = path.join(__dirname, 'common');
 
-let registerRoutes = app.registerRoutes.bind(app);
+let registerRoutes = app.registerRoutes.bind(app),
+    loadComponents = app.loadComponents.bind(app);
 
 Object.assign(app, {
     startServer() {
@@ -55,6 +56,30 @@ Object.assign(app, {
         });
 
         registerRoutes()
+    },
+
+    loadComponents() {
+        loadComponents();
+        let dictionary = {
+            'ru': {
+                'page1': {
+                    'wm plurals': ['арбуз', 'арбуза', 'арбузов'],
+                    'первая страница': 'первая страница'
+                }
+            },
+            'en': {
+                'page1': {
+                    'wm plurals': ['watermelon', 'watermelons', 'watermelons'],
+                    'первая страница': 'first page'
+                }
+            }
+        };
+        let i18n = Object.assign({}, app.get('i18n'), {
+            loadSection(section, lang) {
+                return dictionary[lang][section]
+            }
+        });
+        app.set('i18n', i18n);
     }
 });
 

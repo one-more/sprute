@@ -2,7 +2,6 @@
 
 let express = require('express'),
     app = express(),
-    configuration = {},
     routes = require('./configuration/routes'),
     _ = require('underscore'),
     process = require('process'),
@@ -10,8 +9,6 @@ let express = require('express'),
     cookieParser = require('cookie-parser'),
     bodyParser = require('body-parser'),
     path = require('path');
-
-configuration.app = require('./configuration/app');
 
 module.exports = Object.setPrototypeOf({
 
@@ -25,8 +22,9 @@ module.exports = Object.setPrototypeOf({
     },
 
     startServer() {
-        app.listen(configuration.app.port, configuration.app.host, () => {
-            console.log(`start listening ${configuration.app.host}:${configuration.app.port}`)
+        let serverConfig = require('./configuration/server');
+        app.listen(serverConfig.port, serverConfig.host, () => {
+            console.log(`start listening ${serverConfig.host}:${serverConfig.port}`)
         });
         app.use(express.static(path.join(__dirname, 'static')));
     },
@@ -39,10 +37,9 @@ module.exports = Object.setPrototypeOf({
     loadComponents() {
         let components = require('./configuration/components');
 
-        let templateEngine = components.templatesEngine;
-        app.set('templateEngine', templateEngine.init());
-        let validationEngine = components.validationEngine;
-        app.set('validationEngine', validationEngine.init());
+        _.pairs(components).forEach(pair => {
+            this.set(pair[0], pair[1].init())
+        })
     },
 
     registerRoutes() {
@@ -51,15 +48,13 @@ module.exports = Object.setPrototypeOf({
             while(path = paths.shift()) {
                 try {
                     var router = require(`${path}/routers/${pair[0]}`),
-                        routerObj = new router;
+                        routerObj = new router({
+                            routes: pair[1]
+                        });
                     break
-                } catch(e) {}
-            }
-            if(routerObj) {
-                _.pairs(pair[1]).forEach(pair => {
-                    let method = routerObj[pair[1]];
-                    app.all(pair[0], method.bind(routerObj))
-                })
+                } catch(e) {
+                    console.log(e)
+                }
             }
         })
     },

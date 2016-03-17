@@ -1,8 +1,7 @@
 'use strict';
 
 let smartPlurals = require('smart-plurals'),
-    baseView = require(app.get('commonPath')+'/views/base');
-let pluralRule = smartPlurals.Plurals.getRule('ru');
+    _ = require('underscore');
 
 require('jsmart');
 
@@ -13,7 +12,24 @@ module.exports = {
             'function',
             'pluralize',
             params => {
-                return pluralRule(+params['count'], [params['one'], params['few'], params['many']])
+                let i18n = app.get('i18n');
+                let pluralRule = smartPlurals.Plurals.getRule(i18n.currentLanguage);
+                params = _.values(params)
+                    .filter(param => _.isString(param))
+                    .map(param => {
+                        return +param || param
+                    });
+                return pluralRule.call(null, params[0], params.slice(1))
+            }
+        );
+
+        jSmart.prototype.registerPlugin(
+            'function',
+            'translate',
+            params => {
+                let i18n = app.get('i18n');
+                params = _.values(params).filter(param => _.isString(param));
+                return i18n.translate.apply(i18n, params)
             }
         );
 
@@ -21,7 +37,8 @@ module.exports = {
             'function',
             'include',
             (params, data) => {
-                let view = new baseView;
+                let BaseView = require(app.get('commonPath')+'/views/base'),
+                    view = new BaseView;
                 view.templateDirs = data.templateDirs;
                 return view.getTemplate(params.file, data);
             }

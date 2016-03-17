@@ -1,6 +1,8 @@
 'use strict';
 
 module.exports = {
-    templatesEngine: require(app.get('commonPath')+'/modules/template-engine'),
-    validationEngine: require(app.get('commonPath')+'/modules/validation-engine')
+    templateEngine: require(app.get('commonPath')+'/modules/template-engine'),
+    validationEngine: require(app.get('commonPath')+'/modules/validation-engine'),
+    i18n: require(app.get('commonPath')+'/modules/i18n'),
+    history: require(app.get('commonPath')+'/modules/history')
 };

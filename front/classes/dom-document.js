@@ -3,7 +3,7 @@
 let $ = require('jquery'),
     process = require('process'),
     _ = require('underscore'),
-    buildResult = require(process.cwd()+'/static/build-result'),
+    bundleResult = require(process.cwd()+'/static/bundle-result'),
     build = require(process.cwd()+'/configuration/static');
 
 function checkScript(src) {
@@ -68,7 +68,7 @@ function checkStyles(name, bundle) {
     return new Promise(resolve => {
         if(bundle.styles) {
             let links = Array.from(document.querySelectorAll('link[rel=stylesheet]')),
-                href = `${build.prefix}/${buildResult[name].styles}`;
+                href = `${build.prefix}/${bundleResult[name].styles}`;
             if(links.find(link => link.getAttribute('href') == href)) {
                 resolve()
             } else {
@@ -82,7 +82,7 @@ function checkStyles(name, bundle) {
 
 function checkJS(name, bundle) {
     if(bundle.js) {
-        let src = `${build.prefix}/${buildResult[name].js}`;
+        let src = `${build.prefix}/${bundleResult[name].js}`;
         return checkScript(src)
     } else {
         return Promise.resolve()
@@ -91,7 +91,7 @@ function checkJS(name, bundle) {
 
 function checkTemplates(name, bundle) {
     if(bundle.templates) {
-        let src = `${build.prefix}/${buildResult[name].templates}`;
+        let src = `${build.prefix}/${bundleResult[name].templates}`;
         return checkScript(src)
     } else {
         return Promise.resolve()
@@ -100,7 +100,7 @@ function checkTemplates(name, bundle) {
 
 function checkSVG(name, bundle) {
     if(bundle.svg) {
-        let src = `${build.prefix}/${buildResult[name].svg}`;
+        let src = `${build.prefix}/${bundleResult[name].svg}`;
         return new Promise(resolve => {
             if(document.querySelector(`[data-src="${src}"]`)) {
                 resolve()

@@ -1,7 +1,6 @@
 'use strict';
 
 let process = require('process'),
-    Backbone = require('backbone'),
     _ = require('underscore'),
     routes = require('../configuration/routes'),
     $ = require('jquery');
@@ -14,9 +13,10 @@ module.exports = {
             this.loadComponents();
             this.setRoutes();
             this.registerEvents();
+
+            this.get('history').start({pushState: true, silent: true})
         });
 
-        Backbone.history.start({pushState: true, silent: true});
         return this
     },
 
@@ -36,10 +36,9 @@ module.exports = {
     loadComponents() {
         let components = require('../configuration/components');
 
-        let templateEngine = components.templatesEngine;
-        app.set('templateEngine', templateEngine.init());
-        let validationEngine = components.validationEngine;
-        app.set('validationEngine', validationEngine.init());
+        _.pairs(components).forEach(pair => {
+            this.set(pair[0], pair[1].init())
+        })
     },
 
     setRoutes() {
@@ -60,14 +59,15 @@ module.exports = {
     },
 
     registerEvents() {
-        $(document).on('click', 'a[href]:not(.link_external)', function(e) {
-            let href = this.getAttribute('href');
+        $(document).on('click', 'a[href]:not(.link_external)', e => {
+            let link = e.target;
+            let href = link.getAttribute('href');
             let navigate = href.indexOf('http') == -1
                 && href.indexOf('www') == -1
                 && href.indexOf('javascript') == -1;
             if(navigate) {
                 e.preventDefault();
-                Backbone.history.navigate(href, {trigger: true})
+                this.get('history').navigate(href, {trigger: true})
             }
         });
 
