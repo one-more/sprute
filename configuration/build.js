@@ -6,27 +6,8 @@ let process = require('process'),
     uglify = require('gulp-uglify'),
     filter = require('gulp-filter'),
     jsonminify = require('gulp-jsonminify'),
-    staticParams = require('./static');
-
-let vendorPath = 'bower_components';
-let vendorJS = [
-    vendorPath+'/backbone/backbone.js',
-    vendorPath+'/jquery/dist/jquery.js',
-    vendorPath+'/jquery/bower.json',
-    vendorPath+'/underscore/underscore.js',
-    'static/build-result.js'
-];
-
-let modulesJS = [
-    vendorPath+'/jsmart/jsmart.min.js',
-    vendorPath+'/smart-plurals/package.json',
-    vendorPath+'/smart-plurals/dist/Smart.Plurals.node/Smart.Plurals.node-all.js',
-    'node_modules/livr/*.json',
-    'node_modules/livr/lib/**/*.js',
-    'back/modules/knex/knex.js',
-    vendorPath+'/bluebird/bower.json',
-    vendorPath+'/bluebird/js/browser/bluebird.js'
-];
+    staticParams = require('./static'),
+    vendorPath = 'bower_components';
 
 let bundleOptions = {
     transforms: {
@@ -67,7 +48,12 @@ let modulesOptions = Object.assign(vendorOptions, {
 module.exports = {
     bundles: {
         'app-vendor': {
-            js: vendorJS,
+            js: [
+                vendorPath+'/jquery/dist/jquery.js',
+                vendorPath+'/jquery/bower.json',
+                vendorPath+'/underscore/underscore.js',
+                'static/bundle-result.js'
+            ],
             options: vendorOptions
         },
         app: {
@@ -78,13 +64,23 @@ module.exports = {
                 'configuration/runtime.js',
                 'configuration/components.js',
                 'configuration/static.js',
-                'configuration/theme-light.js'
+                'configuration/theme-light.js',
+                'configuration/i18n.js'
             ],
             options: bundleOptions
         }
     },
     modules: {
-        js: modulesJS,
+        js: [
+            vendorPath+'/jsmart/jsmart.min.js',
+            vendorPath+'/smart-plurals/package.json',
+            vendorPath+'/smart-plurals/dist/Smart.Plurals.node/Smart.Plurals.node-all.js',
+            'node_modules/livr/*.json',
+            'node_modules/livr/lib/**/*.js',
+            'back/modules/knex/knex.js',
+            vendorPath+'/bluebird/bower.json',
+            vendorPath+'/bluebird/js/browser/bluebird.js'
+        ],
         options: modulesOptions
     },
     build: staticParams.build,

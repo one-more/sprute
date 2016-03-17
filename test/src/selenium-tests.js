@@ -12,7 +12,7 @@ let webdriver = require('selenium-webdriver'),
     crypto = require('crypto'),
     process = require('process'),
     seo = require(process.cwd()+'/tests-client/configuration/seo'),
-    buildResult = require(process.cwd()+'/static/build-result'),
+    bundleResult = require(process.cwd()+'/static/bundle-result'),
     themeSecond = require(process.cwd()+'/tests-client/configuration/theme-second'),
     build = require(process.cwd()+'/configuration/static'),
     _ = require('underscore');
@@ -72,6 +72,24 @@ describe('client functional tests', function() {
         describe('check meta', function() {
             it('should be correct', function(done) {
                 checkMeta(seo.page1, done)
+            })
+        });
+
+        describe('check plurals', function() {
+            it('plural forms should be equal', function(done) {
+                browser.wait(until.elementsLocated(By.css('.plurals')), 30 * 1000)
+                    .then(elements => {
+                        Array.from(elements).forEach(table => {
+                            Array.from(table.findElements(By.css('tr'))).forEach(tr => {
+                                let cells = tr.findElements(By.css('td'));
+                                assert.equal(
+                                    cells[0].innerHTML,
+                                    cells[1].innerHTML
+                                )
+                            })
+                        });
+                        done()
+                    })
             })
         });
 
@@ -223,7 +241,7 @@ function checkResources(theme, done) {
 
 function checkJS(name, bundle) {
     if(bundle.js) {
-        let src = `${build.prefix}/${buildResult[name].js}`;
+        let src = `${build.prefix}/${bundleResult[name].js}`;
         return browser.wait(until.elementsLocated(By.css(`script[src="${src}"]`)), 30 * 1000)
             .then(elements => {
                 return assert(elements.length == 1, 'should load only 1 js script')
@@ -233,7 +251,7 @@ function checkJS(name, bundle) {
 
 function checkStyles(name, bundle) {
     if(bundle.styles) {
-        let href = `${build.prefix}/${buildResult[name].styles}`;
+        let href = `${build.prefix}/${bundleResult[name].styles}`;
         return browser.wait(until.elementsLocated(By.css(`link[href="${href}"]`)), 30 * 1000)
             .then(elements => {
                 return assert(elements.length == 1, 'should load only 1 css file')
@@ -243,7 +261,7 @@ function checkStyles(name, bundle) {
 
 function checkTemplates(name, bundle) {
     if(bundle.templates) {
-        let src = `${build.prefix}/${buildResult[name].templates}`;
+        let src = `${build.prefix}/${bundleResult[name].templates}`;
         return browser.wait(until.elementsLocated(By.css(`script[src="${src}"]`)), 30 * 1000)
             .then(elements => {
                 return assert(elements.length == 1, 'should load only 1 templates file')
@@ -253,7 +271,7 @@ function checkTemplates(name, bundle) {
 
 function checkSVG(name, bundle) {
     if(bundle.svg) {
-        let src = `${build.prefix}/${buildResult[name].svg}`;
+        let src = `${build.prefix}/${bundleResult[name].svg}`;
         return browser.wait(until.elementsLocated(By.css(`[data-src="${src}"]`)), 30 * 1000)
             .then(elements => {
                 return assert(elements.length == 1, 'should load only 1 svg file')

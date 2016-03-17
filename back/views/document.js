@@ -1,10 +1,10 @@
 'use strict';
 
-let baseView = require(app.get('commonPath')+'/views/base'),
+let BaseView = require(app.get('commonPath')+'/views/base'),
     process = require('process'),
     build = require(process.cwd()+'/configuration/build');
 
-module.exports = class extends baseView {
+module.exports = class extends BaseView {
     constructor(theme) {
         super();
 

@@ -1,7 +1,7 @@
 'use strict';
 
 let process = require('process'),
-    documentView = require('../views/document');
+    DocumentView = require('../views/document');
 
 module.exports = class {
     constructor(theme) {
@@ -42,7 +42,7 @@ module.exports = class {
     }
 
     toHTML() {
-        let documentViewObj = new documentView(this.theme);
+        let documentViewObj = new DocumentView(this.theme);
         return documentViewObj.render(this.blocks)
     }
 };

@@ -17,7 +17,6 @@
         "tests"
     ],
     "dependencies": {
-        "backbone": "*",
         "bluebird": "^3.3.3",
         "jquery": "2.*",
         "jsmart": "*",
