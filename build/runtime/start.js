@@ -4,6 +4,6 @@ window.start = () => {
     let process = require('process'),
         main = require(process.cwd()+'/configuration/runtime').main;
 
-    require(main);
+    require.main = require(main);
     window.start = () => {}
 };
