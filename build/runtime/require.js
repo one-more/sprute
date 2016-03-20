@@ -158,14 +158,21 @@ function runModule(currentModule, file) {
         return JSON.parse(file.content)
     }
 
+    currentModule = Object.assign({
+        children: [],
+        dirName: undefined
+    }, currentModule);
+
     let module = {
         exports: {},
         filename: file.pathName,
         dirName: file.dirName,
         id: file.pathName,
         loaded: true,
-        parent: currentModule
+        parent: currentModule,
+        children: []
     }, exports = module.exports;
+    currentModule.children.push(module);
     let env = new Function('module','exports','require','readFile','readDir', file.contents);
     let _readFile = readFile.bind(null, currentModule.dirName), //for fs module
         _readDir = readDir.bind(null, currentModule.dirName),
