@@ -38,6 +38,10 @@ module.exports = class {
         })
     }
 
+    get tagName() {
+        return 'div'
+    }
+
     $(selector) {
         return this.$el.find(selector)
     }
@@ -129,13 +133,21 @@ module.exports = class {
     }
 
     setTemplateDir(path) {
-        this.templateDirs = [path];
+        if(_.isArray(path)) {
+            this.templateDirs = path
+        } else {
+            this.templateDirs = [path]
+        }
         return this
     }
 
     addTemplateDir(path) {
         !this.templateDirs && (this.templateDirs = []);
-        this.templateDirs.push(path);
+        if(_.isArray(path)) {
+            this.templateDirs.concat(path)
+        } else {
+            this.templateDirs.push(path);
+        }
         return this
     }
 
