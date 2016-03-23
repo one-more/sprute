@@ -63,29 +63,12 @@ module.exports = class extends BaseMapper {
     }
 
     insert(data) {
-        if(data = this.validateModel(data)) {
-            return this.queryBuilder.insert(data).then(data => data).catch(err => err)
-        } else {
-            throw new Error('invalid data')
-        }
+        return this.queryBuilder.insert(data).then(data => data).catch(err => err)
     }
 
-    update(model) {
-        let data;
-        if(data = this.validateModel(model)) {
-            return this.queryBuilder.update(data).where({id: model.id})
-                .then(data => data).catch(err => err)
-        } else {
-            throw new Error('invalid data')
-        }
-    }
-
-    validateModel() {
-        throw new Error('mapper should specify validateModel method')
-    }
-
-    get validationErrors() {
-        throw new Error('mapper should specify getter for validation errors')
+    update(data) {
+        return this.queryBuilder.update(data).where({id: data.id})
+            .then(data => data).catch(err => err)
     }
 };
 

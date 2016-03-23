@@ -45,6 +45,7 @@ class TestMapper extends KnexMapper {
         if(!this._validator) {
             let vE = app.get('validationEngine');
             this._validator = new vE({
+                id: 'integer',
                 field1: 'not_empty',
                 field2: 'integer',
                 field3: 'not_empty'
