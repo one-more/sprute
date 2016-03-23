@@ -45,11 +45,24 @@ module.exports = class {
     }
 
     save(model) {
-        if(model instanceof this.model) {
-            return this.update(model)
+        let data;
+        if(data = this.validateModel(model)) {
+            if(model instanceof this.model) {
+                return this.update(data)
+            } else {
+                return this.insert(data)
+            }
         } else {
-            return this.insert(model)
+            throw new Error('invalid data')
         }
+    }
+
+    validateModel() {
+        throw new Error('mapper should specify validateModel method')
+    }
+
+    get validationErrors() {
+        throw new Error('mapper should specify getter for validation errors')
     }
 
     insert() {
