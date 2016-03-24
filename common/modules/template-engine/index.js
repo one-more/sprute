@@ -7,6 +7,12 @@ require('jsmart');
 
 module.exports = {
     init() {
+        
+        function translatePlugin(params) {
+            let i18n = app.get('i18n');
+            params = _.values(params).filter(param => _.isString(param));
+            return i18n.translate.apply(i18n, params)
+        }
 
         jSmart.prototype.registerPlugin(
             'function',
@@ -26,11 +32,13 @@ module.exports = {
         jSmart.prototype.registerPlugin(
             'function',
             'translate',
-            params => {
-                let i18n = app.get('i18n');
-                params = _.values(params).filter(param => _.isString(param));
-                return i18n.translate.apply(i18n, params)
-            }
+            translatePlugin
+        );
+
+        jSmart.prototype.registerPlugin(
+            'function',
+            't',
+            translatePlugin
         );
 
         jSmart.prototype.registerPlugin(
