@@ -38,8 +38,17 @@ find ./static/images -name "*upload*" -type f -delete
 
 git add static/*
 
+git tag -a "v$version" -m "version $version"
 git ci -m "release $version"
-git push -u origin "release_$version"
+
+git fetch --all
+git co master
+git pull --rebase
+git merge --no-ff "release_$version"
+
+git branch -d "release_$version"
+
+git push --tags
 
 git reset --hard origin/dev
 git co dev
