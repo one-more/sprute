@@ -21,7 +21,7 @@ echo "creating release branch with version $version"
 
 git co -b "release_$version" origin/dev
 git rm "TODO.md"
-git rm "README.md"
+#git rm "README.md"
 git rm ".foreverignore"
 git rm "mocha-bootstrap.js"
 git rm --cached -r "scripts"
@@ -38,18 +38,23 @@ find ./static/images -name "*upload*" -type f -delete
 
 git add static/*
 
+#delete tag if exists
+git tag -d "v$version"
+
 git tag -a "v$version" -m "version $version"
 git ci -m "release $version"
 
 git fetch --all
 git co master
 git pull --rebase
-git merge --no-ff "release_$version"
+git merge --strategy=ours --no-ff "release_$version"
 
-git branch -d "release_$version"
+git branch -D "release_$version"
 
 git push --tags
 
 git reset --hard origin/dev
 git co dev
+
+sudo chmod -R 777 .
 
