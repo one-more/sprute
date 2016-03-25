@@ -28,7 +28,7 @@ git rm --cached -r "scripts"
 git rm -r "test"
 git rm -r "tests-client"
 
-./build-static.sh
+./scripts/build-static.sh
 
 git rm ./.gitignore
 
@@ -41,5 +41,6 @@ git add static/*
 git ci -m "release $version"
 git push -u origin "release_$version"
 
+git reset --hard origin/dev
 git co dev
 
