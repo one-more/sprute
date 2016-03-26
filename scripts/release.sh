@@ -39,6 +39,8 @@ find ./static/images -name "*upload*" -type f -delete
 
 git add static/*
 
+git co origin/master README.md
+
 #delete tag if exists
 git tag -d "v$version"
 

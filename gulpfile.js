@@ -5,7 +5,8 @@ let build = require('./configuration/build'),
     bundle = require('./build/bundle'),
     themes = require('./configuration/themes'),
     gulp = require('gulp'),
-    rimraf = require('gulp-rimraf');
+    rimraf = require('gulp-rimraf'),
+    ignore = require('gulp-ignore');
 
 gulp.task('bundle', () => {
     return [build].concat(_.pairs(themes).map(pair => pair[1])).reduce((promise, obj) => {
@@ -29,6 +30,7 @@ gulp.task('build-runtime', () => {
 
 gulp.task('clean', () => {
     return gulp.src(build.clean, { read: false })
+        .pipe(ignore('.gitkeep'))
         .pipe(rimraf())
 });
 

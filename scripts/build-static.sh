@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 sudo truncate -s 0 ./nohup.out
+sudo truncate -s 0 ./static/bundle-result.js
 
 sudo nohup gulp 2> /dev/null &
 #  check to see if it started correctly
