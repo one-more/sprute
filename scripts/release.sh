@@ -21,6 +21,8 @@ RELEASE_BRANCH="release_$version"
 
 echo "creating release branch with version $version"
 
+git fetch --all
+
 git co -b $RELEASE_BRANCH origin/dev
 git rm "TODO.md"
 git rm ".foreverignore"
@@ -48,9 +50,11 @@ git tag -d "v$version"
 git ci -m "release $version"
 git tag -a "v$version" -m "version $version"
 
-git fetch --all
+git push --tags
+
 git co master
-git pull --rebase
+#git pull --rebase
+git reset --hard origin/master
 
 git co -b tmp $RELEASE_BRANCH
 git merge -s ours master
@@ -62,12 +66,10 @@ git merge tpm
 git branch -D tmp
 git branch -D $RELEASE_BRANCH
 
-git push --tags
-
 git push origin master
 
-git reset --hard origin/dev
 git co dev
+git reset --hard origin/dev
 
 sudo chmod -R 777 .
 
