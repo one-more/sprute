@@ -23,8 +23,9 @@ git co -b "release_$version" origin/dev
 git rm "TODO.md"
 #git rm "README.md"
 git rm ".foreverignore"
+git rm "configuration/connections.js"
 git rm "mocha-bootstrap.js"
-git rm --cached -r "scripts"
+git rm -r "scripts"
 git rm -r "test"
 git rm -r "tests-client"
 
