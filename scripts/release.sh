@@ -17,11 +17,12 @@ done
 
 shift $((OPTIND-1))
 
+RELEASE_BRANCH="release_$version"
+
 echo "creating release branch with version $version"
 
-git co -b "release_$version" origin/dev
+git co -b $RELEASE_BRANCH origin/dev
 git rm "TODO.md"
-#git rm "README.md"
 git rm ".foreverignore"
 git rm "configuration/connections.js"
 git rm "mocha-bootstrap.js"
@@ -50,9 +51,16 @@ git tag -a "v$version" -m "version $version"
 git fetch --all
 git co master
 git pull --rebase
-git merge --no-ff "release_$version"
 
-git branch -D "release_$version"
+git co -b tmp $RELEASE_BRANCH
+git merge -s ours master
+git co master
+git merge tpm
+
+#git merge --no-ff $RELEASE_BRANCH
+
+git branch -D tmp
+git branch -D $RELEASE_BRANCH
 
 git push --tags
 
