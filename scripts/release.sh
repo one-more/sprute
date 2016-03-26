@@ -32,6 +32,8 @@ git rm -r "scripts"
 git rm -r "test"
 git rm -r "tests-client"
 
+sudo chmod -R 777 .
+
 ./scripts/build-static.sh
 
 git rm ./.gitignore
