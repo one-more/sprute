@@ -62,7 +62,7 @@ git reset --hard origin/master
 git co -b tmp $RELEASE_BRANCH
 git merge -s ours master
 git co master
-git merge tpm
+git merge tmp
 
 #git merge --no-ff $RELEASE_BRANCH
 
