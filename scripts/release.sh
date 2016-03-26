@@ -41,17 +41,19 @@ git add static/*
 #delete tag if exists
 git tag -d "v$version"
 
-git tag -a "v$version" -m "version $version"
 git ci -m "release $version"
+git tag -a "v$version" -m "version $version"
 
 git fetch --all
 git co master
 git pull --rebase
-git merge --strategy=ours --no-ff "release_$version"
+git merge --no-ff "release_$version"
 
 git branch -D "release_$version"
 
 git push --tags
+
+git push origin master
 
 git reset --hard origin/dev
 git co dev
