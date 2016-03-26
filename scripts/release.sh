@@ -24,6 +24,11 @@ echo "creating release branch with version $version"
 git fetch --all
 
 git co -b $RELEASE_BRANCH origin/dev
+
+sudo chmod -R 777 .
+
+./scripts/build-static.sh
+
 git rm "TODO.md"
 git rm ".foreverignore"
 git rm "configuration/connections.js"
@@ -31,10 +36,6 @@ git rm "mocha-bootstrap.js"
 git rm -r "scripts"
 git rm -r "test"
 git rm -r "tests-client"
-
-sudo chmod -R 777 .
-
-./scripts/build-static.sh
 
 git rm ./.gitignore
 
