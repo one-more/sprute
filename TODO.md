@@ -3,4 +3,4 @@
 3. bower.json main field may be an array
 4. check window loaded before send form
 5. replace target to currentTarget in app
-6. knex-mapper - check id along with instance of when save
+6. knex-mapper - check id along with instanceof when save
