@@ -4,3 +4,4 @@
 4. check window loaded before send form
 5. replace target to currentTarget in app
 6. knex-mapper - check id along with instanceof when save
+7. add JSON.stringify to the query method of the rest router
