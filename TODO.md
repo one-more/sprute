@@ -6,3 +6,4 @@
 6. knex-mapper - check id along with instanceof when save
 7. add JSON.stringify to the query method of the rest router
 8. assign params when include in jsmart
+9. rewrite toQueryObject method
