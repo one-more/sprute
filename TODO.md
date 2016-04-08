@@ -7,4 +7,4 @@
 7. add JSON.stringify to the query method of the rest router
 8. assign params when include in jsmart
 9. fix regexp in validateQuery
-10. modify save method to return insert id despite on the db type
+10. modify save method to return insert id and affected rows count despite on the db type
