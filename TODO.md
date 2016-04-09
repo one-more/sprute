@@ -8,3 +8,4 @@
 8. assign params when include in jsmart
 9. fix regexp in validateQuery
 10. modify save method to return insert id and affected rows count despite on the db type
+11. cache connections in mapper
