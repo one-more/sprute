@@ -1,6 +1,6 @@
 1. client JS loading performance
 2. find method should await for checkTable
-3. bower.json main field may be an array
+3. bower.json or package.json main field may be an array
 4. check window loaded before send form
 5. replace target to currentTarget in app
 6. knex-mapper - check id along with instanceof when save
@@ -10,3 +10,4 @@
 10. modify save method to return insert id and affected rows count despite on the db type
 11. cache connections in mapper
 12. throw params object to the router method on the clientside
+13. main in bower.json or package.json may starts with /
