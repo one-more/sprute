@@ -11,3 +11,4 @@
 11. cache connections in mapper
 12. throw params object to the router method on the clientside
 13. main in bower.json or package.json may starts with /
+14. add model relations
