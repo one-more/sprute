@@ -13,3 +13,4 @@
 13. main in bower.json or package.json may starts with /
 14. add model relations
 15. bug - cannot insertBefore of null - domdocument
+16. reinit some components mechanism when page loaded through history.navigate
