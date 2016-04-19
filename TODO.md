@@ -14,3 +14,5 @@
 14. add model relations
 15. bug - cannot insertBefore of null - domdocument
 16. reinit some components mechanism when page loaded through history.navigate
+17. add middleware mechanism
+18. pre & post query processing in mappers
