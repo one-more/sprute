@@ -16,3 +16,4 @@
 16. reinit some components mechanism when page loaded through history.navigate
 17. add middleware mechanism
 18. pre & post query processing in mappers
+19. accept array in setTitle
