@@ -20,3 +20,4 @@
 20. cache system
 21. move query to socket connection
 22. standartize onError handler on request
+23. requre files in module e.g (require('module/file'))
