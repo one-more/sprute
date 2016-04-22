@@ -19,3 +19,4 @@
 19. accept array in setTitle
 20. cache system
 21. move query to socket connection
+22. standartize onError handler on request
