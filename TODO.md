@@ -22,3 +22,4 @@
 22. standartize onError handler on request
 23. requre files in module e.g (require('module/file'))
 24. cache system
+25. accept object in parseAsModel
