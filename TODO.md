@@ -25,4 +25,4 @@
 25. accept object in parseAsModel
 26. dependency injection
 27. polyfills
-28. history:route mobile bug
+28. history:route & router:route mobile bug
