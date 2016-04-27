@@ -27,3 +27,4 @@
 27. polyfills
 28. history:route & router:route mobile bug
 29. back to babel
+30. eslint
