@@ -1,6 +1,6 @@
 'use strict';
 
-let process = require('process'),
+const process = require('process'),
     basePath = process.cwd()+'/tests-client',
     themePath = process.cwd()+'/tests-client/themes/test',
     templatesPath = themePath+'/templates',
@@ -8,10 +8,31 @@ let process = require('process'),
     viewsPath = jsPath+'/views',
     commonPath = basePath+'/common';
 
-let bundleOptions = {
-    watchJS: true,
-    watchTemplates: true
-};
+try {
+    const lazypipe = require('lazypipe'),
+        uglify = require('gulp-uglify'),
+        jsonminify = require('gulp-jsonminify');
+
+    var bundleOptions = {
+        watchJS: true,
+        watchTemplates: true,
+        minifyJS: false,
+        transforms: {
+            js: (() => {
+                let jsFilter, jsonFilter;
+                lazypipe()
+                    .pipe(() => jsFilter = filter('**/*.js', {restore: true}))
+                    .pipe(uglify)
+                    .pipe(() => jsFilter.restore)
+                    .pipe(() => jsonFilter = filter('**/*.json', {restore: true}))
+                    .pipe(jsonminify)
+                    .pipe(() => jsonFilter.restore)
+            })()
+        }
+    };
+} catch(e) {
+    bundleOptions = {}
+}
 
 module.exports = {
     path: themePath,
@@ -25,7 +46,9 @@ module.exports = {
                 commonPath+'/mappers/**/*.js',
                 basePath+'/configuration/theme-test.js',
                 basePath+'/configuration/theme-second.js',
-                basePath+'/configuration/seo.js'
+                basePath+'/configuration/seo.js',
+                basePath+'/bower_components/lightgallery/bower.json',
+                basePath+'/bower_components/lightgallery/dist/js/lightgallery.min.js'
             ],
             options: Object.assign({}, bundleOptions)
         },

@@ -22,6 +22,7 @@ break anything with or without it. -->
 <script src="../../static/build/app-vendor.js" ></script>
 <script src="../../static/build/modules.js" ></script>
 <script src="../../static/build/app.js" data-cover></script>
+<script src="../../static/build/tests-common.js" data-cover></script>
 <!-- start runtime -->
 <script>
     start()
@@ -35,11 +36,13 @@ break anything with or without it. -->
 <script src="knex-mapper-tests.js"></script>
 <script src="fs-tests.js"></script>
 <script src="process-tests.js"></script>
+<script src="require-tests.js"></script>
 <script>
     window.addEventListener('load', function() {
         var testsRunner = mocha.run();
         testsRunner.on('end', function() {
-            window.testRunner = testsRunner
+            window.testRunner = testsRunner;
+            alert('done')
         })
     })
 </script>

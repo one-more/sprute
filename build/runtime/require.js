@@ -85,8 +85,11 @@ function loadAsDirectory(dir) {
         return getLocalModule(path, dir)
     }
     if(fileSystem.isFile(dir['bower.json'])) {
-        let pJ = JSON.parse(dir['bower.json'].contents);
-        let path = pJ.main;
+        let pJ = JSON.parse(dir['bower.json'].contents),
+            path = pJ.main;
+        if(path instanceof Array) {
+            path = path.find(el => el.includes('.js'))
+        }
         return getLocalModule(path, dir)
     }
     if(fileSystem.isFile(dir['index.js'])) {

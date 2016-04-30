@@ -38,12 +38,15 @@ describe('client unit tests', function() {
 
     describe('wait for tests to finish', function() {
         it('failed tests count should be 0', function(done) {
-            browser.wait(until.elementLocated(By.css('.failures em')), 30 * 1000)
-                .then(element => {
-                    element.getInnerHtml().then(html => {
-                        assert.equal(html, '0');
-                        done()
-                    })
+            const wait = 30 * 1000;
+            browser.wait(until.alertIsPresent(), wait)
+                .then(() => {
+                    browser.switchTo().alert().accept();
+                    return browser.findElement(By.css('.failures em')).getInnerHtml()
+                })
+                .then(html => {
+                    assert.equal(String(html), '0');
+                    done()
                 })
         })
     })
