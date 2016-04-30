@@ -34,11 +34,17 @@ class TestMapper extends KnexMapper {
         table.comment('table for running tests')
     }
 
+    beforeQuery(query) {
+        query.where({deleted: 0});
+        return Promise.resolve()
+    }
+
     addColumns(table) {
         table.increments('id').primary();
         table.string('field1');
         table.integer('field2');
-        table.string('field3')
+        table.string('field3');
+        table.boolean('deleted').defaultTo(0).notNullable()
     }
 
     get validator() {
@@ -48,7 +54,8 @@ class TestMapper extends KnexMapper {
                 id: 'integer',
                 field1: 'not_empty',
                 field2: 'integer',
-                field3: 'not_empty'
+                field3: 'not_empty',
+                deleted: 'trim'
             })
         }
         return this._validator
@@ -111,7 +118,7 @@ function checkCreateTable(adapter, mapperClass) {
     return new Promise(resolve => {
         adapter.schema.dropTableIfExists(tableName).then(() => {
             let mapper = new mapperClass;
-            mapper.on('table created', () => {
+            mapper.findOne().then(() => {
                 adapter.schema.hasTable(tableName).then(exists => {
                     assert(exists, `table ${tableName} does not exist`);
                     adapter.schema.hasColumn(tableName, 'id').then(res => {
@@ -139,17 +146,26 @@ function addData(adapter) {
         {
             field1: crypto.randomBytes(12).toString('hex'),
             field2: Math.round(Math.random() * (1 - 99) + 1),
-            field3: crypto.randomBytes(12).toString('hex')
+            field3: crypto.randomBytes(12).toString('hex'),
+            deleted: 0
         },
         {
             field1: crypto.randomBytes(12).toString('hex'),
             field2: Math.round(Math.random() * (1 - 99) + 1),
-            field3: crypto.randomBytes(12).toString('hex')
+            field3: crypto.randomBytes(12).toString('hex'),
+            deleted: 0
         },
         {
             field1: crypto.randomBytes(12).toString('hex'),
             field2: Math.round(Math.random() * (1 - 99) + 1),
-            field3: crypto.randomBytes(12).toString('hex')
+            field3: crypto.randomBytes(12).toString('hex'),
+            deleted: 0
+        },
+        {
+            field1: crypto.randomBytes(12).toString('hex'),
+            field2: Math.round(Math.random() * (1 - 99) + 1),
+            field3: crypto.randomBytes(12).toString('hex'),
+            deleted: 1
         }
     ];
     return adapter.insert(rows).into(tableName).then()
@@ -159,7 +175,10 @@ function checkSelect(mapperClass) {
     return new Promise(resolve => {
         let mapper = new mapperClass;
         mapper.find().where({id: 1}).then(data => {
-            assert(data.length == 1 && data[0] instanceof TestModel)
+            assert(data.length == 1 && data[0] instanceof TestModel);
+            data.forEach(model => {
+                assert(model.deleted == 0)
+            })
         });
         mapper.find().where({id: 0}).then(data => {
             assert(!data.length)
@@ -215,23 +234,26 @@ function checkInsert(mapper) {
 }
 
 function checkUpdate(mapper) {
-    return new Promise(resolve => {
-        mapper.findOne().where({id:1}).then(model => {
-            let newVal = crypto.randomBytes(12).toString('hex');
-            model.field1 = newVal;
-            mapper.save(model).then(affectedRows => {
-                mapper.findOne().where({id:1}).then(model => {
-                    assert(model.field1 == newVal);
+    var newVal;
+    return Promise.resolve().then(() => {
+        return mapper.findOne().where({id:1})
+    }).then(model => {
+        newVal = crypto.randomBytes(12).toString('hex');
+        model.field1 = newVal;
+        return mapper.save(model)
+    }).then(affectedRows => {
+        return mapper.findOne().where({id:1})
+    }).then(model => {
+        assert(model.field1 == newVal);
 
-                    model.field2 = newVal;
-                    try {
-                        mapper.save(model)
-                    } catch(e) {
-                        assert(e);
-                        resolve()
-                    }
-                })
-            });
-        })
+        model.field2 = newVal;
+        try {
+            mapper.save(model)
+        } catch(e) {
+            assert(e)
+        }
+    }).catch(err => {
+        console.log(mapper.validator.getErrors());
+        throw err
     })
 }

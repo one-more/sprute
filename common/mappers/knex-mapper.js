@@ -11,7 +11,20 @@ module.exports = class extends BaseMapper {
         this.schemaBuilder = this.knex.schema;
         this.emitter = new EventEmitter;
         
-        app.serverSide(this.checkTable.bind(this));
+        this.tableChecked = new Promise(resolve => {
+            app.serverSide(() => {
+                this.checkTable().then(resolve)
+            });
+            app.clientSide(resolve)
+        })
+    }
+
+    beforeQuery(query) {
+        return Promise.resolve()
+    }
+
+    afterQuery(result) {
+        return Promise.resolve(result)
     }
 
     get queryBuilder() {
@@ -19,7 +32,7 @@ module.exports = class extends BaseMapper {
     }
     
     checkTable() {
-        this.schemaBuilder.hasTable(this.tableName).then(exists => {
+        return this.schemaBuilder.hasTable(this.tableName).then(exists => {
             if(!exists) {
                 return this.schemaBuilder.createTableIfNotExists(this.tableName, t => {
                     this.beforeCreateTable(t);
@@ -38,6 +51,7 @@ module.exports = class extends BaseMapper {
     on() {
         return this.emitter.on.apply(this.emitter, arguments)
     }
+
     once() {
         return this.emitter.once.apply(this.emitter, arguments)
     }
@@ -379,28 +393,42 @@ class QueryBuilder {
     }
 
     then(callback) {
-        return new Promise((resolve, reject) => {
-            app.serverSide(() => {
-                this.queryBuilder.then(data => {
-                    resolve(callback(this.parser(data)))
-                })
-            });
+        return this.mapper.tableChecked.then(() => {
+            return this.mapper.beforeQuery(this)
+        }).then(() => {
+            return new Promise((resolve, reject) => {
+                app.serverSide(() => {
+                    this.serverQuery(callback, resolve)
+                });
 
-            app.clientSide(() => {
-                let $ = require('jquery');
-                let options = {
-                    mapper: this.mapper.fileName,
-                    queryObject: this.toQueryObject()
-                };
-                $.post('/rest/query', options, null, 'json')
-                    .error((xhr, status, err) => {
-                        reject(xhr)
-                    })
-                    .then(data => {
-                        resolve(callback(this.parser(data)))
-                    })
+                app.clientSide(() => {
+                    this.clientQuery(callback, resolve, reject)
+                })
             })
-        }).then(data => data)
+        }).then(data => {
+            return this.mapper.afterQuery(data)
+        })
+    }
+
+    serverQuery(callback, done) {
+        this.queryBuilder.then(data => {
+            done(callback(this.parser(data)))
+        })
+    }
+
+    clientQuery(callback, done, reject) {
+        let $ = require('jquery');
+        let options = {
+            mapper: this.mapper.fileName,
+            queryObject: this.toQueryObject()
+        };
+        $.post('/rest/query', options, null, 'json')
+            .error((xhr, status, err) => {
+                reject(xhr)
+            })
+            .then(data => {
+                done(callback(this.parser(data)))
+            })
     }
 
     toQueryObject() {
