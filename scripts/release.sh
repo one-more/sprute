@@ -52,7 +52,7 @@ git co origin/master README.md
 git tag -d "v$version"
 
 git ci -m "release $version"
-git tag -a "v$version" -m $releaseMsg
+git tag -a "v$version" -m "$releaseMsg"
 
 git push --tags
 
