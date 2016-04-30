@@ -2,6 +2,7 @@
 
 OPTIND=1
 version='0.0.0'
+releaseMsg=`git log -1 --pretty=%B`
 
 while getopts ":v:" opt; do
     case "$opt" in
@@ -51,7 +52,7 @@ git co origin/master README.md
 git tag -d "v$version"
 
 git ci -m "release $version"
-git tag -a "v$version" -m "version $version"
+git tag -a "v$version" -m $releaseMsg
 
 git push --tags
 
