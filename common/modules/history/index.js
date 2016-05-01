@@ -27,8 +27,7 @@
 
 'use strict';
 
-let EventEmitter = require('events'),
-    _ = require('underscore'),
+const _ = require('underscore'),
     routeStripper = /^[#\/]|\s+$/g,
     rootStripper = /^\/+|\/+$/g,
     pathStripper = /#.*$/;
@@ -322,6 +321,30 @@ module.exports = {
     },
 
     init() {
-        return Object.setPrototypeOf(this, new EventEmitter)
+        this.setRoutes();
+        this.start({pushState: true, silent: true});
+        return this
+    },
+
+    setRoutes() {
+        const routes = require('../configuration/routes'),
+            fs = require('fs');
+        _.pairs(routes).forEach(pair => {
+            let paths = [this.get('commonPath'), this.get('classPath')],
+                path, routerPath;
+            while(path = paths.shift()) {
+                routerPath = `${path}/routers/${pair[0]}`;
+                try {
+                    fs.accessSync(routerPath);
+                } catch(e) {
+                    continue
+                }
+                const router = require(routerPath),
+                    routerObj = new router({
+                        routes: pair[1]
+                    });
+                break
+            }
+        })
     }
 };
