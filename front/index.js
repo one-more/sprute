@@ -1,4 +1,4 @@
 'use strict';
 
-window.app = require('./app');
+window.app = require('../common/classes/app');
 app.start();

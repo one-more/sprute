@@ -28,8 +28,8 @@
 'use strict';
 
 let _ = require('underscore'),
-    history = app.get('history'),
-    EventEmitter = require('events');
+    EventEmitter = require('events'),
+    commonEvents = require('../../common/events/common');
 
 module.exports = class extends EventEmitter {
     constructor(options) {
@@ -48,13 +48,15 @@ module.exports = class extends EventEmitter {
         if(!callback) {
             callback = this[name];
         }
-        history.route(route, fragment => {
-            let args = this._extractParameters(route, fragment);
-            if(this.execute(callback, args, name) !== false) {
-                this.emit.apply(this, ['route:' + name].concat(args));
-                this.emit('route', name, args);
-                history.emit('route', this, name, args);
-            }
+        app.resolve('history').then(history => {
+            history.route(route, fragment => {
+                let args = this._extractParameters(route, fragment);
+                if(this.execute(callback, args, name) !== false) {
+                    this.emit.apply(this, ['route:' + name].concat(args));
+                    this.emit('route', name, args);
+                    commonEvents.emit('route', this, name, args);
+                }
+            });
         });
         return this
     }
@@ -68,7 +70,9 @@ module.exports = class extends EventEmitter {
     }
 
     navigate(fragment, options) {
-        history.navigate(fragment, options);
+        app.resolve('history').then(history => {
+            history.navigate(fragment, options)
+        });
         return this
     }
 
@@ -119,6 +123,6 @@ module.exports = class extends EventEmitter {
     }
 
     loadPage() {
-        this.emit('PageLoaded')
+        commonEvents.emit('PageLoaded')
     }
 };

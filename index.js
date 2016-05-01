@@ -1,4 +1,4 @@
 'use strict';
 
-global.app = require('./app');
+global.app = require('./common/classes/app');
 app.start();

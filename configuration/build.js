@@ -65,7 +65,8 @@ module.exports = {
                 'configuration/components.js',
                 'configuration/static.js',
                 'configuration/theme-light.js',
-                'configuration/i18n.js'
+                'configuration/i18n.js',
+                'configuration/app.js'
             ],
             options: bundleOptions
         }

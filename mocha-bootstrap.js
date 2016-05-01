@@ -1,5 +1,11 @@
 'use strict';
 
-global.app = require('./app');
+global.app = require('./common/classes/app');
 app.setVars();
-app.loadComponents();
+const components = require(process.cwd()+'/configuration/components'),
+    _ = require('underscore'),
+    filteredComponents = ['server', 'history'];
+_.pairs(components).filter(pair => filteredComponents.indexOf(pair[0]) == -1)
+    .forEach(pair => {
+        app.set(pair[0], pair[1].init())
+    });

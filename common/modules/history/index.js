@@ -322,18 +322,22 @@ module.exports = {
 
     init() {
         this.setRoutes();
-        this.start({pushState: true, silent: true});
+        app.clientSide(() => {
+            this.registerEvents();
+            this.start({pushState: true, silent: true})
+        });
         return this
     },
 
     setRoutes() {
-        const routes = require('../configuration/routes'),
+        const process = require('process'),
+            routes = require(process.cwd()+'/configuration/routes'),
             fs = require('fs');
         _.pairs(routes).forEach(pair => {
-            let paths = [this.get('commonPath'), this.get('classPath')],
+            let paths = [app.get('commonPath'), app.get('classPath')],
                 path, routerPath;
             while(path = paths.shift()) {
-                routerPath = `${path}/routers/${pair[0]}`;
+                routerPath = `${path}/routers/${pair[0]}.js`;
                 try {
                     fs.accessSync(routerPath);
                 } catch(e) {
@@ -344,6 +348,21 @@ module.exports = {
                         routes: pair[1]
                     });
                 break
+            }
+        })
+    },
+
+    registerEvents() {
+        const $ = require('jquery');
+        $(document).on('click', 'a[href]:not(.link_external)', e => {
+            let link = e.target;
+            let href = link.getAttribute('href');
+            let navigate = href.indexOf('http') == -1
+                && href.indexOf('www') == -1
+                && href.indexOf('javascript') == -1;
+            if(navigate) {
+                e.preventDefault();
+                this.navigate(href, {trigger: true})
             }
         })
     }

@@ -11,7 +11,7 @@ module.exports = class {
     _bindRoutes() {
         if(this.routes) {
             _.pairs(this.routes).forEach(pair => {
-                app.all(pair[0], this[pair[1]].bind(this))
+                app.get('server').all(pair[0], this[pair[1]].bind(this))
             })
         }
     }
