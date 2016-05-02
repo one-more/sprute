@@ -1,13 +1,17 @@
 'use strict';
 
-let BaseMapper = require('./base'),
-    EventEmitter = require('events');
+const BaseMapper = require('./base'),
+    EventEmitter = require('events'),
+    _ = require('underscore');
+
+let connections = {};
 
 module.exports = class extends BaseMapper {
     constructor(knexConfig) {
         super();
 
-        this.knex = require('knex')(knexConfig);
+        this.config = knexConfig;
+        this.knex = this.connection;
         this.schemaBuilder = this.knex.schema;
         this.emitter = new EventEmitter;
         
@@ -17,6 +21,21 @@ module.exports = class extends BaseMapper {
             });
             app.clientSide(resolve)
         })
+    }
+
+    get connection() {
+        return connections[this.configToString(this.config)] ||
+            (connections[this.configToString(this.config)] = require('knex')(this.config))
+    }
+
+    configToString(config) {
+        return _.pairs(config).reduce((str, pair) => {
+            if(_.isObject(pair[1])) {
+                return str+pair[0]+this.configToString(pair[1])
+            } else {
+                return str+pair[0]+pair[1]
+            }
+        }, '')
     }
 
     beforeQuery(query) {
@@ -77,12 +96,13 @@ module.exports = class extends BaseMapper {
     }
 
     insert(data) {
-        return this.queryBuilder.insert(data).then(data => data).catch(err => err)
+        return this.queryBuilder.insert(data, this.PK)
+            .then(data => data[0]).catch(err => err)
     }
 
     update(data) {
-        return this.queryBuilder.update(data).where({id: data.id})
-            .then(data => data).catch(err => err)
+        return this.queryBuilder.update(data, this.PK).where({id: data.id})
+            .then(data => data[0] || data).catch(err => err)
     }
 };
 

@@ -44,11 +44,14 @@ module.exports = class {
         return new (this.collection.bind.apply(this.collection, [null].concat(data)))
     }
 
+    get PK() {
+        return ((new this.model).primaryKey || _.noop)() || 'id'
+    }
+
     save(model) {
         let data;
         if(data = this.validateModel(model)) {
-            const primaryKey = ((new this.model).primaryKey || _.noop)() || 'id';
-            if(model instanceof this.model || model[primaryKey]) {
+            if(model instanceof this.model || model[this.PK]) {
                 return this.update(data)
             } else {
                 return this.insert(data)

@@ -214,12 +214,12 @@ function checkInsert(mapper) {
             field3: Math.round(Math.random() * (1 - 99) + 1)
         };
 
-        mapper.queryBuilder.count().then(count => {
-            let countBefore = _.values(count[0])[0];
+        mapper.queryBuilder.count('id as id').then(count => {
+            const countBefore = +count[0]['id'];
             mapper.save(validData).then(insertId => {
-                mapper.queryBuilder.count().then(count => {
-                    let countAfter = _.values(count[0])[0];
-                    assert(+countAfter == (+countBefore+1));
+                assert(+insertId > countBefore);
+                mapper.queryBuilder.count('id as id').then(count => {
+                    assert(+count[0]['id'] == countBefore+1);
 
                     try {
                         mapper.save(invalidData);
@@ -242,6 +242,7 @@ function checkUpdate(mapper) {
         model.field1 = newVal;
         return mapper.save(model)
     }).then(affectedRows => {
+        assert.equal(affectedRows, 1);
         return mapper.findOne().where({id:1})
     }).then(model => {
         assert(model.field1 == newVal);
@@ -253,6 +254,7 @@ function checkUpdate(mapper) {
             assert(e)
         }
     }).catch(err => {
+        console.log(err);
         console.log(mapper.validator.getErrors());
         throw err
     })
