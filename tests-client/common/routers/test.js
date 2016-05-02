@@ -10,6 +10,17 @@ let BaseRouter = require(app.get('classPath')+'/routers/base'),
     seo = require('../../configuration/seo');
 
 module.exports = class extends BaseRouter {
+    page(req, res) {
+        switch(+req.params.number) {
+            case 1:
+                this.first(req, res);
+                break;
+            case 2:
+                this.second(req, res);
+                break;
+        }
+    }
+
     first(req, res) {
         let domDocument = new DomDocumentClass(themeTest);
         domDocument.loadTheme().then(() => {

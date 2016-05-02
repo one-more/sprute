@@ -50,7 +50,7 @@ module.exports = class extends EventEmitter {
         }
         app.resolve('history').then(history => {
             history.route(route, fragment => {
-                let args = this._extractParameters(route, fragment);
+                const args = this._extractParameters(route, fragment);
                 if(this.execute(callback, args, name) !== false) {
                     this.emit.apply(this, ['route:' + name].concat(args));
                     this.emit('route', name, args);
@@ -100,7 +100,7 @@ module.exports = class extends EventEmitter {
     }
 
     _routeToRegExp(route) {
-        let optionalParam = /\((.*?)\)/g,
+        const optionalParam = /\((.*?)\)/g,
             namedParam    = /(\(\?)?:\w+/g,
             splatParam    = /\*\w+/g,
             escapeRegExp  = /[\-{}\[\]+?.,\\\^$|#\s]/g;
@@ -113,13 +113,24 @@ module.exports = class extends EventEmitter {
         return new RegExp('^' + route + '(?:\\?([\\s\\S]*))?$')
     }
 
-    _extractParameters(route, fragment) {
-        let params = route.exec(fragment).slice(1);
-        return _.map(params, (param, i) => {
+    _extractParameters(routeRegexp, fragment) {
+        const params = routeRegexp.exec(fragment).slice(1),
+            route = _.pairs(this.routes)
+                .find(pair => this._routeToRegExp(pair[0]).test(fragment))[0];
+        let i = 0;
+        const paramsNames = routeRegexp.exec(route).slice(1);
+        return [_.map(params, (param, i) => {
             // Don't decode the search params.
             if (i === params.length - 1) return param || null;
             return param ? decodeURIComponent(param) : null
-        });
+        }).filter(param => !!param).reduce((req, param, index) => {
+            let paramName = paramsNames[index].slice(1);
+            if(!/\w+/.test(paramName)) {
+                paramName = i++
+            }
+            req.params[paramName] = param;
+            return req
+        }, {params: {}})];
     }
 
     loadPage() {

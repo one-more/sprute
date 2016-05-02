@@ -27,8 +27,7 @@ commonEvents.on('init server', () => {
         next()
     });
     const routes = {
-            '/page1': 'first',
-            '/page2': 'second',
+            '/page:number': 'page',
             '/data/add': 'addData',
             '/images/upload': 'uploadImages'
         }, routerClass = require(commonPath+'/routers/test'),
