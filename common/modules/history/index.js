@@ -355,7 +355,7 @@ module.exports = {
     registerEvents() {
         const $ = require('jquery');
         $(document).on('click', 'a[href]:not(.link_external)', e => {
-            let link = e.target;
+            let link = e.currentTarget;
             let href = link.getAttribute('href');
             let navigate = href.indexOf('http') == -1
                 && href.indexOf('www') == -1

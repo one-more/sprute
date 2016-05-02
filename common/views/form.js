@@ -5,28 +5,63 @@ let BaseView = require('./base'),
     AjaxResponse = require('../classes/ajax-response');
 
 module.exports = class extends BaseView {
+    constructor() {
+        super();
+        this.disable();
+        this.waitForDependencies().then(this.enable.bind(this))
+    }
+
+    disable() {
+        this.$('button, [type=submit]').attr('disabled', 'true')
+    }
+
+    enable() {
+        this.$('button, [type=submit]').removeAttr('disabled')
+    }
+
+    showProgress() {
+
+    }
+
+    hideProgress() {
+
+    }
+
     get events() {
         return {
             'submit': 'submit'
         }
     }
 
+    waitForDependencies() {
+        return new Promise(resolve => {
+            const commonEvents = require('../events/common');
+            if(app.get('validationEngine')) {
+                resolve()
+            } else {
+                commonEvents.on('init validationEngine', resolve)
+            }
+        })
+    }
+
     submit(event) {
         event.preventDefault();
 
-        let form = event.target,
-            data = this.validate(this.serializeData(form));
-        if(data) {
-            this.send(form.action, this.processData(data, form)).then(result => {
-                if(this.isRequestSuccess(result)) {
-                    this.onSuccess(result)
-                } else {
-                    this.onError(result)
-                }
-            })
-        } else {
-            this.onValidationError()
-        }
+        this.waitForDependencies().then(() => {
+            const form = event.target,
+                data = this.validate(this.serializeData(form));
+            if(data) {
+                this.send(form.action, this.processData(data, form)).then(result => {
+                    if(this.isRequestSuccess(result)) {
+                        this.onSuccess(result)
+                    } else {
+                        this.onError(result)
+                    }
+                })
+            } else {
+                this.onValidationError()
+            }
+        })
     }
 
     processData(data) {
@@ -46,7 +81,20 @@ module.exports = class extends BaseView {
     }
 
     send(url, data) {
-        return $.post(url, data, null, 'json')
+        const showProgress = this.showProgress.bind(this);
+        return $.ajax({
+            url,
+            xhr() {
+                const xhr = new XMLHttpRequest();
+                showProgress(xhr);
+                return xhr
+            },
+            data,
+            dataType: 'json'
+        }).then(result => {
+            this.hideProgress();
+            return result
+        })
     }
 
     toJSON() {
