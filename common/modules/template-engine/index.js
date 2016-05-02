@@ -48,7 +48,7 @@ module.exports = {
                 let BaseView = require(app.get('commonPath')+'/views/base'),
                     view = new BaseView;
                 view.templateDirs = data.templateDirs;
-                return view.getTemplate(params.file, data);
+                return view.getTemplate(params.file, Object.assign(data, params));
             }
         );
 

@@ -47,7 +47,8 @@ module.exports = class {
     save(model) {
         let data;
         if(data = this.validateModel(model)) {
-            if(model instanceof this.model) {
+            const primaryKey = ((new this.model).primaryKey || _.noop)() || 'id';
+            if(model instanceof this.model || model[primaryKey]) {
                 return this.update(data)
             } else {
                 return this.insert(data)

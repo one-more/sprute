@@ -10,7 +10,8 @@ module.exports = class extends BaseRouter {
         while(path = paths.shift()) {
             try {
                 let mapperClass = new (require(`${path}/mappers/${mapper}`));
-                return mapperClass.fromQueryObject(req.body.queryObject).then(data => res.send(data))
+                return mapperClass.fromQueryObject(req.body.queryObject)
+                    .then(data => res.send(JSON.stringify(data)))
             } catch(e) {
                 //console.error(e)
             }

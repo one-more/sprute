@@ -3,10 +3,10 @@
 3. bower.json or package.json main field may be an array +
 4. check window loaded before send form +
 5. replace target to currentTarget in app +
-6. knex-mapper - check id along with instanceof when save
-7. add JSON.stringify to the query method of the rest router
-8. assign params when include in jsmart
-9. fix regexp in validateQuery
+6. knex-mapper - check id along with instanceof when save +
+7. add JSON.stringify to the query method of the rest router +
+8. assign params when include in jsmart +
+9. fix regexp in validateQuery +
 10. modify save method to return insert id and affected rows count despite on the db type
 11. cache connections in mapper
 12. throw params object to the router method on the clientside

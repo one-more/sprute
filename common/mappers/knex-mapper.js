@@ -473,7 +473,7 @@ class QueryBuilder {
         if(this.mapper.validateQuery) {
             return this.mapper.validateQuery(queryStr)
         } else {
-            return !/join|union|insert|update|delete/.test(queryStr)
+            return !/\bjoin\b|\bunion\b|\binsert\b|\bupdate\b|\bdelete\b/gi.test(queryStr)
                 && new RegExp(`from\\s+\\S*${this.mapper.tableName}\\S*`).test(queryStr)
         }
     }
