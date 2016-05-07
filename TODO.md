@@ -26,9 +26,9 @@
 25. accept object in parseAsModel +
 26. history:route & router:route mobile bug +
 27. polyfills +
------------------------------------------------
-28. dependency injection
+28. eslint
 29. back to babel
-30. eslint
+-----------------------------------------------
+30. dependency injection
 31. remove try/catch from theme config
 32. move query to socket connection
