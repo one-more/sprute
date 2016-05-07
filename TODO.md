@@ -18,7 +18,8 @@
 16. reinit some components mechanism when page loaded through history.navigate -
 17. add middleware mechanism +
 18. pre & post query processing in mappers +
-19. accept array in setTitle
+19. accept array in setMeta +
+-----------------------------------------------
 20. cache system
 21. move query to socket connection
 22. standartize onError handler on request

@@ -38,6 +38,9 @@ module.exports = class {
     }
 
     setMeta(meta) {
+        if(meta instanceof Array) {
+            meta = meta.reduce((str, obj) => `${str}\n${obj.toString()}`, '')
+        }
         this.setBlock('meta', meta)
     }
 

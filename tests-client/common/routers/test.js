@@ -32,7 +32,7 @@ module.exports = class extends BaseRouter {
                 domDocument.setMeta([
                     new meta.Description(seo.page1.description),
                     new meta.Keywords(seo.page1.keywords)
-                ].reduce((meta, obj) => `${meta}\n${obj.toString()}`, ''));
+                ]);
                 this.loadPage(domDocument, res);
             })
         })
@@ -49,7 +49,7 @@ module.exports = class extends BaseRouter {
                 domDocument.setMeta([
                     new meta.Description(seo.page2.description),
                     new meta.Keywords(seo.page2.keywords)
-                ].reduce((meta, obj) => `${meta}\n${obj.toString()}`, ''));
+                ]);
                 this.loadPage(domDocument, res);
             })
         })
