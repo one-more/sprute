@@ -4,11 +4,18 @@ const BaseRouter = require(app.get('classPath')+'/routers/base');
 
 class TestRouter extends BaseRouter {
     search(req) {
-        expect(req.params.query).to.not.be.undefined
+        expect(+req.cookies.testCookie1).to.be.equal(1);
+        expect(+req.cookies.testCookie2).to.be.equal(2);
+
+        expect(req.params.query).to.be.oneOf([
+            'news', 'тест'
+        ])
     }
 
     searchWithPage(req) {
-        expect(req.params.query).to.not.be.undefined;
+        expect(req.params.query).to.be.oneOf([
+            'nyc', 'manhattan'
+        ]);
         expect(req.params.page).to.be.above(5)
     }
 
@@ -21,7 +28,35 @@ class TestRouter extends BaseRouter {
     }
 
     namedOptional(req) {
-        console.log(arguments)
+        expect(req.params.z).to.be.equal('123')
+    }
+
+    splat(req) {
+        expect(req.params[0]).to.be.equal('long-list/of/splatted_99args')
+    }
+    github(req) {
+        expect(req.params.repo).to.be.equal('backbone');
+        expect(req.params[0]).to.be.equal('1.0');
+        expect(req.params[1]).to.be.equal('braddunbar:with/slash')
+    }
+
+    decode(req) {
+        expect(req.params.named).to.be.equal('a/b');
+        expect(req.params[0]).to.be.equal('c/d/e')
+    }
+
+    complex(req) {
+        expect(req.params[0]).to.be.equal('one/two/three');
+        expect(req.params[1]).to.be.equal('part');
+        expect(req.params[2]).to.be.equal('four/five/six/seven')
+    }
+
+    query(req) {
+        expect(req.params.entity).to.be.oneOf(['test', 'mandel'])
+    }
+
+    anything(req) {
+        expect(req.params[0]).to.not.be.undefined
     }
 }
 
@@ -38,7 +73,7 @@ const routes = {
     '*first/complex-*part/*rest': 'complex',
     'query/:entity': 'query',
     'function/:value': req => {
-        expect(req.params.value).to.not.be.undefined
+        expect(req.params.value).to.be.equal('set')
     },
     '*anything': 'anything'
 };
@@ -57,10 +92,10 @@ const urls = [
     '/optional/thing',
     '/one/two/three/complex-part/four/five/six/seven',
     '/query/mandel?a=b&c=d',
+    '/query/test?a=b',
     '/doesnt-match-a-route',
     '/function/set',
-    '/decode/a%2Fb/c%2Fd/e',
-    '/query/test?a=b'
+    '/decode/a%2Fb/c%2Fd/e'
 ];
 
 describe('router', function() {
@@ -68,6 +103,10 @@ describe('router', function() {
         new TestRouter({
             routes
         });
+        deleteCookie('testCookie1');
+        deleteCookie('testCookie2');
+        setCookie('testCookie1', 1, {path:'/'});
+        setCookie('testCookie2', 2, {path:'/'});
         setTimeout(() => {
             urls.forEach(url => {
                 app.get('history').navigate(url, {trigger: true})

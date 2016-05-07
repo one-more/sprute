@@ -11,7 +11,7 @@
 10. modify save method to return insert id and affected rows count despite 
     on the db type +
 11. cache connections in mapper +
-12. throw params object to the router method on the clientside
+12. throw params object to the router method on the clientside +
 13. main in bower.json or package.json may starts with /
 14. add model relations
 15. bug - cannot insertBefore of null - domdocument

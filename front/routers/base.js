@@ -117,20 +117,40 @@ module.exports = class extends EventEmitter {
         const params = routeRegexp.exec(fragment).slice(1),
             route = _.pairs(this.routes)
                 .find(pair => this._routeToRegExp(pair[0]).test(fragment))[0];
-        let i = 0;
-        const paramsNames = routeRegexp.exec(route).slice(1);
+        let i = 0,
+            req = {
+                params: {},
+                baseUrl: location.pathname,
+                cookies: this.cookiesObj(),
+                hostname: location.hostname,
+                originalUrl: location.href.replace(location.origin, ''),
+                path: location.pathname,
+                protocol: location.protocol,
+                query: location.search
+            };
+        const paramsNames = routeRegexp.exec(route.replace(/\(|\)/g, '')).slice(1);
         return [_.map(params, (param, i) => {
             // Don't decode the search params.
             if (i === params.length - 1) return param || null;
             return param ? decodeURIComponent(param) : null
         }).filter(param => !!param).reduce((req, param, index) => {
-            let paramName = paramsNames[index].slice(1);
-            if(!/\w+/.test(paramName)) {
+            let paramName = (paramsNames[index] || '').slice(1);
+            if(!((paramsNames[index] || '').slice(0,1) == ':')) {
                 paramName = i++
             }
             req.params[paramName] = param;
             return req
-        }, {params: {}})];
+        }, req)];
+    }
+
+    cookiesObj() {
+        let str = document.cookie.split('; '),
+            result = {};
+        for (var i = 0; i < str.length; i++) {
+            var cur = str[i].split('=');
+            result[cur[0]] = cur[1];
+        }
+        return result
     }
 
     loadPage() {
