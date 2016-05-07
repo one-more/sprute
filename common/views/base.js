@@ -154,27 +154,21 @@ module.exports = class {
     getTemplate(name, data) {
         for(let i in this.templateDirs) {
             if(this.templateDirs.hasOwnProperty(i)) {
-                let dir = this.templateDirs[i];
-                let file = `${dir}/${name}`;
-                try {
-                    fs.accessSync(file);
+                const dir = this.templateDirs[i],
+                    files = fs.readdirSync(dir),
+                    file = `${dir}/${name}`;
+                if(files.find(el => el == name)) {
                     let tpl = fs.readFileSync(file, 'utf8');
-                    if(tpl) {
-                        return this.compile(tpl, data)
-                    }
-                } catch(e) {}
+                    return this.compile(tpl, data)
+                }
             }
         }
         throw new Error(`cannot find template ${name}`)
     }
 
     compile(tpl, data) {
-        try {
-            let templateEngine = app.get('templateEngine'),
-                compiled = new templateEngine(tpl);
-            return compiled.fetch(Object.assign(data || {}, {templateDirs: this.templateDirs}))
-        } catch(e) {
-            console.error(e)
-        }
+        let templateEngine = app.get('templateEngine'),
+            compiled = new templateEngine(tpl);
+        return compiled.fetch(Object.assign(data || {}, {templateDirs: this.templateDirs}))
     }
 };

@@ -1,9 +1,15 @@
 'use strict';
 
-let smartPlurals = require('smart-plurals'),
+const smartPlurals = require('smart-plurals'),
     _ = require('underscore');
 
 require('jsmart');
+
+if(typeof window != 'undefined') {
+    var jSmart = window.jSmart
+} else {
+    jSmart = global.jSmart
+}
 
 module.exports = {
     init() {

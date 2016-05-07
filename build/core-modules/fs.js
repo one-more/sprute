@@ -53,7 +53,9 @@ exports.existsSync = path => {
         try {
             func(path);
             return true
-        } catch(e) {}
+        } catch(e) {
+            return false
+        }
     }, false)
 };
 

@@ -169,9 +169,9 @@ module.exports = {
 
     urlStateListeners() {
         // Add a cross-platform `addEventListener` shim for older browsers.
-        let addEventListener = window.addEventListener ||
+        const addEventListener = window.addEventListener ||
             ((eventName, listener) => {
-                return attachEvent('on' + eventName, listener);
+                return window.attachEvent('on' + eventName, listener);
             });
 
         // Depending on whether we're using pushState or hashes, and whether
@@ -203,9 +203,9 @@ module.exports = {
 
     removeListeners() {
         // Add a cross-platform `removeEventListener` shim for older browsers.
-        let removeEventListener = window.removeEventListener ||
+        const removeEventListener = window.removeEventListener ||
             ((eventName, listener) => {
-                return detachEvent('on' + eventName, listener);
+                return window.detachEvent('on' + eventName, listener);
             });
 
         // Remove window listeners.
@@ -217,7 +217,7 @@ module.exports = {
     },
 
     route(routeRegexp, callback) {
-      this.handlers.unshift({route: routeRegexp, callback: callback});
+        this.handlers.unshift({route: routeRegexp, callback: callback});
     },
 
     _checkUrl() {
@@ -284,7 +284,7 @@ module.exports = {
 
             // If hash changes haven't been explicitly disabled, update the hash
             // fragment to store history.
-        } else if (this._wantsHashChange) {
+        } else if(this._wantsHashChange) {
             this._updateHash(this.location, fragment, options.replace);
             if(this.iframe && fragment !== this.getHash(this.iframe.contentWindow)) {
                 let iWindow = this.iframe.contentWindow;
@@ -331,7 +331,7 @@ module.exports = {
 
     setRoutes() {
         const process = require('process'),
-            routes = require(process.cwd()+'/configuration/routes'),
+            routes = require(process.cwd() + '/configuration/routes'),
             fs = require('fs');
         _.pairs(routes).forEach(pair => {
             let paths = [app.get('commonPath'), app.get('classPath')],
@@ -343,10 +343,10 @@ module.exports = {
                 } catch(e) {
                     continue
                 }
-                const router = require(routerPath),
-                    routerObj = new router({
-                        routes: pair[1]
-                    });
+                const router = require(routerPath);
+                new router({
+                    routes: pair[1]
+                });
                 break
             }
         })

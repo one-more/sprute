@@ -1,7 +1,6 @@
 'use strict';
 
 let through = require('through2'),
-    _ = require('underscore'),
     process = require('process');
 
 function makeModule(file) {

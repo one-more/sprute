@@ -105,7 +105,7 @@ window.loadFile = (file) => {
     fileSystem.addFile(file)
 };
 
-function readDir(__baseDir, path) {
+function readDir(__baseDir, path) { // eslint-disable-line no-unused-vars
     try {
         var dir = fileSystem.getDir(path, __baseDir);
     } catch(e) {
@@ -117,7 +117,7 @@ function readDir(__baseDir, path) {
     return dir
 }
 
-function readFile(__baseDir, path) {
+function readFile(__baseDir, path) { // eslint-disable-line no-unused-vars
     try {
         var file = fileSystem.getFile(path, __baseDir)
     } catch(e) {

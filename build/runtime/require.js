@@ -56,7 +56,7 @@ function addToCache(path, module) {
 function isPathRelative(path) {
     "use strict";
 
-    return path.startsWith('/')  || path.startsWith('./') || path.startsWith('../')
+    return path.startsWith('/') || path.startsWith('./') || path.startsWith('../')
 }
 
 function loadAsFile(dir, fileName) {
@@ -65,14 +65,14 @@ function loadAsFile(dir, fileName) {
     if(fileSystem.isFile(dir[fileName])) {
         return dir[fileName]
     }
-    if(fileSystem.isFile(dir[fileName+'.min.js'])) {
-        return dir[fileName+'.min.js']
+    if(fileSystem.isFile(dir[fileName + '.min.js'])) {
+        return dir[fileName + '.min.js']
     }
-    if(fileSystem.isFile(dir[fileName+'.js'])) {
-        return dir[fileName+'.js']
+    if(fileSystem.isFile(dir[fileName + '.js'])) {
+        return dir[fileName + '.js']
     }
-    if(fileSystem.isFile(dir[fileName+'.json'])) {
-        return dir[fileName+'.json']
+    if(fileSystem.isFile(dir[fileName + '.json'])) {
+        return dir[fileName + '.json']
     }
 }
 
@@ -134,6 +134,7 @@ function getGlobalModule(name) {
     "use strict";
 
     let result;
+
     function process(key, value) {
         let file;
         if(fileSystem.isDir(value) || fileSystem.isFile(value)) {
@@ -185,8 +186,15 @@ function runModule(currentModule, file) {
         children: []
     }, exports = module.exports;
     currentModule.children.push(module);
-    let env = new Function('module','exports','require','readFile','readDir', file.contents);
-    let _readFile = readFile.bind(null, currentModule.dirName), //for fs module
+    const env = new Function(
+        'module',
+        'exports',
+        'require',
+        'readFile',
+        'readDir',
+        file.contents
+    );
+    const _readFile = readFile.bind(null, currentModule.dirName), //for fs module
         _readDir = readDir.bind(null, currentModule.dirName),
         _require = require.bind(null, module, file.dirName);
     env(module, exports, _require, _readFile, _readDir);

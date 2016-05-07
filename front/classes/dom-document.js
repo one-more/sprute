@@ -3,8 +3,8 @@
 let $ = require('jquery'),
     process = require('process'),
     _ = require('underscore'),
-    bundleResult = require(process.cwd()+'/static/bundle-result'),
-    build = require(process.cwd()+'/configuration/static');
+    bundleResult = require(process.cwd() + '/static/bundle-result'),
+    build = require(process.cwd() + '/configuration/static');
 
 function checkScript(src) {
     return new Promise((resolve, reject) => {
@@ -37,22 +37,22 @@ function loadStyles(href) {
     return new Promise((resolve, reject) => {
         let link = document.createElement('link');
         link.setAttribute('href', href);
-        link.setAttribute( 'rel', 'stylesheet' );
-        link.setAttribute( 'type', 'text/css' );
+        link.setAttribute('rel', 'stylesheet');
+        link.setAttribute('type', 'text/css');
         let sheet, cssRules;
         if('sheet' in link) {
-            sheet = 'sheet'; cssRules = 'cssRules';
+            sheet = 'sheet';
+            cssRules = 'cssRules';
         } else {
-            sheet = 'styleSheet'; cssRules = 'rules';
+            sheet = 'styleSheet';
+            cssRules = 'rules';
         }
         var interval_id = setInterval(() => {
-                try {
-                    if (link[sheet] && link[sheet][cssRules].length) {
-                        clearInterval(interval_id);
-                        clearTimeout(timeout_id);
-                        resolve();
-                    }
-                } catch(e) {} finally {}
+                if(link[sheet] && (link[sheet][cssRules] || []).length) {
+                    clearInterval(interval_id);
+                    clearTimeout(timeout_id);
+                    resolve()
+                }
             }, 10),
             timeout_id = setTimeout(() => {
                 clearInterval(interval_id);

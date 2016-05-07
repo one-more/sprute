@@ -33,6 +33,7 @@ let _ = require('underscore'),
 
 module.exports = class extends EventEmitter {
     constructor(options) {
+        super();
         Object.assign(this, options);
         this._bindRoutes()
     }

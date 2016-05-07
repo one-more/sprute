@@ -1,7 +1,6 @@
 'use strict';
 
-let process = require('process'),
-    to5 = require('gulp-6to5'),
+let to5 = require('gulp-6to5'),
     lazypipe = require('lazypipe'),
     uglify = require('gulp-uglify'),
     filter = require('gulp-filter'),
