@@ -176,8 +176,7 @@ function runModule(currentModule, file) {
         dirName: undefined
     }, currentModule);
 
-    let exports = module.exports,
-        module = {
+    let module = {
             exports: {},
             filename: file.pathName,
             dirName: file.dirName,
@@ -185,7 +184,8 @@ function runModule(currentModule, file) {
             loaded: true,
             parent: currentModule,
             children: []
-        };
+        },
+        exports = module.exports;
     currentModule.children.push(module);
     const env = new Function(
         'module',
