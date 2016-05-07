@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "lightgallery": "^1.2.18"
+    "lightgallery": "^1.2.18",
+    "socket.io-client": "^1.4.6"
   }
 }

@@ -113,7 +113,7 @@ function checkSVG(name, bundle) {
                     div.setAttribute('data-src', src);
                     div.innerHTML = ajax.responseText;
                     div.style.display = 'none';
-                    document.body.insertBefore(div, document.body.childNodes[0]);
+                    document.body.insertBefore(div, document.body.firstChild);
                     resolve()
                 }
             }

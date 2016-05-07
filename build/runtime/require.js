@@ -80,17 +80,12 @@ function loadAsDirectory(dir) {
     "use strict";
 
     if(fileSystem.isFile(dir['package.json'])) {
-        let pJ = JSON.parse(dir['package.json'].contents);
-        let path = pJ.main;
-        return getLocalModule(path, dir)
+        const pJ = JSON.parse(dir['package.json'].contents);
+        return loadFromPackageFile(pJ, dir)
     }
     if(fileSystem.isFile(dir['bower.json'])) {
-        let pJ = JSON.parse(dir['bower.json'].contents),
-            path = pJ.main;
-        if(path instanceof Array) {
-            path = path.find(el => el.includes('.js'))
-        }
-        return getLocalModule(path, dir)
+        const pJ = JSON.parse(dir['bower.json'].contents);
+        return loadFromPackageFile(pJ, dir)
     }
     if(fileSystem.isFile(dir['index.js'])) {
         return dir['index.js']
@@ -98,6 +93,18 @@ function loadAsDirectory(dir) {
     if(fileSystem.isFile(dir['index.json'])) {
         return dir['index.json']
     }
+}
+
+function loadFromPackageFile(packageFile, dir) {
+    "use strict";
+    let path = packageFile.main;
+    if(path instanceof Array) {
+        path = path.find(el => el.includes('.js'))
+    }
+    if(isPathRelative(path)) {
+        path = path.replace(/^(\.\.\/)|(\/)|(\.\/)/, '')
+    }
+    return getLocalModule(path, dir)
 }
 
 function getLocalModule(path, baseDir) {
@@ -111,12 +118,14 @@ function getLocalModule(path, baseDir) {
     } else {
         dir = fileSystem.getDir(dirName, baseDir)
     }
-    if(file = loadAsFile(dir, fileName)) {
-        return file
-    }
-    if(fileSystem.isDir(dir[fileName])) {
-        if(file = loadAsDirectory(dir[fileName])) {
+    if(dir) {
+        if(file = loadAsFile(dir, fileName)) {
             return file
+        }
+        if(fileSystem.isDir(dir[fileName])) {
+            if(file = loadAsDirectory(dir[fileName])) {
+                return file
+            }
         }
     }
 }

@@ -48,13 +48,14 @@ module.exports = {
                 basePath+'/configuration/theme-second.js',
                 basePath+'/configuration/seo.js',
                 basePath+'/bower_components/lightgallery/bower.json',
-                basePath+'/bower_components/lightgallery/dist/js/lightgallery.min.js'
+                basePath+'/bower_components/lightgallery/dist/js/lightgallery.min.js',
+                basePath+'/bower_components/socket.io-client/socket.io.js'
             ],
             options: Object.assign({}, bundleOptions)
         },
         'theme-test': {
             templates: [templatesPath+'/**/*.html'],
-            js: [jsPath+'/**/*.js'],
+            js: [jsPath+'/**/*.js', jsPath+'/**/*.json'],
             options: Object.assign({}, bundleOptions)
         }
     }
