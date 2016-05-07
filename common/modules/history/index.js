@@ -216,8 +216,8 @@ module.exports = {
         }
     },
 
-    route(route, callback) {
-      this.handlers.unshift({route: route, callback: callback});
+    route(routeRegexp, callback) {
+      this.handlers.unshift({route: routeRegexp, callback: callback});
     },
 
     _checkUrl() {

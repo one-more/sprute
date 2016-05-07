@@ -37,9 +37,9 @@ module.exports = class extends EventEmitter {
         this._bindRoutes()
     }
 
-    route(route, name, callback) {
-        if(!_.isRegExp(route)) {
-            route = this._routeToRegExp(route);
+    route(routeRegexp, name, callback) {
+        if(!_.isRegExp(routeRegexp)) {
+            routeRegexp = this._routeToRegExp(routeRegexp);
         }
         if(_.isFunction(name)) {
             callback = name;
@@ -49,8 +49,8 @@ module.exports = class extends EventEmitter {
             callback = this[name];
         }
         app.resolve('history').then(history => {
-            history.route(route, fragment => {
-                const args = this._extractParameters(route, fragment);
+            history.route(routeRegexp, fragment => {
+                const args = this._extractParameters(routeRegexp, fragment);
                 if(this.execute(callback, args, name) !== false) {
                     this.emit.apply(this, ['route:' + name].concat(args));
                     this.emit('route', name, args);

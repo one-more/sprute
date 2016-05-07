@@ -19,16 +19,16 @@
 17. add middleware mechanism +
 18. pre & post query processing in mappers +
 19. accept array in setMeta +
+20. cache system -
+22. standartize onError handler on request -
+23. requre files in module e.g (require('module/file')) +
+24. cache system -
+25. accept object in parseAsModel +
+26. history:route & router:route mobile bug +
+27. polyfills +
 -----------------------------------------------
-20. cache system
-21. move query to socket connection
-22. standartize onError handler on request
-23. requre files in module e.g (require('module/file'))
-24. cache system
-25. accept object in parseAsModel
-26. dependency injection
-27. polyfills
-28. history:route & router:route mobile bug
+28. dependency injection
 29. back to babel
 30. eslint
 31. remove try/catch from theme config
+32. move query to socket connection

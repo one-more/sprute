@@ -32,8 +32,10 @@ module.exports = class {
     }
 
     parseAsModel(data) {
-        if(data.length) {
+        if(data instanceof Array && data.length) {
             return this.populateModel(data[0])
+        } else if(typeof data == 'object' && Object.keys(data).length) {
+            return this.populateModel(data)
         } else {
             return null
         }
