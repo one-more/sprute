@@ -5,17 +5,17 @@ var fileSystem = {
         let path = file.pathName.slice(0, -file.name.length);
         let dir = path.split('/').filter(part => !!part).reduce((tree, dir) => {
             return tree[dir] || (tree[dir] = {
-                    parent: tree,
-                    name: dir,
-                    get pathName() {
-                        let parent, parts = [this.name], part = this;
-                        while(parent = part.parent) {
-                            parts.unshift(parent.name);
-                            part = parent
-                        }
-                        return parts.join('/')
+                parent: tree,
+                name: dir,
+                get pathName() {
+                    let parent, parts = [this.name], part = this;
+                    while(parent = part.parent) {
+                        parts.unshift(parent.name);
+                        part = parent
                     }
-                })
+                    return parts.join('/')
+                }
+            })
         }, this);
         dir[file.path.split('/').slice(-1)] = file;
     },

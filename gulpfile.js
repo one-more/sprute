@@ -1,6 +1,6 @@
 'use strict';
 
-let build = require('./configuration/build'),
+const build = require('./configuration/build'),
     _ = require('underscore'),
     bundle = require('./build/bundle'),
     themes = require('./configuration/themes'),
@@ -29,7 +29,7 @@ gulp.task('build-runtime', () => {
 });
 
 gulp.task('clean', () => {
-    return gulp.src(build.clean, { read: false })
+    return gulp.src(build.clean, {read: false})
         .pipe(ignore('.gitkeep'))
         .pipe(rimraf())
 });

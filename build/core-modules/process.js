@@ -7,13 +7,13 @@ exports.cwd = () => cwd;
 exports.chdir = path => {
     try {
         if(path.startsWith('./')) {
-            var dir = readDir(cwd+'/'+path.slice(1));
+            var dir = readDir(cwd + '/' + path.slice(1));
         } else if(path.startsWith('../')) {
             dir = readDir(`${cwd}/${path}`)
         } else if(path.startsWith('/')) {
             dir = readDir(path);
         } else {
-            dir = readDir('/'+path);
+            dir = readDir('/' + path);
         }
         cwd = (dir && dir.pathName, dir.pathName) || '/'
     } catch(e) {
@@ -30,7 +30,7 @@ exports.nextTick = cb => {
             i = 0,
             p = {};
         while(!p[nextTick] && i < prefixes.length) {
-             p[nextTick] = window[prefixes[i++] + 'equestAnimationFrame']
+            p[nextTick] = window[prefixes[i++] + 'equestAnimationFrame']
         }
         return (p[nextTick] || (p[nextTick] = window.setImmediate || window.setTimeout))(cb)
     }()
