@@ -7,9 +7,6 @@ const process = require('process'),
     _ = require('underscore'),
     commonPath = path.join(__dirname, 'common'),
     commonEvents = require('../common/events/common');
-//
-//let app = require('../app');
-//
 
 process.chdir('../');
 
@@ -38,6 +35,13 @@ commonEvents.on('init server', () => {
     });
 });
 
+commonEvents.on('init socketConnection', () => {
+    app.get('socketConnection').on('changeClassPath', () => {
+        console.log('changed classPath');
+        app.set('classPath', commonPath)
+    })
+});
+
 commonEvents.on('init i18n', () => {
     const dictionary = {
         'ru': {
@@ -60,43 +64,5 @@ commonEvents.on('init i18n', () => {
     });
     app.set('i18n', i18n);
 });
-//
-//let commonPath = path.join(__dirname, 'common');
-//
-//let registerRoutes = app.registerRoutes.bind(app),
-//    loadComponents = app.loadComponents.bind(app);
-//
-//Object.assign(app, {
-//    startServer() {
-//        let server = Object.getPrototypeOf(app);
-//        let listener = server.listen(8000, 'localhost', () => {
-//            console.log(`start listening ${listener.address().host}:${listener.address().port}`)
-//        });
-//        server.use(express.static(__dirname));
-//        server.use(express.static(__dirname+'/static'));
-//
-//        let setVars = app.setVars;
 
-//
-//        try {
-//            fs.accessSync(path.join(__dirname, 'static'), fs.F_OK)
-//        } catch (e) {
-//            fs.symlinkSync(process.cwd()+'/static', path.join(__dirname, 'static'))
-//        }
-//    },
-//
-//    registerRoutes() {
-
-//
-//        registerRoutes()
-//    },
-//
-//    loadComponents() {
-//        loadComponents();
-//
-//    }
-//});
-//
-//global.app = app;
 global.basePath = __dirname;
-//app.start();

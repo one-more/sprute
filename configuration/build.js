@@ -67,6 +67,7 @@ module.exports = {
                 'configuration/static.js',
                 'configuration/theme-light.js',
                 'configuration/i18n.js',
+                'configuration/socket-server.js',
                 'configuration/app.js'
             ],
             options: bundleOptions
@@ -81,7 +82,8 @@ module.exports = {
             'node_modules/livr/lib/**/*.js',
             'back/modules/knex/knex.js',
             vendorPath+'/bluebird/bower.json',
-            vendorPath+'/bluebird/js/browser/bluebird.js'
+            vendorPath+'/bluebird/js/browser/bluebird.js',
+            vendorPath+'/socket.io-client/socket.io.js'
         ],
         options: modulesOptions
     },

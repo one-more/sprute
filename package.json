@@ -52,6 +52,7 @@
     "nib": "^1.1.0",
     "opn": "*",
     "smart-plurals": "*",
+    "socket.io": "^1.4.6",
     "stream-combiner2": "^1.1.1",
     "through2": "^2.0.0",
     "try-thread-sleep": "^1.0.0",

@@ -4,6 +4,10 @@ let mysqlMapper = new MysqlMapper,
     pgMapper = new PGMapper,
     expect = require('chai').expect;
 
+app.resolve('socketConnection').then(socket => {
+    socket.emit('changeClassPath')
+});
+
 describe('MysqlMapper', function() {
     describe('#find', function() {
         it('should return model(s)', function(done) {
@@ -56,7 +60,7 @@ function checkSave(mapper, done) {
 
 
     mapper.save(data).catch(err => {
-        mapper.findOne({id:1}).then(model => {
+        mapper.findOne().where({id:1}).then(model => {
             model.field1 = 'dfg';
             mapper.save(data).catch(err => {
                 done()

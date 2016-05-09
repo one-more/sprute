@@ -14,7 +14,7 @@ module.exports = class extends BaseMapper {
         this.knex = this.connection;
         this.schemaBuilder = this.knex.schema;
         this.emitter = new EventEmitter;
-        
+
         this.tableChecked = new Promise(resolve => {
             app.serverSide(() => {
                 this.checkTable().then(resolve)
@@ -31,9 +31,9 @@ module.exports = class extends BaseMapper {
     configToString(config) {
         return _.pairs(config).reduce((str, pair) => {
             if(_.isObject(pair[1])) {
-                return str+pair[0]+this.configToString(pair[1])
+                return str + pair[0] + this.configToString(pair[1])
             } else {
-                return str+pair[0]+pair[1]
+                return str + pair[0] + pair[1]
             }
         }, '')
     }
@@ -49,7 +49,7 @@ module.exports = class extends BaseMapper {
     get queryBuilder() {
         return new QueryBuilder(this.knex, this)
     }
-    
+
     checkTable() {
         return this.schemaBuilder.hasTable(this.tableName).then(exists => {
             if(!exists) {
@@ -62,10 +62,12 @@ module.exports = class extends BaseMapper {
             }
         })
     }
-    
-    beforeCreateTable(table) {}
 
-    addColumns(table) {}
+    beforeCreateTable(table) {
+    }
+
+    addColumns(table) {
+    }
 
     on() {
         return this.emitter.on.apply(this.emitter, arguments)
@@ -97,12 +99,12 @@ module.exports = class extends BaseMapper {
 
     insert(data) {
         return this.queryBuilder.insert(data, this.PK)
-            .then(data => data[0]).catch(err => err)
+            .then(data => data[0])
     }
 
     update(data) {
         return this.queryBuilder.update(data, this.PK).where({id: data.id})
-            .then(data => data[0] || data).catch(err => err)
+            .then(data => data[0] || data)
     }
 };
 
@@ -437,18 +439,18 @@ class QueryBuilder {
     }
 
     clientQuery(callback, done, reject) {
-        let $ = require('jquery');
-        let options = {
-            mapper: this.mapper.fileName,
-            queryObject: this.toQueryObject()
-        };
-        $.post('/rest/query', options, null, 'json')
-            .error((xhr, status, err) => {
-                reject(xhr)
-            })
-            .then(data => {
+        const socketConnection = app.get('socketConnection'),
+            options = {
+                mapper: this.mapper.fileName,
+                queryObject: this.toQueryObject()
+            };
+        socketConnection.emit('query', options, (err, data) => {
+            if(err) {
+                reject(err)
+            } else {
                 done(callback(this.parser(data)))
-            })
+            }
+        })
     }
 
     toQueryObject() {
@@ -477,7 +479,7 @@ class QueryBuilder {
             }
         }
     }
-    
+
     fromQueryObject(queryObject) {
         this.boolify(queryObject);
         Object.assign(this.queryBuilder, queryObject);
