@@ -1,17 +1,21 @@
 'use strict';
 
-let baseRouter = require(app.get('classPath')+'/routers/base'),
-    DomDocument = require(app.get('classPath')+'/classes/dom-document'),
+const BaseRouter = require(app.get('classPath')+'/routers/base'),
     process = require('process'),
-    theme = require(process.cwd()+'/configuration/theme-light'),
-    domDocumentObj = new DomDocument(theme);
+    theme = require(process.cwd()+'/configuration/theme-light');
 
-module.exports = class extends baseRouter {
+module.exports = class extends BaseRouter {
+    constructor(params, DomDocument) {
+        super(params);
+        this.DomDocument = DomDocument || require(app.get('classPath')+'/classes/dom-document')
+    }
+
     index(req, res) {
-        let mainPageView = new (require('../views/main-page'))(theme);
-        mainPageView.render().then(html => {
-            domDocumentObj.setBlock('main', html);
-            this.loadPage(domDocumentObj, res)
+        const view = new (require('../views/main-page'))(theme),
+            DomDocument = new this.DomDocument(theme);
+        view.render().then(html => {
+            DomDocument.setBlock('main', html);
+            this.loadPage(DomDocument, res)
         })
     }
 };
