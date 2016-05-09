@@ -29,6 +29,6 @@
 28. eslint +
 29. back to babel +
 30. dependency injection -
-31. remove try/catch from theme config
------------------------------------------------
+31. remove try/catch from theme config -
+----------------------------------------
 32. move query to socket connection
