@@ -27,8 +27,8 @@
 26. history:route & router:route mobile bug +
 27. polyfills +
 28. eslint +
-29. back to babel
------------------------------------------------
+29. back to babel +
 30. dependency injection
 31. remove try/catch from theme config
+-----------------------------------------------
 32. move query to socket connection

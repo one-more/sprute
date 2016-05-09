@@ -1,6 +1,6 @@
 'use strict';
 
-let to5 = require('gulp-6to5'),
+const babel = require('gulp-babel'),
     lazypipe = require('lazypipe'),
     uglify = require('gulp-uglify'),
     filter = require('gulp-filter'),
@@ -10,7 +10,9 @@ let to5 = require('gulp-6to5'),
 
 let bundleOptions = {
     transforms: {
-        js: lazypipe().pipe(to5)
+        js: lazypipe().pipe(babel, {
+            'presets': ['es2015']
+        })
     },
     minifyJS: true,
     minifyStyles: true,

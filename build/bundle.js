@@ -1,14 +1,14 @@
 'use strict';
 
-let process = require('process'),
-    build = require(process.cwd()+'/configuration/build'),
+const process = require('process'),
+    build = require(process.cwd() + '/configuration/build'),
     gulp = require('gulp'),
     gulpMerge = require('gulp-merge'),
     crypto = require('crypto'),
     concat = require('gulp-concat'),
     through = require('through2'),
     fs = require('fs'),
-    to5 = require('gulp-6to5'),
+    babel = require('gulp-babel'),
     uglify = require('gulp-uglify'),
     combiner = require('stream-combiner2'),
     cssmin = require('gulp-cssmin'),
@@ -92,7 +92,7 @@ function buildTemplates(name, bundle) {
     ]).on('error', console.error.bind(console))
 }
 
-function buildSVG (name, bundle) {
+function buildSVG(name, bundle) {
     let fileName = isDev() ? `${name}.svg` : `${getFileName(bundle.svg)}.${name}.svg`;
     writeToResultFile(name, 'svg', fileName);
     let options = Object.assign({
@@ -114,17 +114,19 @@ function buildSVG (name, bundle) {
                     }
                 },
                 transform: [
-                    {svgo: {
-                        plugins: [
-                            {removeTitle: true}
-                        ]
-                    }}
+                    {
+                        svgo: {
+                            plugins: [
+                                {removeTitle: true}
+                            ]
+                        }
+                    }
                 ]
             },
             svg: {
                 namespaceClassnames: false,
                 doctypeDeclaration: false,
-                transform: function (svg) {
+                transform: function(svg) {
                     return svg.replace(/\#[\w]*/gi, 'currentColor').replace(/<symbol/gi, "\n<symbol");
                 }
             },
@@ -146,13 +148,18 @@ function buildRuntime() {
 
     let run = () => {
         return gulpMerge(
+            gulp.src(process.cwd()+'/node_modules/babel-polyfill/dist/polyfill.min.js'),
             gulp.src(src)
-                .pipe(to5())
+                .pipe(babel({
+                    'presets': ['es2015']
+                }))
                 .pipe(uglify())
                 .pipe(concat('essentials.js'))
                 .pipe(wrapCode()),
             gulp.src(coreModulesSrc)
-                .pipe(to5())
+                .pipe(babel({
+                    'presets': ['es2015']
+                }))
                 .pipe(uglify())
                 .pipe(require('./gulp-modules')())
                 .pipe(concat('core-modules.js'))
@@ -207,9 +214,11 @@ module.exports = {
     build(name, bundle) {
         return new Promise(done => {
             let sources = ['js', 'styles', 'templates', 'svg'];
+
             function hasSource(source) {
                 return !!bundle[source]
             }
+
             if(!sources.some(hasSource)) {
                 done()
             }
