@@ -1,12 +1,8 @@
 'use strict';
 
-let mysqlMapper = new MysqlMapper,
-    pgMapper = new PGMapper,
+const mysqlMapper = new (require('/tests-client/common/mappers/mysql')),
+    pgMapper = new (require('/tests-client/common/mappers/pg')),
     expect = require('chai').expect;
-
-app.resolve('socketConnection').then(socket => {
-    socket.emit('changeClassPath')
-});
 
 describe('MysqlMapper', function() {
     describe('#find', function() {

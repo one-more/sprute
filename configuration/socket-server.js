@@ -34,7 +34,9 @@ module.exports = {
                     }
                 }
             }
-            cb(new Error(`mapper ${mapper} does not exist`))
+            cb({
+                message: `mapper ${mapper} does not exist`
+            })
         })
     }
 };
