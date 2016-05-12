@@ -8,7 +8,7 @@ const babel = require('gulp-babel'),
     staticParams = require('./static'),
     vendorPath = 'bower_components';
 
-let bundleOptions = {
+const bundleOptions = {
     transforms: {
         js: lazypipe().pipe(babel, {
             'presets': ['es2015']
@@ -40,7 +40,7 @@ let vendorOptions = {
     minifyJS: false
 };
 
-let modulesOptions = Object.assign(vendorOptions, {
+const modulesOptions = Object.assign(vendorOptions, {
     transforms: {
         js: vendorTransforms()
     }

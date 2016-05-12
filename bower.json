@@ -21,6 +21,7 @@
         "jquery": "2.*",
         "jsmart": "*",
         "smart-plurals": "*",
-        "underscore": "*"
+        "underscore": "*",
+        "socket.io-client": "^1.4.6"
     }
 }
