@@ -4,3 +4,4 @@
 4. afterQuery does'n work
 5. and/orWhere
 6. serialize empty checkbox
+7. contentS when require json file
