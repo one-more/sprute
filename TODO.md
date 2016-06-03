@@ -5,3 +5,4 @@
 5. and/orWhere
 6. serialize empty checkbox
 7. contentS when require json file
+8. add modules styles
