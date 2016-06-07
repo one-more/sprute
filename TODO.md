@@ -8,3 +8,4 @@
 8. add modules styles
 9. refactor file-upload-form
 10. create error class for invalid data error
+11. app.resolve -> change to interval
