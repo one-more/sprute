@@ -10,3 +10,4 @@
 10. create error class for invalid data error
 11. app.resolve -> change to interval
 12. add default favicon
+13. try to make possible require relative from global modules (moment.js)
