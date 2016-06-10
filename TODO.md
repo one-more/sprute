@@ -12,3 +12,4 @@
 12. add default favicon
 13. try to make possible require relative from global modules (moment.js)
 14. add caching mechanism into mapper
+15. add default scrollTop
