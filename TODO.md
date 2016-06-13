@@ -14,3 +14,4 @@
 14. add caching mechanism into mapper
 15. add default scrollTop
 16. parse req.query to object
+17. improve (from/to)queryObject
