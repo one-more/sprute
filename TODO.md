@@ -17,3 +17,4 @@
 17. improve (from/to)queryObject
 18. watch runs only once on single file
 19. decodeURI req.query on client
+20. pluralize - filter string and numbers
