@@ -18,4 +18,4 @@
 18. watch runs only once on single file
 19. decodeURI req.query on client
 20. pluralize - filter string and numbers
-21. add once and other stuff to the sever socket and refactor it
+21. add once and other stuff to the sever socket and refactor it. Also change on connection to once connection
