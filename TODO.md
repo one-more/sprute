@@ -21,3 +21,4 @@
 21. refactor socket connection
 22. socket events on the client
 23. make process global
+24. clear mapper cache
