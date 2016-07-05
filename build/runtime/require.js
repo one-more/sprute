@@ -168,7 +168,7 @@ function runModule(currentModule, file) {
     "use strict";
 
     if(file.name.includes('.json')) {
-        return JSON.parse(file.content)
+        return JSON.parse(file.contents)
     }
 
     currentModule = Object.assign({

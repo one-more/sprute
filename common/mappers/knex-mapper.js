@@ -154,6 +154,16 @@ class QueryBuilder {
         return this
     }
 
+    andWhere() {
+        this.queryBuilder.andWhere.apply(this.queryBuilder, arguments);
+        return this
+    }
+
+    orWhere() {
+        this.queryBuilder.orWhere.apply(this.queryBuilder, arguments);
+        return this
+    }
+
     whereNot() {
         this.queryBuilder.whereNot.apply(this.queryBuilder, arguments);
         return this
@@ -420,25 +430,27 @@ class QueryBuilder {
         }).then(() => {
             return new Promise((resolve, reject) => {
                 app.serverSide(() => {
-                    this.serverQuery(callback, resolve)
+                    this.serverQuery(resolve)
                 });
 
                 app.clientSide(() => {
-                    this.clientQuery(callback, resolve, reject)
+                    this.clientQuery(resolve, reject)
                 })
             })
         }).then(data => {
             return this.mapper.afterQuery(data)
+        }).then(data => {
+            return callback(data)
         })
     }
 
-    serverQuery(callback, done) {
+    serverQuery(done) {
         this.queryBuilder.then(data => {
-            done(callback(this.parser(data)))
+            done(this.parser(data))
         })
     }
 
-    clientQuery(callback, done, reject) {
+    clientQuery(done, reject) {
         const socketConnection = app.get('socketConnection'),
             options = {
                 mapper: this.mapper.fileName,
@@ -448,7 +460,7 @@ class QueryBuilder {
             if(err) {
                 reject(err)
             } else {
-                done(callback(this.parser(data)))
+                done(this.parser(data))
             }
         })
     }

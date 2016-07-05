@@ -13,6 +13,10 @@ module.exports = {
         return phrase
     },
 
+    t() {
+        return this.translate.apply(this, arguments)
+    },
+
     get currentLanguage() {
         return config.currentLanguage
     },

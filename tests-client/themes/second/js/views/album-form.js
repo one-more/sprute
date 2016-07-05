@@ -37,10 +37,12 @@ module.exports = class extends FileUploadView {
     }
 
     validate(data) {
+        console.log(data);
         return this.validator.validate(data)
     }
 
     onValidationError() {
+        console.log(this.validator.getErrors());
         alert('invalid data')
     }
 

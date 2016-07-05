@@ -39,6 +39,19 @@ class TestMapper extends KnexMapper {
         return Promise.resolve()
     }
 
+    afterQuery(data) {
+        if(data instanceof Array) {
+            data.forEach(el => {
+                if(el.id) {
+                    el.afterQueryCreatedField = 1
+                }
+            })
+        } else if(data && data.id) {
+            data.afterQueryCreatedField = 1
+        }
+        return Promise.resolve(data)
+    }
+
     addColumns(table) {
         table.increments('id').primary();
         table.string('field1');
@@ -87,6 +100,9 @@ describe('MysqlMapper', function() {
     describe(`#find()`, function() {
         it('has to return model(s)', function() {
             return checkSelect(MysqlMapper)
+        });
+        it('has to add model(s) field after query', function() {
+            return checkAfterQuery(MysqlMapper)
         })
     });
     describe(`#save()`, function() {
@@ -105,6 +121,9 @@ describe('PGMapper', function() {
     describe(`#find()`, function() {
         it('has to return model(s)', function() {
             return checkSelect(PGMapper)
+        });
+        it('has to add model(s) field after query', function() {
+            return checkAfterQuery(PGMapper)
         })
     });
     describe(`#save()`, function() {
@@ -190,6 +209,18 @@ function checkSelect(mapperClass) {
             assert(!data);
             resolve()
         });
+    })
+}
+
+function checkAfterQuery(mapperClass) {
+    const mapper = new mapperClass;
+    return Promise.resolve().then(() => {
+        return mapper.find().where({id: 1})
+    }).then(data => {
+        assert(data.length == 1 && data[0].afterQueryCreatedField);
+        return mapper.findOne().where({id: 1})
+    }).then(model => {
+        assert(model && model.afterQueryCreatedField)
     })
 }
 

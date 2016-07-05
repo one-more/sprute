@@ -15,6 +15,9 @@
                 <link rel="stylesheet" href="{$build.prefix}/{$bundleResult[$bundle].styles}">
             {/if}
         {/foreach}
+        {if $bundleResult.modules.styles}
+            <link rel="stylesheet" href="{$build.prefix}/{$bundleResult.modules.styles}">
+        {/if}
 
         {foreach $theme.bundles as $bundle=>$files}
             {if $bundleResult[$bundle].svg}
@@ -31,12 +34,14 @@
                 </script>
             {/if}
         {/foreach}
+
+        <link type="image/png" rel="shortcut icon" href="/images/favicon.png" />
     </head>
     <body>
         <div id="all">
-            <div id="main-block" data-block="main">
+            <main id="main-block" data-block="main">
                 {$blocks.main || ''}
-            </div>
+            </main>
         </div>
 
         <script src="{$build.prefix}/{$bundleResult.runtime.js}"></script>

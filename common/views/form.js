@@ -1,6 +1,6 @@
 'use strict';
 
-let BaseView = require('./base'),
+const BaseView = require('./base'),
     $ = require('jquery'),
     AjaxResponse = require('../classes/ajax-response');
 
@@ -71,13 +71,13 @@ module.exports = class extends BaseView {
     isRequestSuccess(result) {
         return result.status == AjaxResponse.statusOK
     }
-    
+
     onSuccess() {}
-    
+
     onError() {}
 
     serializeData(form) {
-        return this.toJSON.call(form)
+        return this.toJSON(form)
     }
 
     send(url, data) {
@@ -94,15 +94,17 @@ module.exports = class extends BaseView {
         }).then(result => {
             this.hideProgress();
             return result
+        }).fail(err => {
+            this.hideProgress()
         })
     }
 
-    toJSON() {
+    toJSON(form) {
         let json = {},
             push_counters = {},
             patterns = {
                 "validate": /^[a-zA-Z][a-zA-Z0-9_]*(?:\[(?:\d*|[a-zA-Z0-9_]+)\])*$/,
-                "key":      /[a-zA-Z0-9_]+|(?=\[\])/g,
+                "key":      /[a-zA-Z0-9_-]+|(?=\[\])/g,
                 "push":     /^$/,
                 "fixed":    /^\d+$/,
                 "named":    /^[a-zA-Z0-9_]+$/
@@ -121,7 +123,7 @@ module.exports = class extends BaseView {
             return push_counters[key]++;
         };
 
-        $.each($(this).serializeArray(), function() {
+        $.each($(form).serializeArray().concat(this.getUncheckedCheckboxes()), function() {
             // skip invalid keys
             if(!patterns.validate.test(this.name)){
                 return;
@@ -156,6 +158,15 @@ module.exports = class extends BaseView {
         });
 
         return json;
+    }
+
+    getUncheckedCheckboxes() {
+        return this.$('[type=checkbox]:not(:checked)').toArray().map(el => {
+            return {
+                name: el.name,
+                value: ''
+            }
+        })
     }
 
     validate(data) {
