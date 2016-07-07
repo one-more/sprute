@@ -6,7 +6,7 @@
 6. serialize empty checkbox +
 7. contentS when require json file +
 8. add modules styles +
-9. refactor file-upload-form
+9. refactor file-upload-form +
 10. create error class for invalid data error
 11. app.resolve -> change to interval
 12. add default favicon

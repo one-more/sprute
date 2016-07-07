@@ -1,22 +1,25 @@
 'use strict';
 
-let FileUploadView = require(app.get('commonPath')+'/views/file-upload-form');
+const FileUploadView = require(app.get('commonPath')+'/views/file-upload-form');
 
 module.exports = class extends FileUploadView {
     get el() {
         return '#album-form'
     }
 
-    get events() {
-        return Object.assign(super.events, {
-            'change input[type=file]': 'onFileChosen'
-        })
+    get concatFiles() {
+        return false
     }
 
-    onFileChosen(event) {
+    onFileSelect(event) {
         if(event.target.files.length) {
-            this.$el.find('input[type=file]').eq(0).clone().appendTo('#album-previews')
+            const clone = this.$el.find('input[type=file]').eq(0).clone();
+            const _ = require('underscore');
+            const name = _.uniqueId(clone.get(0).name);
+            clone.attr('name', name);
+            clone.appendTo('#album-previews')
         }
+        console.log(this.files);
     }
 
     get validator() {

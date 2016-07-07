@@ -73,14 +73,24 @@ module.exports = class extends BaseRouter {
     }
 
     uploadImages(req, res) {
-        let formidable = require('formidable'),
+        const formidable = require('formidable'),
             form = new formidable.IncomingForm(),
             response = new AjaxResponse;
+        let filesCount = 0;
         form.uploadDir = process.cwd()+'/static/images';
         form.keepExtensions = true;
         form.type = 'multipart/form-data';
-        form.parse(req, function(err, fields, files) {
-            response.status = AjaxResponse.statusOK;
+        form.addListener('file', function(file) {
+            console.log('File Fired');
+            console.log(arguments);
+            filesCount += 1
+        });
+        form.parse(req, (err, fields, files) => {
+            if(filesCount) {
+                response.status = AjaxResponse.statusOK
+            } else {
+                response.status = AjaxResponse.statusError
+            }
             res.send(response)
         })
     }
