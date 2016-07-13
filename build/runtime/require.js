@@ -28,7 +28,7 @@ function require(module, __dirname, path) {
             if(getFromCache(path)) {
                 return getFromCache(path)
             } else if(file = getGlobalModule(path)) {
-                return addToCache(path, runModule(module, file))
+                return addToCache(file.pathName, runModule(module, file))
             }
         }
     }
@@ -176,7 +176,7 @@ function runModule(currentModule, file) {
         dirName: undefined
     }, currentModule);
 
-    let module = {
+    const module = {
             exports: {},
             filename: file.pathName,
             dirName: file.dirName,
@@ -193,11 +193,23 @@ function runModule(currentModule, file) {
         'require',
         'readFile',
         'readDir',
+        '__filename',
+        '__dirname',
         file.contents
     );
     const _readFile = readFile.bind(null, currentModule.dirName), //for fs module
         _readDir = readDir.bind(null, currentModule.dirName),
-        _require = require.bind(null, module, file.dirName);
-    env(module, exports, _require, _readFile, _readDir);
+        _require = require.bind(null, module, file.dirName),
+        fileName = module.pathName,
+        dirName = module.dirName;
+    env(
+        module,
+        exports,
+        _require,
+        _readFile,
+        _readDir,
+        fileName,
+        dirName
+    );
     return module.exports
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-let LIVR = require('livr');
+const LIVR = require('livr');
 
 module.exports = {
     init() {

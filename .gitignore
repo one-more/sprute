@@ -5,3 +5,5 @@ static/build/*
 static/bundle-result.js
 bower_components
 configuration/connections.js
+tests-client/bower_components
+tests-client/node_modules

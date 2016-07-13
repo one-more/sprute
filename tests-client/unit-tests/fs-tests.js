@@ -1,8 +1,10 @@
 'use strict';
 
-let fs = require('fs');
+const fs = require('fs');
 
 describe('fs', function() {
+    const expect = require('chai').expect;
+
     describe('#readFile', function() {
         it('should return file contents', function(done) {
             fs.readFile('/static/bundle-result.js', function(err, content) {

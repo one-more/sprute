@@ -1,8 +1,9 @@
 'use strict';
 
-var process = require('process');
-
 describe('process', function() {
+    const process = require('process');
+    const expect = require('chai').expect;
+
     describe('#cwd', function() {
         it('should return /', function(done) {
             expect(process.cwd()).to.equal('/');

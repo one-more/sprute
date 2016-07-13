@@ -27,5 +27,8 @@ module.exports = {
         "templates": "theme-second.tpl.js",
         "styles": "theme-second.css",
         "svg": "theme-second.svg"
+    },
+    "test-client-modules": {
+        "js": "test-client-modules.js"
     }
 }

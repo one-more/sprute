@@ -27,13 +27,13 @@ function isDev() {
 function buildJS(name, bundle) {
     let fileName = isDev() ? `${name}.js` : `${getFileName(bundle.js)}.${name}.js`;
     writeToResultFile(name, 'js', fileName);
-    let options = Object.assign({
+    const options = Object.assign({
         transforms: {}
     }, bundle.options);
 
     if(options.watchJS) {
         bundle.options.watchJS = false;
-        addWatch(bundle.js, buildJS.bind(null, name, bundle))
+        addWatch(options.watchJSGlob || bundle.js, buildJS.bind(null, name, bundle))
     }
 
     return combiner.obj([
@@ -127,7 +127,8 @@ function buildSVG(name, bundle) {
                 namespaceClassnames: false,
                 doctypeDeclaration: false,
                 transform: function(svg) {
-                    return svg.replace(/\#[\w]*/gi, 'currentColor').replace(/<symbol/gi, "\n<symbol");
+                    return svg
+                        .replace(/<symbol/gi, "\n<symbol");
                 }
             },
             mode: {

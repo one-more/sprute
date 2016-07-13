@@ -6,16 +6,17 @@
 6. serialize empty checkbox +
 7. contentS when require json file +
 8. add modules styles +
+-------------------------------------- 1.1.2
 9. refactor file-upload-form +
-10. create error class for invalid data error
-11. app.resolve -> change to interval
-12. add default favicon
-13. try to make possible require relative from global modules (moment.js)
-14. add caching mechanism into mapper
-15. add default scrollTop
+10. create error class for invalid data error -
+11. app.resolve -> change to interval -
+12. add default favicon +
+13. try to make possible require relative from global modules (moment.js) +
+14. don't replace svg color to current color +
+15. watch runs only once on single file +
 16. parse req.query to object
 17. improve (from/to)queryObject
-18. watch runs only once on single file
+18. add default scrollTop
 19. decodeURI req.query on client
 20. pluralize - filter string and numbers
 21. refactor socket connection
@@ -23,3 +24,5 @@
 23. make process global
 24. clear mapper cache
 25. start & stop socket request events
+26. remove blocking resources from head
+27. add caching mechanism into mapper
