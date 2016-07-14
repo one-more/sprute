@@ -14,7 +14,7 @@
 13. try to make possible require relative from global modules (moment.js) +
 14. don't replace svg color to current color +
 15. watch runs only once on single file +
-16. parse req.query to object
+16. parse req.query to object +
 17. improve (from/to)queryObject
 18. add default scrollTop
 19. decodeURI req.query on client

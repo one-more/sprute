@@ -55,6 +55,11 @@ class TestRouter extends BaseRouter {
         expect(req.params.entity).to.be.oneOf(['test', 'mandel'])
     }
 
+    queryParams(req) {
+        expect(+req.query.param1).to.be.equal(1);
+        expect(+req.query.param2).to.be.equal(2);
+    }
+
     anything(req) {
         expect(req.params[0]).to.not.be.undefined
     }
@@ -72,6 +77,7 @@ const routes = {
     'decode/:named/*splat': 'decode',
     '*first/complex-*part/*rest': 'complex',
     'query/:entity': 'query',
+    'query-params': 'queryParams',
     'function/:value': req => {
         expect(req.params.value).to.be.equal('set')
     },
@@ -93,6 +99,7 @@ const urls = [
     '/one/two/three/complex-part/four/five/six/seven',
     '/query/mandel?a=b&c=d',
     '/query/test?a=b',
+    '/query-params?param1=1&param2=2',
     '/doesnt-match-a-route',
     '/function/set',
     '/decode/a%2Fb/c%2Fd/e'
