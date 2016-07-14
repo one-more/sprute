@@ -4,7 +4,7 @@ const BaseMapper = require('./base'),
     EventEmitter = require('events'),
     _ = require('underscore');
 
-let connections = {};
+const connections = {};
 
 module.exports = class extends BaseMapper {
     constructor(knexConfig) {
@@ -425,9 +425,29 @@ class QueryBuilder {
     }
 
     then(callback) {
+        const cacheEngine = this.mapper.cacheEngine;
+        const isSelectQuery = this.toString().includes('select ');
+        let hasCache = false;
         return this.mapper.tableChecked.then(() => {
             return this.mapper.beforeQuery(this)
         }).then(() => {
+            if(cacheEngine) {
+                if(isSelectQuery) {
+                    const key = this.toString();
+                    return cacheEngine.get(key).then(cache => {
+                        if(cache) {
+                            hasCache = true;
+                            return this.parser(cache)
+                        }
+                    })
+                } else {
+                    (this.mapper.clearCache || _.noop)()
+                }
+            }
+        }).then(cache => {
+            if(cache) {
+                return cache
+            }
             return new Promise((resolve, reject) => {
                 app.serverSide(() => {
                     this.serverQuery(resolve)
@@ -438,6 +458,12 @@ class QueryBuilder {
                 })
             })
         }).then(data => {
+            if(cacheEngine && isSelectQuery) {
+                const key = this.toString();
+                if(!hasCache && data) {
+                    cacheEngine.set(key, data)
+                }
+            }
             return this.mapper.afterQuery(data)
         }).then(data => {
             return callback(data)
@@ -469,7 +495,41 @@ class QueryBuilder {
         let obj = {};
         Object.keys(this.queryBuilder).filter(key => key[0] == '_')
             .forEach(key => obj[key] = this.queryBuilder[key]);
+        obj = this.stringifyFunc(obj);
         return obj
+    }
+
+    traverse(obj, process) {
+        return _.mapObject(obj, (value, key, obj) => {
+            if(typeof value == 'object' && value != obj) {
+                const res = this.traverse(value, process);
+                if(value instanceof Array) {
+                    return _.values(res)
+                }
+                return res
+            }
+            return process(value)
+        })
+    }
+
+    stringifyFunc(obj) {
+        return this.traverse(obj, value => {
+            if(_.isFunction(value)) {
+                return value.toString()
+            } else {
+                return value
+            }
+        })
+    }
+
+    parseFunc(obj) {
+        return this.traverse(obj, value => {
+            if(typeof value == 'string' && value.includes('function')) {
+                return new Function(value.replace(/\n/g, ' ').match(/{(.*)}/)[1])
+            } else {
+                return value
+            }
+        })
     }
 
     toString() {
@@ -477,27 +537,27 @@ class QueryBuilder {
     }
 
     boolify(obj) {
-        for(let key in obj) {
-            if(obj.hasOwnProperty(key)) {
-                if(typeof obj[key] == 'object') {
-                    this.boolify(obj[key]);
-                }
-                if(obj[key] === 'false') {
-                    obj[key] = false;
-                }
-                if(obj[key] === 'true') {
-                    obj[key] = true;
-                }
+        return this.traverse(obj, value => {
+            if(value === 'false') {
+                return false
+            } else if(value === 'true') {
+                return true
+            } else {
+                return value
             }
-        }
+        })
     }
 
     fromQueryObject(queryObject) {
-        this.boolify(queryObject);
+        queryObject = this.parseFunc(queryObject);
+        queryObject = this.boolify(queryObject);
         Object.assign(this.queryBuilder, queryObject);
-        let queryStr = this.queryBuilder.toString();
+        const queryStr = this.queryBuilder.toString();
         if(this.validateQuery(queryStr)) {
-            return this.queryBuilder.then(data => data)
+            return this.queryBuilder.then(data => {
+                //console.log(1, data);
+                return data
+            })
         } else {
             throw new Error('invalid query')
         }
