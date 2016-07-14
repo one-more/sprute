@@ -58,7 +58,7 @@ class TestRouter extends BaseRouter {
     queryParams(req) {
         expect(+req.query.param1).to.be.equal(1);
         expect(+req.query.param2).to.be.equal(2);
-        expect(+req.query.param3).to.be.equal('три');
+        expect(req.query.param3).to.be.equal('три')
     }
 
     anything(req) {
