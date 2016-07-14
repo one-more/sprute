@@ -42,7 +42,12 @@ function checkSelect(mapper, done) {
         expect(data).to.be.an.instanceof(mapper.model)
     });
     mapper.findOne().where({id: 0}).then(data => {
-        expect(data).to.be.null;
+        expect(data).to.be.null
+    });
+    mapper.findOne().where(function() {
+        this.whereIn('id', [0,1])
+    }).then(model => {
+        expect(model.id).to.be.equal(1);
         done()
     });
 }

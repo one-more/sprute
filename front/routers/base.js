@@ -157,12 +157,15 @@ module.exports = class extends EventEmitter {
     parseQuery(str) {
         return str.replace('?', '').split('&').filter(el => !!el).reduce((obj, curr) => {
             const pair = curr.split('=');
-            obj[pair[0]] = pair[1];
+            obj[pair[0]] = decodeURI(pair[1]);
             return obj
         }, {})
     }
 
     loadPage() {
-        commonEvents.emit('PageLoaded')
+        commonEvents.emit('PageLoaded');
+        app.clientSide(() => {
+            document.body.scrollTop = 0
+        })
     }
 };

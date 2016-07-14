@@ -58,6 +58,7 @@ class TestRouter extends BaseRouter {
     queryParams(req) {
         expect(+req.query.param1).to.be.equal(1);
         expect(+req.query.param2).to.be.equal(2);
+        expect(+req.query.param3).to.be.equal('три');
     }
 
     anything(req) {
@@ -99,7 +100,7 @@ const urls = [
     '/one/two/three/complex-part/four/five/six/seven',
     '/query/mandel?a=b&c=d',
     '/query/test?a=b',
-    '/query-params?param1=1&param2=2',
+    '/query-params?param1=1&param2=2&param3=три',
     '/doesnt-match-a-route',
     '/function/set',
     '/decode/a%2Fb/c%2Fd/e'

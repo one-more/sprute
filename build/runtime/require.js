@@ -1,6 +1,4 @@
-window.require = require;
-
-let cachedModules = {}, noCacheModules = ['fs'];
+const cachedModules = {}, noCacheModules = ['fs'];
 
 function require(module, __dirname, path) {
     "use strict";

@@ -2,13 +2,13 @@
 
 module.exports = {
     init() {
-        let socket;
+        let module;
         app.clientSide(() => {
-            socket = require('./lib/client-socket')
+            module = require('./lib/client')
         });
         app.serverSide(() => {
-            socket = require('./lib/server-socket')
+            module = require('./lib/server')
         });
-        return socket
+        return module.init()
     }
 };

@@ -17,12 +17,12 @@
 16. parse req.query to object +
 17. improve (from/to)queryObject +
 18. add caching mechanism into mapper + 
-19. decodeURI req.query on client
-20. pluralize - filter string and numbers
-21. refactor socket connection
-22. socket events on the client
-23. make process global
-24. clear mapper cache
-25. start & stop socket request events
-26. remove blocking resources from head
-27. add default scrollTop
+19. decodeURI req.query on client +
+20. pluralize - filter string and numbers +
+21. refactor socket connection +
+22. socket events on the client +
+23. make process global +
+24. clear mapper cache +
+25. start & stop socket request events + 
+26. add default scrollTop +
+27. remove blocking resources from head -

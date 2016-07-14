@@ -1,9 +1,11 @@
 window.start = () => {
     "use strict";
 
-    let process = require('process'),
-        main = require(process.cwd()+'/configuration/runtime').main;
+    window.start = () => {};
+    window.require = require;
+    window.process = require('process');
 
-    require.main = require(main);
-    window.start = () => {}
+    const main = require(process.cwd()+'/configuration/runtime').main;
+
+    require.main = require(main)
 };

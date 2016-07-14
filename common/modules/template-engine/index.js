@@ -24,10 +24,10 @@ module.exports = {
             'function',
             'pluralize',
             params => {
-                let i18n = app.get('i18n');
-                let pluralRule = smartPlurals.Plurals.getRule(i18n.currentLanguage);
+                const i18n = app.get('i18n');
+                const pluralRule = smartPlurals.Plurals.getRule(i18n.currentLanguage);
                 params = _.values(params)
-                    .filter(param => _.isString(param))
+                    .filter(param => _.isString(param) || !isNaN(+param))
                     .map(param => {
                         return +param || param
                     });
