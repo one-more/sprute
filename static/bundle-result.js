@@ -14,21 +14,5 @@ module.exports = {
     "theme-light": {
         "styles": "theme-light.css",
         "templates": "theme-light.tpl.js"
-    },
-    "tests-common": {
-        "js": "tests-common.js"
-    },
-    "theme-test": {
-        "js": "theme-test.js",
-        "templates": "theme-test.tpl.js"
-    },
-    "theme-second": {
-        "js": "theme-second.js",
-        "templates": "theme-second.tpl.js",
-        "styles": "theme-second.css",
-        "svg": "theme-second.svg"
-    },
-    "test-client-modules": {
-        "js": "test-client-modules.js"
     }
 }
