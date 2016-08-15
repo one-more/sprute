@@ -1,9 +1,0 @@
-**/node_modules/
-node_modules/
-**/bower_components/
-bower_components/
-test/
-tests-client/
-static/
-mocha-bootstrap.js
-back/modules/knex/knex.js
