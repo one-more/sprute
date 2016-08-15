@@ -1,6 +1,6 @@
 const cachedModules = {}, noCacheModules = ['fs'];
 
-function require(module, __dirname, path) {
+window.require = function require(module, __dirname, path) {
     "use strict";
 
     //in case it's global code
